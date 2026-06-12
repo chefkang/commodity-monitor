@@ -32,8 +32,8 @@
       <main class="content">
         <header class="topbar">
           <div class="title-block">
-            <p class="eyebrow">Daily Commodity Desk</p>
-            <h2>原材料价格、趋势与涨价风险</h2>
+            <p class="eyebrow">老板原材料驾驶舱</p>
+            <h2>迈瑟伦原材料价格、趋势与涨价风险</h2>
           </div>
           <img class="topbar-logo" src="./assets/maxcellent-logo-wordmark.png" alt="MAXCELLENT 迈瑟伦" />
           <div class="top-actions">
@@ -69,18 +69,19 @@
           <section class="panel chart-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Trend</p>
+                <p class="eyebrow">价格趋势</p>
                 <h3 id="chartTitle">成本压力指数</h3>
               </div>
               <div class="chart-controls">
                 <select id="materialSelect" aria-label="选择品种"></select>
                 <div class="segmented" id="rangeControl">
-                  <button data-days="30">30D</button>
-                  <button data-days="90" class="active">90D</button>
-                  <button data-days="180">180D</button>
+                  <button data-days="30">30天</button>
+                  <button data-days="90" class="active">90天</button>
+                  <button data-days="180">180天</button>
                 </div>
               </div>
             </div>
+            <div class="chart-summary" id="chartSummary"></div>
             <div class="chart-wrap">
               <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="价格趋势图"></svg>
             </div>
@@ -89,7 +90,7 @@
           <section class="panel risk-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Risk</p>
+                <p class="eyebrow">风险预警</p>
                 <h3>优先关注</h3>
               </div>
             </div>
@@ -98,11 +99,11 @@
         </section>
 
         <section class="panel table-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Materials</p>
-              <h3>每日价格趋势表</h3>
-            </div>
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">价格明细</p>
+                <h3>每日原材料价格趋势表</h3>
+              </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -129,8 +130,8 @@
           <section class="panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">Cost Map</p>
-                <h3>成本结构联动</h3>
+                <p class="eyebrow">成本结构</p>
+                <h3>产品大类成本联动</h3>
               </div>
             </div>
             <div class="bucket-grid" id="bucketGrid"></div>
@@ -139,7 +140,7 @@
           <section class="panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">News</p>
+                <p class="eyebrow">新闻扰动</p>
                 <h3>国际与产业新闻</h3>
               </div>
             </div>
@@ -150,7 +151,7 @@
         <section class="panel watch-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Supplier Quotes</p>
+              <p class="eyebrow">供应商报价</p>
               <h3>需补录的关键报价</h3>
             </div>
           </div>

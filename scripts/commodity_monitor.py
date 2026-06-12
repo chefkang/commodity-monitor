@@ -361,6 +361,42 @@ def load_manual_records(today: date) -> list[PriceRecord]:
     return records
 
 
+def build_derived_records(config: dict[str, Any], base_records: list[PriceRecord]) -> list[PriceRecord]:
+    by_material: dict[str, list[PriceRecord]] = defaultdict(list)
+    for record in base_records:
+        by_material[record.material_id].append(record)
+
+    records: list[PriceRecord] = []
+    for material in config["materials"]:
+        if material.get("provider") != "derived_from":
+            continue
+        source_id = material.get("source_material_id")
+        if not source_id:
+            continue
+        source_records = by_material.get(source_id, [])
+        for source in source_records:
+            records.append(
+                PriceRecord(
+                    date=source.date,
+                    material_id=material["id"],
+                    material_name=material["name"],
+                    category=material["category"],
+                    price=source.price,
+                    unit=material.get("unit", source.unit),
+                    source=material.get("source_name", f"{source.material_name}价格代理"),
+                    provider="derived_from",
+                    symbol=source.symbol,
+                    source_date=source.source_date or source.date,
+                    daily_change_pct=source.daily_change_pct,
+                    near_contract_price=source.near_contract_price,
+                    dominant_contract_price=source.dominant_contract_price,
+                    dom_basis_rate=source.dom_basis_rate,
+                    notes=material.get("notes", ""),
+                )
+            )
+    return records
+
+
 def merge_price_records(records: list[PriceRecord]) -> pd.DataFrame:
     new_df = pd.DataFrame([record.to_dict() for record in records])
     if PRICE_CSV.exists():
@@ -802,6 +838,7 @@ def write_dashboard_data(
         "sources": [
             "AKShare 期货现货与基差接口",
             "生意社商品基准价公开页面",
+            "上游价格代理指标",
             "Google News RSS",
             "供应商人工报价文件 data/manual_prices.csv",
         ],
@@ -830,6 +867,7 @@ def main() -> int:
     records.extend(fetch_akshare_records(config, start, today))
     records.extend(fetch_sunsirs_vane_records(config, today))
     records.extend(load_manual_records(today))
+    records.extend(build_derived_records(config, records))
 
     if not records:
         print("没有获取到价格记录。", file=sys.stderr)

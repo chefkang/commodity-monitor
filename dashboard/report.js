@@ -3,19 +3,26 @@
   const byId = new Map(data.latest.map((item) => [item.material_id, item]));
 
   const coreOrder = [
-    "copper",
-    "tin",
     "lithium_carbonate",
+    "lfp_cathode_proxy",
+    "battery_copper_foil_proxy",
+    "battery_aluminum_foil_proxy",
+    "copper",
+    "copper_foil_proxy",
+    "tin",
+    "solder_tin_proxy",
     "aluminum",
+    "steel_hc",
+    "nickel",
+    "zinc",
     "abs",
+    "pc",
+    "pvc",
     "epoxy_resin",
-    "glass_proxy",
+    "fiberglass_cloth_proxy",
     "organic_silicon_dmc",
     "corrugated_paper",
     "paper_pulp",
-    "pp",
-    "pvc",
-    "pc",
     "waste_paper",
   ];
 
@@ -155,6 +162,34 @@
     `;
   }
 
+  function renderComponents() {
+    const target = el("componentGrid");
+    if (!target) return;
+    target.innerHTML = (data.cost_buckets || [])
+      .map((bucket) => {
+        const items = bucket.materials.map((id) => byId.get(id)).filter(Boolean);
+        const avgRisk = items.length ? items.reduce((sum, item) => sum + Number(item.up_probability || 0), 0) / items.length : 0;
+        const top = items.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))[0];
+        const trend = top ? `${top.material_name} ${top.up_probability ?? "-"}%` : "暂无重点";
+        const price = top ? `${num(top.price, 2)} ${top.unit || ""}` : "-";
+        return `
+          <article class="component-card">
+            <div class="component-head">
+              <h3>${bucket.name}</h3>
+              <strong>${bucket.share ?? "-"}%</strong>
+            </div>
+            <p>${bucket.boss_focus || "维持日度跟踪。"}</p>
+            <div class="component-meta">
+              <span>压力 ${Math.round(avgRisk)}%</span>
+              <span>重点 ${trend}</span>
+              <span>最新 ${price}</span>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
   function renderIndexChart() {
     const svg = el("indexChart");
     const points = data.index_history.slice(-90).map((row) => ({ date: row.date, value: Number(row.value) }));
@@ -197,12 +232,13 @@
     el("newsList").innerHTML =
       data.news
         .slice(0, 8)
-        .map((item) => `<article class="news-item"><a href="${item.link}" target="_blank" rel="noreferrer">${item.title}</a><span>${item.source || "News"}</span></article>`)
+        .map((item) => `<article class="news-item"><a href="${item.link}" target="_blank" rel="noreferrer">${item.title}</a><span>${item.source || "新闻"}</span></article>`)
         .join("") || '<p class="neutral">暂无新闻风险。</p>';
   }
 
   renderHeader();
   renderBrief();
+  renderComponents();
   renderTable();
   renderIndexChart();
   renderNews();

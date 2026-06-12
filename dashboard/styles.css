@@ -56,20 +56,21 @@ a {
 }
 
 .brand-mark {
-  width: 160px;
-  height: 58px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: #fff;
-  border-radius: 8px;
+  width: 178px;
+  height: 62px;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .brand-mark img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.28)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.18));
 }
 
 .brand h1 {
@@ -152,14 +153,15 @@ a {
 }
 
 .topbar-logo {
-  width: 184px;
-  height: 50px;
+  width: 192px;
+  height: 56px;
   object-fit: contain;
   background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 4px 8px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
   margin-left: auto;
+  filter: drop-shadow(0 8px 14px rgba(36, 87, 166, 0.12));
 }
 
 .eyebrow {
@@ -281,6 +283,41 @@ select {
   border-radius: 8px;
   background: var(--surface-alt);
   overflow: hidden;
+}
+
+.chart-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.chart-summary article {
+  min-height: 92px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-alt);
+}
+
+.chart-summary span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chart-summary strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.08;
+}
+
+.chart-summary small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 #trendChart {
@@ -433,6 +470,33 @@ td strong {
   font-size: 15px;
 }
 
+.bucket-head,
+.bucket-pressure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bucket-head strong {
+  color: var(--teal);
+  font-size: 20px;
+}
+
+.bucket p {
+  margin: 6px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.bucket-pressure {
+  margin-bottom: 10px;
+  color: #4b4034;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .bucket .chips {
   display: flex;
   flex-wrap: wrap;
@@ -495,6 +559,7 @@ td strong {
   width: 178px;
   height: 54px;
   object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(36, 87, 166, 0.12));
 }
 
 .empty {
@@ -544,10 +609,15 @@ td strong {
   .main-grid,
   .bottom-grid,
   .metric-grid,
+  .chart-summary,
   .bucket-grid,
   .watch-grid,
   .category-nav {
     grid-template-columns: 1fr;
+  }
+
+  .chart-wrap {
+    height: 420px;
   }
 
   h2 {

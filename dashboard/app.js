@@ -17,6 +17,7 @@
 
   const el = (id) => document.getElementById(id);
   const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
+  const costBucketByName = new Map((data.cost_buckets || []).map((bucket) => [bucket.name, bucket]));
 
   function formatDateTime(value) {
     if (!value) return "等待数据";
@@ -43,6 +44,18 @@
     const cls = number > 0 ? "positive" : number < 0 ? "negative" : "neutral";
     const sign = number > 0 ? "+" : "";
     return `<span class="${cls}">${sign}${number.toFixed(2)}%</span>`;
+  }
+
+  function plainPct(value) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
+    const number = Number(value);
+    const sign = number > 0 ? "+" : "";
+    return `${sign}${number.toFixed(2)}%`;
+  }
+
+  function priceLine(item) {
+    if (!item) return "-";
+    return `${formatNumber(item.price)} ${item.unit || ""}`;
   }
 
   function riskClass(item) {
@@ -77,7 +90,7 @@
   }
 
   function initCategories() {
-    const categories = ["全部", ...new Set(data.latest.map((item) => item.category).filter(Boolean))];
+    const categories = ["全部", ...(data.cost_buckets || []).map((bucket) => bucket.name)];
     el("categoryNav").innerHTML = categories
       .map((category) => `<button data-category="${category}" class="${category === state.category ? "active" : ""}">${category}</button>`)
       .join("");
@@ -117,7 +130,9 @@
   function filteredLatest() {
     let rows = data.latest.slice();
     if (state.category !== "全部") {
-      rows = rows.filter((item) => item.category === state.category);
+      const bucket = costBucketByName.get(state.category);
+      const materialIds = new Set(bucket ? bucket.materials : []);
+      rows = rows.filter((item) => materialIds.has(item.material_id));
     }
     return rows;
   }
@@ -185,6 +200,7 @@
     const series = seriesForChart();
     const selected = latestById.get(state.selectedMaterial);
     el("chartTitle").textContent = selected ? `${selected.material_name}价格趋势` : "成本压力指数";
+    renderChartSummary(selected, series);
 
     if (series.length < 2) {
       svg.innerHTML = '<text x="450" y="180" text-anchor="middle" fill="#67615a">暂无足够趋势数据</text>';
@@ -236,15 +252,92 @@
     `;
   }
 
+  function renderChartSummary(selected, series) {
+    const summary = el("chartSummary");
+    if (!summary) return;
+    if (selected) {
+      summary.innerHTML = `
+        <article>
+          <span>最新价格</span>
+          <strong>${priceLine(selected)}</strong>
+          <small>${selected.date || ""} · ${selected.source || "公开价格"}</small>
+        </article>
+        <article>
+          <span>1日变化</span>
+          <strong>${plainPct(selected.change_1d)}</strong>
+          <small>相对上一有效价格</small>
+        </article>
+        <article>
+          <span>30日变化</span>
+          <strong>${plainPct(selected.change_30d)}</strong>
+          <small>${selected.trend || "持续观察"}</small>
+        </article>
+        <article>
+          <span>涨价概率</span>
+          <strong>${selected.up_probability ?? "-"}%</strong>
+          <small>${selected.risk_level || "观察"}</small>
+        </article>
+      `;
+      return;
+    }
+
+    const latest = series[series.length - 1];
+    const first = series[0];
+    const change = latest && first && first.value ? (latest.value / first.value - 1) * 100 : null;
+    summary.innerHTML = `
+      <article>
+        <span>最新指数</span>
+        <strong>${latest ? formatNumber(latest.value) : "-"}</strong>
+        <small>${latest ? latest.date : "等待数据"}</small>
+      </article>
+      <article>
+        <span>${state.rangeDays}天变化</span>
+        <strong>${plainPct(change)}</strong>
+        <small>综合成本压力方向</small>
+      </article>
+      <article>
+        <span>高风险品种</span>
+        <strong>${data.summary.high_risk_count ?? 0}</strong>
+        <small>达到预警线</small>
+      </article>
+      <article>
+        <span>今日上涨</span>
+        <strong>${data.summary.rising_count ?? 0}</strong>
+        <small>相对上一有效价格</small>
+      </article>
+    `;
+  }
+
   function renderBuckets() {
     el("bucketGrid").innerHTML = data.cost_buckets
       .map((bucket) => {
-        const chips = bucket.materials
+        const items = bucket.materials
           .map((materialId) => latestById.get(materialId))
-          .filter(Boolean)
+          .filter(Boolean);
+        const avgRisk = items.length
+          ? items.reduce((sum, item) => sum + Number(item.up_probability || 0), 0) / items.length
+          : 0;
+        const top = items.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))[0];
+        const chips = items
+          .slice()
+          .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))
+          .slice(0, 8)
           .map((item) => `<span class="chip">${item.material_name}</span>`)
           .join("");
-        return `<article class="bucket"><h4>${bucket.name}</h4><div class="chips">${chips}</div></article>`;
+        return `
+          <article class="bucket">
+            <div class="bucket-head">
+              <h4>${bucket.name}</h4>
+              <strong>${bucket.share ?? "-"}%</strong>
+            </div>
+            <p>${bucket.boss_focus || "维持日度跟踪。"}</p>
+            <div class="bucket-pressure">
+              <span>当前压力 ${Math.round(avgRisk)}%</span>
+              <span>重点 ${top ? `${top.material_name} ${top.up_probability ?? "-"}%` : "-"}</span>
+            </div>
+            <div class="chips">${chips}</div>
+          </article>
+        `;
       })
       .join("");
   }
@@ -254,7 +347,7 @@
       data.news
         .slice(0, 12)
         .map((item) => {
-          const source = item.source || "News";
+          const source = item.source || "新闻";
           const date = item.published ? formatDateTime(item.published) : "";
           return `
             <article class="news-item">
