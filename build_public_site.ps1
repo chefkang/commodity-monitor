@@ -24,6 +24,9 @@ Copy-Item -LiteralPath (Join-Path $dashboard "report.js") -Destination (Join-Pat
 Copy-Item -LiteralPath (Join-Path $dashboard "styles.css") -Destination (Join-Path $Public "styles.css")
 Copy-Item -LiteralPath (Join-Path $dashboard "app.js") -Destination (Join-Path $Public "app.js")
 Copy-Item -LiteralPath (Join-Path $dashboard "data.js") -Destination (Join-Path $Public "data.js")
+if (Test-Path (Join-Path $dashboard "assets")) {
+  Copy-Item -Path (Join-Path $dashboard "assets") -Destination (Join-Path $Public "assets") -Recurse -Force
+}
 
 $reportHtml = Get-Content -LiteralPath (Join-Path $dashboard "report.html") -Raw -Encoding UTF8
 $reportHtml = $reportHtml.Replace('<link rel="stylesheet" href="./report.css" />', '<link rel="stylesheet" href="./report.css" />')

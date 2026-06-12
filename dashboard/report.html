@@ -4,13 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>大宗商品价格日报</title>
+    <link rel="icon" href="./assets/maxcellent-logo.png" />
     <link rel="stylesheet" href="./report.css" />
   </head>
   <body>
     <main class="report">
       <header class="hero">
         <div>
-          <p class="kicker">Commodity Cost Daily</p>
+          <div class="hero-brand">
+            <img src="./assets/maxcellent-logo.png" alt="MAXCELLENT 迈瑟伦" />
+            <span>Commodity Cost Daily</span>
+          </div>
           <h1>大宗商品价格日报</h1>
           <p id="reportDate" class="subline">正在读取今日价格与趋势</p>
         </div>
@@ -89,6 +93,11 @@
           <div class="news-list" id="newsList"></div>
         </section>
       </section>
+
+      <footer class="report-footer">
+        <img src="./assets/maxcellent-logo.png" alt="MAXCELLENT 迈瑟伦" />
+        <span>MAXCELLENT 迈瑟伦 · 大宗商品价格日报</span>
+      </footer>
     </main>
 
     <script src="./data.js"></script>

@@ -24,6 +24,10 @@ def main() -> int:
     for filename in ["report.css", "report.js", "styles.css", "app.js", "data.js"]:
         copy_file(DASHBOARD / filename, PUBLIC / filename)
 
+    assets = DASHBOARD / "assets"
+    if assets.exists():
+        shutil.copytree(assets, PUBLIC / "assets", dirs_exist_ok=True)
+
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")

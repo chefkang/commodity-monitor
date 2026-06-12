@@ -50,19 +50,26 @@ a {
 
 .brand {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
+  grid-template-columns: 58px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
 }
 
 .brand-mark {
-  width: 44px;
+  width: 58px;
   height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: #fff;
+  border-radius: 6px;
   display: grid;
   place-items: center;
-  font-weight: 800;
-  letter-spacing: 0;
+  padding: 5px;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand h1 {
@@ -138,6 +145,21 @@ a {
 
 .topbar {
   margin-bottom: 18px;
+}
+
+.title-block {
+  min-width: 0;
+}
+
+.topbar-logo {
+  width: 126px;
+  height: 44px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-left: auto;
 }
 
 .eyebrow {
@@ -459,6 +481,22 @@ td strong {
   margin-bottom: 18px;
 }
 
+.brand-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.brand-footer img {
+  width: 118px;
+  height: 38px;
+  object-fit: contain;
+}
+
 .empty {
   color: var(--muted);
   padding: 14px;
@@ -497,6 +535,10 @@ td strong {
   .chart-controls {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .topbar-logo {
+    margin-left: 0;
   }
 
   .main-grid,
