@@ -73,13 +73,14 @@ a {
 }
 
 .hero-brand img {
-  width: 150px;
-  height: 48px;
+  width: 248px;
+  height: 76px;
   object-fit: contain;
   background: #fff;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 7px;
-  padding: 7px 12px;
+  border-radius: 9px;
+  padding: 0;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 .hero-brand span {
@@ -367,8 +368,8 @@ h2 {
 }
 
 .report-footer img {
-  width: 132px;
-  height: 40px;
+  width: 188px;
+  height: 58px;
   object-fit: contain;
 }
 

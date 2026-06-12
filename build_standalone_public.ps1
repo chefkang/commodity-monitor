@@ -11,13 +11,18 @@ $html = Get-Content -LiteralPath (Join-Path $Dashboard "report.html") -Raw -Enco
 $css = Get-Content -LiteralPath (Join-Path $Dashboard "report.css") -Raw -Encoding UTF8
 $data = Get-Content -LiteralPath (Join-Path $Dashboard "data.js") -Raw -Encoding UTF8
 $js = Get-Content -LiteralPath (Join-Path $Dashboard "report.js") -Raw -Encoding UTF8
-$logoPath = Join-Path $Dashboard "assets\maxcellent-logo.png"
-$logoBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($logoPath))
-$logoDataUri = "data:image/png;base64,$logoBase64"
+function Get-ImageDataUri($relativePath) {
+  $path = Join-Path $Dashboard $relativePath
+  $base64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($path))
+  return "data:image/png;base64,$base64"
+}
 
 $html = $html -replace '<link rel="stylesheet" href="\./report\.css"\s*/>', "<style>`n$css`n</style>"
 $html = $html -replace '<a href="\./index\.html">进入趋势看板</a>', ''
-$html = $html.Replace('./assets/maxcellent-logo.png', $logoDataUri)
+$html = $html.Replace('./assets/maxcellent-logo.png', (Get-ImageDataUri "assets\maxcellent-logo.png"))
+$html = $html.Replace('./assets/maxcellent-logo-card.png', (Get-ImageDataUri "assets\maxcellent-logo-card.png"))
+$html = $html.Replace('./assets/maxcellent-logo-wordmark.png', (Get-ImageDataUri "assets\maxcellent-logo-wordmark.png"))
+$html = $html.Replace('./assets/maxcellent-favicon.png', (Get-ImageDataUri "assets\maxcellent-favicon.png"))
 $html = $html -replace '<script src="\./data\.js"></script>', "<script>`n$data`n</script>"
 $html = $html -replace '<script src="\./report\.js"></script>', "<script>`n$js`n</script>"
 

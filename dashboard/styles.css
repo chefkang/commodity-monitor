@@ -49,21 +49,21 @@ a {
 }
 
 .brand {
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .brand-mark {
-  width: 58px;
-  height: 44px;
+  width: 160px;
+  height: 58px;
   border: 1px solid rgba(255, 255, 255, 0.24);
   background: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  padding: 5px;
+  overflow: hidden;
 }
 
 .brand-mark img {
@@ -74,7 +74,7 @@ a {
 
 .brand h1 {
   margin: 0;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.25;
 }
 
@@ -152,13 +152,13 @@ a {
 }
 
 .topbar-logo {
-  width: 126px;
-  height: 44px;
+  width: 184px;
+  height: 50px;
   object-fit: contain;
-  background: #fff;
+  background: transparent;
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 4px 8px;
   margin-left: auto;
 }
 
@@ -492,8 +492,8 @@ td strong {
 }
 
 .brand-footer img {
-  width: 118px;
-  height: 38px;
+  width: 178px;
+  height: 54px;
   object-fit: contain;
 }
 
