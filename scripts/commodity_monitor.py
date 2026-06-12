@@ -1,0 +1,855 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import email.utils
+import json
+import math
+import re
+import sys
+import warnings
+import xml.etree.ElementTree as ET
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import date, datetime, timedelta
+from pathlib import Path
+from typing import Any
+from urllib.parse import quote_plus
+from zoneinfo import ZoneInfo
+
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+
+ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = ROOT / "config" / "materials.json"
+DATA_DIR = ROOT / "data"
+DASHBOARD_DIR = ROOT / "dashboard"
+BRIEFS_DIR = ROOT / "briefs"
+OUTPUTS_DIR = ROOT / "outputs"
+PRICE_CSV = DATA_DIR / "prices.csv"
+LATEST_JSON = DATA_DIR / "latest.json"
+NEWS_JSON = DATA_DIR / "news.json"
+DASHBOARD_DATA = DASHBOARD_DIR / "data.js"
+MANUAL_PRICE_CSV = DATA_DIR / "manual_prices.csv"
+TIMEZONE = ZoneInfo("Asia/Shanghai")
+
+
+UP_KEYWORDS = [
+    "上涨",
+    "涨价",
+    "上调",
+    "反弹",
+    "走强",
+    "供应紧张",
+    "短缺",
+    "减产",
+    "停产",
+    "检修",
+    "罢工",
+    "制裁",
+    "关税",
+    "冲突",
+    "中东",
+    "红海",
+    "库存下降",
+    "出口限制",
+    "surge",
+    "rally",
+    "rise",
+    "higher",
+    "shortage",
+    "tight supply",
+    "strike",
+    "sanction",
+    "tariff",
+    "disruption",
+    "conflict",
+    "export ban",
+]
+
+DOWN_KEYWORDS = [
+    "下跌",
+    "走弱",
+    "下调",
+    "回落",
+    "降价",
+    "需求疲软",
+    "库存增加",
+    "过剩",
+    "复产",
+    "slump",
+    "fall",
+    "lower",
+    "weak demand",
+    "surplus",
+    "oversupply",
+]
+
+NEWS_EXCLUDE_KEYWORDS = [
+    "黑马",
+    "股票",
+    "股价",
+    "涨停",
+    "概念股",
+    "财富号",
+    "问询函",
+    "可转换公司债券",
+    "公告",
+    "研报",
+    "目标价",
+]
+
+
+@dataclass
+class PriceRecord:
+    date: str
+    material_id: str
+    material_name: str
+    category: str
+    price: float
+    unit: str
+    source: str
+    provider: str
+    symbol: str = ""
+    source_date: str = ""
+    daily_change_pct: float | None = None
+    near_contract_price: float | None = None
+    dominant_contract_price: float | None = None
+    dom_basis_rate: float | None = None
+    notes: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "date": self.date,
+            "material_id": self.material_id,
+            "material_name": self.material_name,
+            "category": self.category,
+            "price": self.price,
+            "unit": self.unit,
+            "source": self.source,
+            "provider": self.provider,
+            "symbol": self.symbol,
+            "source_date": self.source_date or self.date,
+            "daily_change_pct": self.daily_change_pct,
+            "near_contract_price": self.near_contract_price,
+            "dominant_contract_price": self.dominant_contract_price,
+            "dom_basis_rate": self.dom_basis_rate,
+            "notes": self.notes,
+        }
+
+
+def load_config(path: Path = CONFIG_PATH) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def ensure_dirs() -> None:
+    for path in [DATA_DIR, DASHBOARD_DIR, BRIEFS_DIR, OUTPUTS_DIR]:
+        path.mkdir(parents=True, exist_ok=True)
+
+
+def now_cn() -> datetime:
+    return datetime.now(TIMEZONE)
+
+
+def clamp(value: float, low: float, high: float) -> float:
+    return max(low, min(high, value))
+
+
+def clean_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        if pd.isna(value):
+            return None
+    except TypeError:
+        pass
+    text = str(value).replace(",", "").replace("%", "").strip()
+    if text in {"", "-", "nan", "None"}:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def parse_yyyymmdd(value: Any) -> str:
+    text = str(value).strip()
+    if re.fullmatch(r"\d{8}", text):
+        return datetime.strptime(text, "%Y%m%d").date().isoformat()
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        return text
+    raise ValueError(f"Cannot parse date: {value!r}")
+
+
+def infer_mmdd(mmdd: str, today: date) -> str:
+    month, day = [int(part) for part in mmdd.split("-")]
+    guessed = date(today.year, month, day)
+    if guessed > today + timedelta(days=7):
+        guessed = date(today.year - 1, month, day)
+    return guessed.isoformat()
+
+
+def fetch_akshare_records(config: dict[str, Any], start: date, end: date) -> list[PriceRecord]:
+    try:
+        import akshare as ak
+    except ImportError as exc:
+        raise RuntimeError("缺少 akshare，请先运行 setup.ps1 安装依赖。") from exc
+
+    materials = {
+        item["symbol"]: item
+        for item in config["materials"]
+        if item.get("provider") == "akshare_basis" and item.get("symbol")
+    }
+    if not materials:
+        return []
+
+    symbols = list(materials.keys())
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        df = ak.futures_spot_price_daily(
+            start_day=start.strftime("%Y%m%d"),
+            end_day=end.strftime("%Y%m%d"),
+            vars_list=symbols,
+        )
+
+    records: list[PriceRecord] = []
+    if df.empty:
+        return records
+
+    for _, row in df.iterrows():
+        symbol = str(row.get("symbol", "")).strip()
+        material = materials.get(symbol)
+        if not material:
+            continue
+        price = clean_float(row.get("spot_price"))
+        if price is None:
+            continue
+        near = clean_float(row.get("near_contract_price"))
+        dominant = clean_float(row.get("dominant_contract_price"))
+        basis_rate = clean_float(row.get("dom_basis_rate"))
+        source_date = parse_yyyymmdd(row.get("date"))
+        records.append(
+            PriceRecord(
+                date=source_date,
+                material_id=material["id"],
+                material_name=material["name"],
+                category=material["category"],
+                price=price,
+                unit=material.get("unit", "元/吨"),
+                source=material.get("source_name", "AKShare"),
+                provider="akshare_basis",
+                symbol=symbol,
+                source_date=source_date,
+                near_contract_price=near,
+                dominant_contract_price=dominant,
+                dom_basis_rate=basis_rate,
+            )
+        )
+    return records
+
+
+def get_with_100ppi_check(session: requests.Session, url: str) -> str:
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125 Safari/537.36"
+        )
+    }
+    response = session.get(url, headers=headers, timeout=25)
+    text = response.text
+    if "HW_CHECK" in text and "安全检查" in text:
+        match = re.search(r'var\s+_0x2\s*=\s*"([^"]+)"', text)
+        if match:
+            domain = re.sub(r"^https?://([^/]+).*$", r"\1", url)
+            session.cookies.set("HW_CHECK", match.group(1), domain=domain, path="/")
+            response = session.get(url, headers=headers, timeout=25)
+            text = response.text
+    response.raise_for_status()
+    return text
+
+
+def fetch_sunsirs_vane_records(config: dict[str, Any], today: date) -> list[PriceRecord]:
+    records: list[PriceRecord] = []
+    session = requests.Session()
+    for material in config["materials"]:
+        if material.get("provider") != "sunsirs_vane":
+            continue
+        url = material.get("url")
+        if not url:
+            continue
+        try:
+            html = get_with_100ppi_check(session, url)
+            soup = BeautifulSoup(html, "lxml")
+            lines = [line.strip() for line in soup.get_text("\n").splitlines() if line.strip()]
+        except Exception as exc:
+            records.append(
+                PriceRecord(
+                    date=today.isoformat(),
+                    material_id=material["id"],
+                    material_name=material["name"],
+                    category=material["category"],
+                    price=math.nan,
+                    unit=material.get("unit", "元/吨"),
+                    source=material.get("source_name", "生意社"),
+                    provider="sunsirs_vane",
+                    notes=f"抓取失败: {type(exc).__name__}: {exc}",
+                )
+            )
+            continue
+
+        table_start = None
+        for idx, line in enumerate(lines):
+            if line == "日期" and idx + 2 < len(lines) and lines[idx + 1] == "价格":
+                table_start = idx + 3
+                break
+        if table_start is None:
+            continue
+
+        pos = table_start
+        while pos + 2 < len(lines):
+            raw_date, raw_price, raw_change = lines[pos], lines[pos + 1], lines[pos + 2]
+            if not re.fullmatch(r"\d{2}-\d{2}", raw_date):
+                break
+            price = clean_float(raw_price)
+            if price is not None:
+                records.append(
+                    PriceRecord(
+                        date=infer_mmdd(raw_date, today),
+                        material_id=material["id"],
+                        material_name=material["name"],
+                        category=material["category"],
+                        price=price,
+                        unit=material.get("unit", "元/吨"),
+                        source=material.get("source_name", "生意社基准价"),
+                        provider="sunsirs_vane",
+                        source_date=infer_mmdd(raw_date, today),
+                        daily_change_pct=clean_float(raw_change),
+                    )
+                )
+            pos += 3
+    return [record for record in records if not math.isnan(record.price)]
+
+
+def load_manual_records(today: date) -> list[PriceRecord]:
+    if not MANUAL_PRICE_CSV.exists():
+        return []
+    records: list[PriceRecord] = []
+    with MANUAL_PRICE_CSV.open("r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            price = clean_float(row.get("price"))
+            if price is None:
+                continue
+            record_date = row.get("date") or today.isoformat()
+            records.append(
+                PriceRecord(
+                    date=record_date,
+                    material_id=row.get("material_id", "").strip(),
+                    material_name=row.get("material_name", "").strip(),
+                    category="供应商报价",
+                    price=price,
+                    unit=row.get("unit", "").strip(),
+                    source=row.get("source", "供应商报价").strip(),
+                    provider="manual",
+                    source_date=record_date,
+                    notes=row.get("notes", "").strip(),
+                )
+            )
+    return records
+
+
+def merge_price_records(records: list[PriceRecord]) -> pd.DataFrame:
+    new_df = pd.DataFrame([record.to_dict() for record in records])
+    if PRICE_CSV.exists():
+        existing = pd.read_csv(PRICE_CSV, encoding="utf-8-sig")
+        combined = pd.concat([existing, new_df], ignore_index=True)
+    else:
+        combined = new_df
+    if combined.empty:
+        return combined
+    combined["price"] = pd.to_numeric(combined["price"], errors="coerce")
+    combined = combined.dropna(subset=["date", "material_id", "price"])
+    combined["date"] = pd.to_datetime(combined["date"], errors="coerce").dt.date.astype(str)
+    combined = combined.dropna(subset=["date"])
+    combined = combined.sort_values(["material_id", "date", "provider"])
+    combined = combined.drop_duplicates(subset=["date", "material_id"], keep="last")
+    combined.to_csv(PRICE_CSV, index=False, encoding="utf-8-sig")
+    return combined
+
+
+def fetch_news(config: dict[str, Any], max_items: int = 50) -> list[dict[str, Any]]:
+    session = requests.Session()
+    headers = {"User-Agent": "Mozilla/5.0"}
+    seen: set[str] = set()
+    items: list[dict[str, Any]] = []
+    min_published = now_cn() - timedelta(days=14)
+    material_keywords = {
+        str(keyword).lower()
+        for material in config.get("materials", [])
+        for keyword in material.get("keywords", [])
+        if str(keyword).strip()
+    }
+    global_keywords = {
+        "commodity",
+        "supply",
+        "shipping",
+        "freight",
+        "tariff",
+        "sanctions",
+        "red sea",
+        "oil",
+        "metals",
+        "大宗",
+        "供应",
+        "减产",
+        "关税",
+        "制裁",
+        "红海",
+        "中东",
+        "原油",
+        "运费",
+    }
+    required_keywords = material_keywords | global_keywords
+    for query in config.get("news_queries", []):
+        recent_query = f"{query} when:14d"
+        url = (
+            "https://news.google.com/rss/search?q="
+            + quote_plus(recent_query)
+            + "&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+        )
+        try:
+            response = session.get(url, headers=headers, timeout=20)
+            response.raise_for_status()
+            root = ET.fromstring(response.content)
+        except Exception:
+            continue
+        for item in root.findall(".//item")[:8]:
+            title = (item.findtext("title") or "").strip()
+            if not title or title in seen:
+                continue
+            lowered_title = title.lower()
+            if any(keyword in lowered_title for keyword in NEWS_EXCLUDE_KEYWORDS):
+                continue
+            if not any(keyword in lowered_title for keyword in required_keywords):
+                continue
+            if title_has_stale_month(title, now_cn().date()):
+                continue
+            seen.add(title)
+            link = (item.findtext("link") or "").strip()
+            pub_raw = item.findtext("pubDate") or ""
+            try:
+                published_dt = email.utils.parsedate_to_datetime(pub_raw)
+                published = published_dt.astimezone(TIMEZONE).isoformat()
+            except Exception:
+                published_dt = None
+                published = pub_raw
+            if published_dt and published_dt.astimezone(TIMEZONE) < min_published:
+                continue
+            source_el = item.find("source")
+            source = source_el.text.strip() if source_el is not None and source_el.text else ""
+            text = lowered_title
+            up_hits = sum(1 for keyword in UP_KEYWORDS if keyword.lower() in text)
+            down_hits = sum(1 for keyword in DOWN_KEYWORDS if keyword.lower() in text)
+            signal = clamp(up_hits - down_hits, -3, 3)
+            items.append(
+                {
+                    "title": title,
+                    "link": link,
+                    "source": source,
+                    "published": published,
+                    "query": query,
+                    "signal": signal,
+                }
+            )
+            if len(items) >= max_items:
+                break
+        if len(items) >= max_items:
+            break
+    items.sort(key=lambda x: x.get("published", ""), reverse=True)
+    NEWS_JSON.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
+    return items
+
+
+def title_has_stale_month(title: str, today: date) -> bool:
+    months = [int(match.group(1)) for match in re.finditer(r"(?<!\d)(1[0-2]|[1-9])月", title)]
+    if not months:
+        return False
+    allowed = {today.month, (today.month - 1) or 12}
+    return all(month not in allowed for month in months)
+
+
+def news_signal_for_material(material: dict[str, Any], news: list[dict[str, Any]]) -> tuple[float, list[dict[str, Any]]]:
+    keywords = [str(keyword).lower() for keyword in material.get("keywords", [])]
+    matched: list[dict[str, Any]] = []
+    signal = 0.0
+    for item in news:
+        title = item.get("title", "")
+        text = title.lower()
+        if any(keyword and keyword in text for keyword in keywords):
+            matched.append(item)
+            signal += float(item.get("signal", 0))
+    return clamp(signal, -4, 4), matched[:4]
+
+
+def pct_since(group: pd.DataFrame, current_date: date, current_price: float, days: int) -> float | None:
+    target = current_date - timedelta(days=days)
+    prior = group[group["_date"] <= target]
+    if prior.empty:
+        return None
+    old_price = clean_float(prior.iloc[-1]["price"])
+    if old_price is None or old_price == 0:
+        return None
+    return (current_price / old_price - 1) * 100
+
+
+def daily_change(group: pd.DataFrame, latest_row: pd.Series) -> float | None:
+    explicit = clean_float(latest_row.get("daily_change_pct"))
+    if explicit is not None:
+        return explicit
+    if len(group) < 2:
+        return None
+    prev = clean_float(group.iloc[-2]["price"])
+    latest = clean_float(latest_row["price"])
+    if prev is None or latest is None or prev == 0:
+        return None
+    return (latest / prev - 1) * 100
+
+
+def volatility_30d(group: pd.DataFrame) -> float:
+    recent = group.tail(30).copy()
+    if len(recent) < 4:
+        return 0.0
+    returns = recent["price"].astype(float).pct_change().dropna() * 100
+    if returns.empty:
+        return 0.0
+    return float(returns.std())
+
+
+def make_latest(config: dict[str, Any], prices: pd.DataFrame, news: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    if prices.empty:
+        return [], {}
+
+    prices = prices.copy()
+    prices["_date"] = pd.to_datetime(prices["date"], errors="coerce").dt.date
+    prices = prices.dropna(subset=["_date"])
+
+    by_id = {item["id"]: item for item in config["materials"]}
+    latest_rows: list[dict[str, Any]] = []
+
+    for material_id, group in prices.sort_values(["material_id", "_date"]).groupby("material_id"):
+        group = group.sort_values("_date")
+        row = group.iloc[-1]
+        current_price = float(row["price"])
+        current_date = row["_date"]
+        material = by_id.get(material_id, {})
+        change_1d = daily_change(group, row)
+        change_7d = pct_since(group, current_date, current_price, 7)
+        change_30d = pct_since(group, current_date, current_price, 30)
+        change_90d = pct_since(group, current_date, current_price, 90)
+        vol = volatility_30d(group)
+
+        future_premium_pct = None
+        dominant = clean_float(row.get("dominant_contract_price"))
+        if dominant is not None and current_price:
+            future_premium_pct = (dominant / current_price - 1) * 100
+
+        news_signal, matched_news = news_signal_for_material(material, news) if material else (0.0, [])
+        score = 50.0
+        if change_7d is not None:
+            score += clamp(change_7d, -12, 12) * 1.1
+        if change_30d is not None:
+            score += clamp(change_30d, -25, 25) * 0.45
+        if change_90d is not None:
+            score += clamp(change_90d, -40, 40) * 0.18
+        if future_premium_pct is not None:
+            score += clamp(future_premium_pct * 1.8, -6, 6)
+        score += news_signal * 3.5
+        score += clamp(vol * 0.7, 0, 7)
+        probability = int(round(clamp(score, 5, 95)))
+
+        if probability >= config["settings"]["high_risk_threshold"]:
+            risk_level = "高"
+        elif probability >= config["settings"]["medium_risk_threshold"]:
+            risk_level = "中偏高"
+        elif probability >= 45:
+            risk_level = "观察"
+        else:
+            risk_level = "低"
+
+        if change_30d is not None and change_30d > 3:
+            trend = "上行"
+        elif change_30d is not None and change_30d < -3:
+            trend = "下行"
+        elif change_7d is not None and change_7d > 1:
+            trend = "短线上行"
+        elif change_7d is not None and change_7d < -1:
+            trend = "短线下行"
+        else:
+            trend = "震荡"
+
+        latest_rows.append(
+            {
+                "material_id": material_id,
+                "material_name": row.get("material_name", material.get("name", material_id)),
+                "category": row.get("category", material.get("category", "")),
+                "date": row["date"],
+                "price": round(current_price, 4),
+                "unit": row.get("unit", material.get("unit", "")),
+                "source": row.get("source", ""),
+                "provider": row.get("provider", ""),
+                "symbol": row.get("symbol", ""),
+                "change_1d": round(change_1d, 2) if change_1d is not None else None,
+                "change_7d": round(change_7d, 2) if change_7d is not None else None,
+                "change_30d": round(change_30d, 2) if change_30d is not None else None,
+                "change_90d": round(change_90d, 2) if change_90d is not None else None,
+                "volatility_30d": round(vol, 2),
+                "future_premium_pct": round(future_premium_pct, 2) if future_premium_pct is not None else None,
+                "up_probability": probability,
+                "risk_level": risk_level,
+                "trend": trend,
+                "impact_weight": material.get("impact_weight", 1),
+                "matched_news": matched_news,
+                "notes": row.get("notes", ""),
+            }
+        )
+
+    weight_sum = sum(float(item.get("impact_weight", 1)) for item in latest_rows) or 1
+    pressure_index = sum(
+        float(item.get("impact_weight", 1)) * float(item.get("up_probability", 50))
+        for item in latest_rows
+    ) / weight_sum
+    rising_count = sum(1 for item in latest_rows if (item.get("change_1d") or 0) > 0)
+    high_risk_count = sum(1 for item in latest_rows if item.get("risk_level") == "高")
+    news_risk = sum(1 for item in news[:20] if item.get("signal", 0) > 0)
+
+    summary = {
+        "pressure_index": round(pressure_index, 1),
+        "rising_count": rising_count,
+        "high_risk_count": high_risk_count,
+        "tracked_count": len(latest_rows),
+        "news_risk_count": news_risk,
+    }
+    latest_rows.sort(key=lambda item: (item["risk_level"] != "高", -item["up_probability"], item["material_name"]))
+    return latest_rows, summary
+
+
+def make_history(prices: pd.DataFrame, lookback_days: int) -> list[dict[str, Any]]:
+    if prices.empty:
+        return []
+    cutoff = now_cn().date() - timedelta(days=lookback_days)
+    df = prices.copy()
+    df["_date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
+    df = df[df["_date"] >= cutoff]
+    df = df.sort_values(["material_id", "_date"])
+    return [
+        {
+            "date": row["date"],
+            "material_id": row["material_id"],
+            "material_name": row["material_name"],
+            "price": round(float(row["price"]), 4),
+            "unit": row.get("unit", ""),
+        }
+        for _, row in df.iterrows()
+    ]
+
+
+def make_index_history(history: list[dict[str, Any]], latest: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    weights = {item["material_id"]: float(item.get("impact_weight", 1)) for item in latest}
+    by_material: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in history:
+        by_material[row["material_id"]].append(row)
+
+    base_prices: dict[str, float] = {}
+    for material_id, rows in by_material.items():
+        rows.sort(key=lambda row: row["date"])
+        if rows and rows[0]["price"]:
+            base_prices[material_id] = float(rows[0]["price"])
+
+    by_date: dict[str, list[tuple[float, float]]] = defaultdict(list)
+    for row in history:
+        material_id = row["material_id"]
+        base = base_prices.get(material_id)
+        if not base:
+            continue
+        weight = weights.get(material_id, 1.0)
+        by_date[row["date"]].append((float(row["price"]) / base * 100, weight))
+
+    result = []
+    for day, values in sorted(by_date.items()):
+        weight_sum = sum(weight for _, weight in values) or 1
+        index_value = sum(value * weight for value, weight in values) / weight_sum
+        result.append({"date": day, "value": round(index_value, 2)})
+    return result
+
+
+def make_brief(config: dict[str, Any], latest: list[dict[str, Any]], summary: dict[str, Any], news: list[dict[str, Any]]) -> dict[str, Any]:
+    top_risers = sorted(
+        [item for item in latest if item.get("change_1d") is not None],
+        key=lambda item: item.get("change_1d") or 0,
+        reverse=True,
+    )[:5]
+    top_fallers = sorted(
+        [item for item in latest if item.get("change_1d") is not None],
+        key=lambda item: item.get("change_1d") or 0,
+    )[:5]
+    high_risk = [item for item in latest if item.get("risk_level") == "高"][:6]
+
+    actions: list[str] = []
+    for item in high_risk[:4]:
+        actions.append(
+            f"{item['material_name']}涨价概率{item['up_probability']}%，建议核对未锁价订单、供应商交期和可替代料。"
+        )
+    if not actions:
+        actions.append("目前未出现高风险品种，建议维持日度监控并重点观察短线上行品种。")
+
+    return {
+        "date": now_cn().date().isoformat(),
+        "summary": summary,
+        "top_risers": top_risers,
+        "top_fallers": top_fallers,
+        "high_risk": high_risk,
+        "actions": actions,
+        "news": news[:10],
+        "cost_buckets": config.get("cost_buckets", []),
+    }
+
+
+def write_brief_markdown(brief: dict[str, Any]) -> Path:
+    day = brief["date"]
+    path = BRIEFS_DIR / f"{day}.md"
+    lines = [
+        f"# 大宗商品价格监测简报 {day}",
+        "",
+        "## 总览",
+        f"- 采购成本压力指数: {brief['summary'].get('pressure_index', '-')}/100",
+        f"- 高风险品种: {brief['summary'].get('high_risk_count', 0)} 个",
+        f"- 今日上涨品种: {brief['summary'].get('rising_count', 0)} 个",
+        f"- 跟踪品种: {brief['summary'].get('tracked_count', 0)} 个",
+        "",
+        "## 高风险品种",
+    ]
+    if brief["high_risk"]:
+        for item in brief["high_risk"]:
+            lines.append(
+                f"- {item['material_name']}: {item['price']}{item['unit']}，"
+                f"30日{fmt_pct(item.get('change_30d'))}，涨价概率{item['up_probability']}%，趋势{item['trend']}"
+            )
+    else:
+        lines.append("- 暂无高风险品种。")
+
+    lines.extend(["", "## 今日涨幅靠前"])
+    for item in brief["top_risers"]:
+        lines.append(f"- {item['material_name']}: {fmt_pct(item.get('change_1d'))}，{item['price']}{item['unit']}")
+
+    lines.extend(["", "## 今日跌幅靠前"])
+    for item in brief["top_fallers"]:
+        lines.append(f"- {item['material_name']}: {fmt_pct(item.get('change_1d'))}，{item['price']}{item['unit']}")
+
+    lines.extend(["", "## 采购动作"])
+    for action in brief["actions"]:
+        lines.append(f"- {action}")
+
+    lines.extend(["", "## 新闻风险"])
+    if brief["news"]:
+        for item in brief["news"]:
+            source = f" - {item['source']}" if item.get("source") else ""
+            lines.append(f"- {item['title']}{source}")
+    else:
+        lines.append("- 暂未抓取到新闻。")
+
+    lines.extend(
+        [
+            "",
+            "> 提醒: 概率用于采购风险预警，不构成投资建议；供应商合同价应以实际报价、账期、物流和规格为准。",
+            "",
+        ]
+    )
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
+
+
+def fmt_pct(value: Any) -> str:
+    number = clean_float(value)
+    if number is None:
+        return "-"
+    sign = "+" if number > 0 else ""
+    return f"{sign}{number:.2f}%"
+
+
+def write_dashboard_data(
+    config: dict[str, Any],
+    latest: list[dict[str, Any]],
+    summary: dict[str, Any],
+    history: list[dict[str, Any]],
+    index_history: list[dict[str, Any]],
+    news: list[dict[str, Any]],
+    brief: dict[str, Any],
+) -> None:
+    payload = {
+        "generated_at": now_cn().isoformat(),
+        "currency": config["settings"].get("base_currency", "CNY"),
+        "summary": summary,
+        "latest": latest,
+        "history": history,
+        "index_history": index_history,
+        "news": news[:30],
+        "brief": brief,
+        "cost_buckets": config.get("cost_buckets", []),
+        "manual_watch_items": config.get("manual_watch_items", []),
+        "sources": [
+            "AKShare 期货现货与基差接口",
+            "生意社商品基准价公开页面",
+            "Google News RSS",
+            "供应商人工报价文件 data/manual_prices.csv",
+        ],
+    }
+    LATEST_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    js = "window.COMMODITY_MONITOR_DATA = "
+    js += json.dumps(payload, ensure_ascii=False, indent=2)
+    js += ";\n"
+    DASHBOARD_DATA.write_text(js, encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Daily commodity price monitor")
+    parser.add_argument("--backfill-days", type=int, default=None, help="Days of history to refresh")
+    parser.add_argument("--no-news", action="store_true", help="Skip news RSS fetch")
+    args = parser.parse_args()
+
+    ensure_dirs()
+    config = load_config()
+    today = now_cn().date()
+    lookback = args.backfill_days or int(config["settings"].get("lookback_days", 180))
+    start = today - timedelta(days=lookback)
+
+    print(f"刷新行情: {start.isoformat()} 至 {today.isoformat()}")
+    records: list[PriceRecord] = []
+    records.extend(fetch_akshare_records(config, start, today))
+    records.extend(fetch_sunsirs_vane_records(config, today))
+    records.extend(load_manual_records(today))
+
+    if not records:
+        print("没有获取到价格记录。", file=sys.stderr)
+        return 2
+
+    prices = merge_price_records(records)
+    news = [] if args.no_news else fetch_news(config)
+    latest, summary = make_latest(config, prices, news)
+    history = make_history(prices, lookback)
+    index_history = make_index_history(history, latest)
+    brief = make_brief(config, latest, summary, news)
+    brief_path = write_brief_markdown(brief)
+    write_dashboard_data(config, latest, summary, history, index_history, news, brief)
+
+    print(f"已更新: {PRICE_CSV}")
+    print(f"已生成看板数据: {DASHBOARD_DATA}")
+    print(f"已生成简报: {brief_path}")
+    print(f"采购成本压力指数: {summary.get('pressure_index')}/100")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,293 @@
+(function () {
+  const data = window.COMMODITY_MONITOR_DATA || {
+    summary: {},
+    latest: [],
+    history: [],
+    index_history: [],
+    news: [],
+    cost_buckets: [],
+    manual_watch_items: [],
+  };
+
+  const state = {
+    category: "全部",
+    selectedMaterial: "index",
+    rangeDays: 90,
+  };
+
+  const el = (id) => document.getElementById(id);
+  const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
+
+  function formatDateTime(value) {
+    if (!value) return "等待数据";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString("zh-CN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  function formatNumber(value) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
+    return Number(value).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+  }
+
+  function pct(value) {
+    if (value === null || value === undefined || Number.isNaN(Number(value))) {
+      return '<span class="neutral">-</span>';
+    }
+    const number = Number(value);
+    const cls = number > 0 ? "positive" : number < 0 ? "negative" : "neutral";
+    const sign = number > 0 ? "+" : "";
+    return `<span class="${cls}">${sign}${number.toFixed(2)}%</span>`;
+  }
+
+  function riskClass(item) {
+    if (item.risk_level === "高") return "high";
+    if (item.risk_level === "中偏高") return "medium";
+    if (item.risk_level === "观察") return "watch";
+    return "low";
+  }
+
+  function pressureLabel(value) {
+    if (value >= 65) return "偏高，建议锁价复核";
+    if (value >= 55) return "中偏高，关注补库窗口";
+    if (value >= 45) return "观察，维持日度跟踪";
+    return "偏低，采购压力可控";
+  }
+
+  function initHeader() {
+    el("updatedAt").textContent = `更新 ${formatDateTime(data.generated_at)}`;
+    const pressure = data.summary.pressure_index;
+    el("pressureIndex").textContent = pressure === undefined ? "--" : Math.round(pressure);
+    el("pressureStatus").textContent = pressureLabel(Number(pressure || 0));
+    el("trackedCount").textContent = data.summary.tracked_count ?? data.latest.length;
+    el("highRiskCount").textContent = data.summary.high_risk_count ?? 0;
+    el("risingCount").textContent = data.summary.rising_count ?? 0;
+    el("newsRiskCount").textContent = data.summary.news_risk_count ?? 0;
+
+    const today = data.brief && data.brief.date ? data.brief.date : "";
+    if (today) {
+      el("briefLink").href = `../briefs/${today}.md`;
+    }
+    el("reloadButton").addEventListener("click", () => window.location.reload());
+  }
+
+  function initCategories() {
+    const categories = ["全部", ...new Set(data.latest.map((item) => item.category).filter(Boolean))];
+    el("categoryNav").innerHTML = categories
+      .map((category) => `<button data-category="${category}" class="${category === state.category ? "active" : ""}">${category}</button>`)
+      .join("");
+    el("categoryNav").querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.category = button.dataset.category;
+        initCategories();
+        renderMaterials();
+        renderRiskList();
+      });
+    });
+  }
+
+  function initMaterialSelect() {
+    const options = [
+      '<option value="index">成本压力指数</option>',
+      ...data.latest
+        .slice()
+        .sort((a, b) => a.material_name.localeCompare(b.material_name, "zh-CN"))
+        .map((item) => `<option value="${item.material_id}">${item.material_name}</option>`),
+    ];
+    el("materialSelect").innerHTML = options.join("");
+    el("materialSelect").addEventListener("change", (event) => {
+      state.selectedMaterial = event.target.value;
+      renderChart();
+    });
+    el("rangeControl").querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.rangeDays = Number(button.dataset.days);
+        el("rangeControl").querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        renderChart();
+      });
+    });
+  }
+
+  function filteredLatest() {
+    let rows = data.latest.slice();
+    if (state.category !== "全部") {
+      rows = rows.filter((item) => item.category === state.category);
+    }
+    return rows;
+  }
+
+  function renderMaterials() {
+    const rows = filteredLatest();
+    el("materialsTable").innerHTML = rows
+      .map(
+        (item) => `
+          <tr>
+            <td><strong>${item.material_name}</strong><br><span class="neutral">${item.date || ""}</span></td>
+            <td><span class="tag">${item.category || "-"}</span></td>
+            <td>${formatNumber(item.price)} ${item.unit || ""}</td>
+            <td>${pct(item.change_1d)}</td>
+            <td>${pct(item.change_7d)}</td>
+            <td>${pct(item.change_30d)}</td>
+            <td>${pct(item.change_90d)}</td>
+            <td><span class="probability ${riskClass(item)}">${item.up_probability ?? "-"}%</span></td>
+            <td>${item.trend || "-"}</td>
+            <td>${item.source || "-"}</td>
+          </tr>
+        `
+      )
+      .join("");
+  }
+
+  function renderRiskList() {
+    const rows = filteredLatest()
+      .slice()
+      .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))
+      .slice(0, 7);
+    el("riskList").innerHTML =
+      rows
+        .map((item) => {
+          const newsTitle = item.matched_news && item.matched_news[0] ? item.matched_news[0].title : "";
+          return `
+            <article class="risk-item ${riskClass(item)}">
+              <h4>${item.material_name} · ${item.up_probability ?? "-"}%</h4>
+              <p>${item.trend || "震荡"}，30日${item.change_30d ?? "-"}%，最新 ${formatNumber(item.price)} ${item.unit || ""}</p>
+              ${newsTitle ? `<p>${newsTitle}</p>` : ""}
+            </article>
+          `;
+        })
+        .join("") || '<div class="empty">暂无风险数据</div>';
+  }
+
+  function seriesForChart() {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - state.rangeDays);
+
+    if (state.selectedMaterial === "index") {
+      return data.index_history
+        .filter((row) => new Date(row.date) >= cutoff)
+        .map((row) => ({ date: row.date, value: Number(row.value) }));
+    }
+
+    return data.history
+      .filter((row) => row.material_id === state.selectedMaterial)
+      .filter((row) => new Date(row.date) >= cutoff)
+      .map((row) => ({ date: row.date, value: Number(row.price) }));
+  }
+
+  function renderChart() {
+    const svg = el("trendChart");
+    const series = seriesForChart();
+    const selected = latestById.get(state.selectedMaterial);
+    el("chartTitle").textContent = selected ? `${selected.material_name}价格趋势` : "成本压力指数";
+
+    if (series.length < 2) {
+      svg.innerHTML = '<text x="450" y="180" text-anchor="middle" fill="#67615a">暂无足够趋势数据</text>';
+      return;
+    }
+
+    const width = 900;
+    const height = 360;
+    const padding = { top: 28, right: 34, bottom: 46, left: 68 };
+    const values = series.map((point) => point.value).filter((value) => Number.isFinite(value));
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const span = max - min || 1;
+    const yMin = min - span * 0.08;
+    const yMax = max + span * 0.08;
+    const xStep = (width - padding.left - padding.right) / (series.length - 1);
+
+    const x = (index) => padding.left + index * xStep;
+    const y = (value) => padding.top + (yMax - value) / (yMax - yMin) * (height - padding.top - padding.bottom);
+    const path = series.map((point, index) => `${index === 0 ? "M" : "L"} ${x(index).toFixed(2)} ${y(point.value).toFixed(2)}`).join(" ");
+    const fillPath = `${path} L ${x(series.length - 1).toFixed(2)} ${height - padding.bottom} L ${padding.left} ${height - padding.bottom} Z`;
+    const last = series[series.length - 1];
+    const first = series[0];
+    const lineColor = last.value >= first.value ? "#b42318" : "#147b3d";
+    const grid = [0, 0.25, 0.5, 0.75, 1]
+      .map((tick) => {
+        const yy = padding.top + tick * (height - padding.top - padding.bottom);
+        const value = yMax - tick * (yMax - yMin);
+        return `
+          <line x1="${padding.left}" x2="${width - padding.right}" y1="${yy}" y2="${yy}" stroke="#ded8d0" stroke-width="1" />
+          <text x="${padding.left - 12}" y="${yy + 4}" text-anchor="end" fill="#67615a" font-size="12">${formatNumber(value)}</text>
+        `;
+      })
+      .join("");
+
+    const startLabel = series[0].date.slice(5);
+    const endLabel = series[series.length - 1].date.slice(5);
+
+    svg.innerHTML = `
+      <rect x="0" y="0" width="${width}" height="${height}" fill="#f8f7f4"></rect>
+      ${grid}
+      <path d="${fillPath}" fill="${lineColor}" opacity="0.08"></path>
+      <path d="${path}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
+      <circle cx="${x(series.length - 1)}" cy="${y(last.value)}" r="5" fill="${lineColor}"></circle>
+      <line x1="${padding.left}" x2="${width - padding.right}" y1="${height - padding.bottom}" y2="${height - padding.bottom}" stroke="#bfb7ad"></line>
+      <text x="${padding.left}" y="${height - 16}" fill="#67615a" font-size="12">${startLabel}</text>
+      <text x="${width - padding.right}" y="${height - 16}" fill="#67615a" font-size="12" text-anchor="end">${endLabel}</text>
+      <text x="${width - padding.right}" y="${padding.top + 2}" fill="${lineColor}" font-size="13" text-anchor="end">${formatNumber(last.value)}</text>
+    `;
+  }
+
+  function renderBuckets() {
+    el("bucketGrid").innerHTML = data.cost_buckets
+      .map((bucket) => {
+        const chips = bucket.materials
+          .map((materialId) => latestById.get(materialId))
+          .filter(Boolean)
+          .map((item) => `<span class="chip">${item.material_name}</span>`)
+          .join("");
+        return `<article class="bucket"><h4>${bucket.name}</h4><div class="chips">${chips}</div></article>`;
+      })
+      .join("");
+  }
+
+  function renderNews() {
+    el("newsFeed").innerHTML =
+      data.news
+        .slice(0, 12)
+        .map((item) => {
+          const source = item.source || "News";
+          const date = item.published ? formatDateTime(item.published) : "";
+          return `
+            <article class="news-item">
+              <a href="${item.link}" target="_blank" rel="noreferrer">${item.title}</a>
+              <span>${source}${date ? ` · ${date}` : ""}</span>
+            </article>
+          `;
+        })
+        .join("") || '<div class="empty">暂无新闻数据</div>';
+  }
+
+  function renderManualWatch() {
+    el("manualWatch").innerHTML =
+      data.manual_watch_items
+        .map(
+          (item) => `
+            <article class="watch-item">
+              <h4>${item.name}</h4>
+              <p>${item.unit}</p>
+              <p>${item.reason}</p>
+            </article>
+          `
+        )
+        .join("") || '<div class="empty">暂无补录项</div>';
+  }
+
+  initHeader();
+  initCategories();
+  initMaterialSelect();
+  renderMaterials();
+  renderRiskList();
+  renderChart();
+  renderBuckets();
+  renderNews();
+  renderManualWatch();
+})();

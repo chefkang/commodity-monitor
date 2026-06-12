@@ -1,0 +1,9 @@
+.venv/
+runtime/
+tools/
+public/
+outputs/
+*.zip
+mobile_access.html
+__pycache__/
+.pytest_cache/

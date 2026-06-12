@@ -1,0 +1,12204 @@
+window.COMMODITY_MONITOR_DATA = {
+  "generated_at": "2026-06-12T17:48:22.346871+08:00",
+  "currency": "CNY",
+  "summary": {
+    "pressure_index": 49.0,
+    "rising_count": 9,
+    "high_risk_count": 0,
+    "tracked_count": 20,
+    "news_risk_count": 4
+  },
+  "latest": [
+    {
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "category": "纸箱上游",
+      "date": "2026-06-12",
+      "price": 1900.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.0,
+      "change_7d": 5.44,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 2.22,
+      "future_premium_pct": null,
+      "up_probability": 58,
+      "risk_level": "中偏高",
+      "trend": "短线上行",
+      "impact_weight": 3,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "category": "电池材料",
+      "date": "2026-06-12",
+      "price": 172000.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "LC",
+      "change_1d": 2.99,
+      "change_7d": 7.5,
+      "change_30d": -11.79,
+      "change_90d": 9.55,
+      "volatility_30d": 2.27,
+      "future_premium_pct": 1.92,
+      "up_probability": 56,
+      "risk_level": "中偏高",
+      "trend": "下行",
+      "impact_weight": 13,
+      "matched_news": [
+        {
+          "title": "华泰期货：碳酸锂价格区间震荡，关注供给端边际变化 - 新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOLTdCa056XzFaLW51SVRHQjNXS2xKcVF6WjEzTjQ2aDNhc1NGRGVHN1ktY0psZ0lIZE8xbXZkX0tsQVAxMEFaMlNUMWxpSlkyQVEwcHFzUmh1SUhuWlhmaHIwRVk3aVQ1ZjdZa1luWW9FR1hUOXR3U0YwQjF1cUsxMWVPaWMycnlkakQ1M2Zpc3E?oc=5",
+          "source": "新浪财经",
+          "published": "2026-06-11T20:56:15+08:00",
+          "query": "碳酸锂 锂矿 电池级 价格 供应",
+          "signal": 0
+        },
+        {
+          "title": "长安期货张晨：紧平衡未破 碳酸锂高位回调后做空风险加大 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNQS15T1ZRWHdVRkJIVXFQSTRYYnFERjR3eFZodE9MNm52RkRPSXNBRUtXdmRFbURaNFg0Z1hadmxlU1RITkQwTExRQUlyV3BXWWtURmpzV1VXRUZPN2hBNmxBYkN5TGtNNFNXdXphZzViZExjbWQ3RzREZnYyU3VpZ0l4aE9tVjRTX2JaSXFHVVFEZEpHMkYzWUJFai1nNVRISUkxNFJQRGhyblMyMVp2RjhFUzVGaXU2Nk5rZWw2ME1waGxjWVUtcExqTlhHN3ZIX2Y1alpPOWw0Zw?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-09T10:47:00+08:00",
+          "query": "碳酸锂 锂矿 电池级 价格 供应",
+          "signal": 0
+        },
+        {
+          "title": "碳酸锂最近怎么涨不动了？六个反常信号看清当下的市场困局 - 维科号",
+          "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1rck9aWnplNDFmcEVOV0pxdXBDUkphc1RkV1NKVDNBV016ZXZUNU1OX0p3Mk5xTzFrNUlmR3YzVzFxajVVZmdEekgzTW9yQVZyeldNRU83QUU?oc=5",
+          "source": "维科号",
+          "published": "2026-06-05T13:49:00+08:00",
+          "query": "碳酸锂 锂矿 电池级 价格 供应",
+          "signal": 0
+        },
+        {
+          "title": "长江有色：4日碳酸锂价下跌，仓单压顶VS需求强劲，多空博弈加剧 - 新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMilgNBVV95cUxNdTgtakJIWGFVb2FoeTdydWlZSVZxbTRKUEpwd0pYejNrZFZINzhaRUJxR19LNUdxbkRqdjdZZmZFOFZjbXZyOWdYRW9CMnRMRlBXQzcxSzZSMnp2NDZkQ0psV0FNREJ5d2hvcFhNOGhlNlgyOXRxam5MVUVxUk1JM0diNkU3RkVOc1BYRkpOVTdlb2xzOG5KY0NJN21fdUFuVVRoZ0xmMmxMMnJ1YjA3dldLS05yaWZRUk9QOWNaT2hhc2ZlQ1hLcmVuTF9LUVNCVTZjTWswczVQQW96Y3ZwWDdIdjlVOG9PclVYSktQbXBvQjA4RmdRVzJyQjZqaXBZUkoybXg3TU5wcXpMUXFtT09nLVNzeG5qMFFoek1OajJLdHZZbW9BWnduSzd2R0Q4QjRJclhwWFBUOWtZenZhU2xZS2tHVGZPUmZWOUNuZWluekxkVmZ4UDZOWnNpeVFUUGRDN2RwUHJkaFlwbFhhUHEzNUtrRXR6MU1ucmpBZ2RfTUVSM3JqYTczLW5waVU1THpaSEln?oc=5",
+          "source": "新浪财经",
+          "published": "2026-06-05T08:56:03+08:00",
+          "query": "碳酸锂 锂矿 电池级 价格 供应",
+          "signal": -1
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "category": "环氧上游",
+      "date": "2026-06-12",
+      "price": 10400.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.0,
+      "change_7d": 0.0,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 3.75,
+      "future_premium_pct": null,
+      "up_probability": 53,
+      "risk_level": "观察",
+      "trend": "震荡",
+      "impact_weight": 3,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "category": "纸箱",
+      "date": "2026-06-12",
+      "price": 2941.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.34,
+      "change_7d": 2.05,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 0.34,
+      "future_premium_pct": null,
+      "up_probability": 52,
+      "risk_level": "观察",
+      "trend": "短线上行",
+      "impact_weight": 7,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "category": "有色金属",
+      "date": "2026-06-12",
+      "price": 24153.33,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "AL",
+      "change_1d": 0.69,
+      "change_7d": -0.28,
+      "change_30d": -1.72,
+      "change_90d": -3.89,
+      "volatility_30d": 0.73,
+      "future_premium_pct": 0.05,
+      "up_probability": 52,
+      "risk_level": "观察",
+      "trend": "震荡",
+      "impact_weight": 7,
+      "matched_news": [
+        {
+          "title": "全球铝业大地震！世界最大单体铝冶炼厂减产 印度铝业巨头宣布不可抗力 - 财联社",
+          "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5TMTBhb1hLSEVqc0xyY2ZtVzVHOVF0TENlQ1BDV1JLUExZMG9YbnJ5T0pMaWZNbFZuRWdFMlNwWWgxWWo3dmxMZw?oc=5",
+          "source": "财联社",
+          "published": "2026-06-12T12:00:59+08:00",
+          "query": "铝 氧化铝 电解铝 能源 价格",
+          "signal": 1
+        },
+        {
+          "title": "中国铝冶炼产业月度景气指数报告2026年5月 - 中国有色网",
+          "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLZHhkYV9IZ041UlBDNkNlSHdjZGgtek9VY3pnVUhNbDR0WEZzV01zOV9qbV9sd1VDY3kxb3hSWUttX1lYaWVKQnVnUVlQQ2xoakk5N2VWbWt3NDh6?oc=5",
+          "source": "中国有色网",
+          "published": "2026-06-11T15:14:00+08:00",
+          "query": "铝 氧化铝 电解铝 能源 价格",
+          "signal": 0
+        },
+        {
+          "title": "几内亚“限矿”冲击波：氧化铝产业深度洗牌在即 氧化铝行业如何破局？ - 上海有色金属网",
+          "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE1pN1ZoejdvcXd1WlBJTjNmXzlORkJOQW9rR3o1UExBQkt5bjF4VVhnNTgtVlhnODN4T092Wi1KM3hLUGdnV3YzNkFB?oc=5",
+          "source": "上海有色金属网",
+          "published": "2026-06-10T22:42:00+08:00",
+          "query": "铝 氧化铝 电解铝 能源 价格",
+          "signal": 0
+        },
+        {
+          "title": "2026-2033年全球氧化铝细分市场、下游需求及价格走势分析报告 - 北京研精毕智",
+          "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBkZ0M5bUJEOHNmSjNqOTNzZHNFZi1ENTdKQmFnVnNXOWt1UnN0dmFuSF9wX3dhY3dBYVpUYlVrY0N2bXpLTlpDYmtka1JBZDBTLXc?oc=5",
+          "source": "北京研精毕智",
+          "published": "2026-06-10T10:34:49+08:00",
+          "query": "铝 氧化铝 电解铝 能源 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "category": "环氧上游",
+      "date": "2026-06-12",
+      "price": 8740.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.0,
+      "change_7d": -0.91,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 3.13,
+      "future_premium_pct": null,
+      "up_probability": 51,
+      "risk_level": "观察",
+      "trend": "震荡",
+      "impact_weight": 3,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "abs",
+      "material_name": "ABS",
+      "category": "塑料树脂",
+      "date": "2026-06-12",
+      "price": 9300.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.18,
+      "change_7d": -2.28,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 2.77,
+      "future_premium_pct": null,
+      "up_probability": 49,
+      "risk_level": "观察",
+      "trend": "短线下行",
+      "impact_weight": 10,
+      "matched_news": [
+        {
+          "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-06T09:18:00+08:00",
+          "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "category": "塑料树脂",
+      "date": "2026-06-12",
+      "price": 4580.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "V",
+      "change_1d": 0.44,
+      "change_7d": -0.43,
+      "change_30d": -8.47,
+      "change_90d": -19.56,
+      "volatility_30d": 1.26,
+      "future_premium_pct": 3.52,
+      "up_probability": 49,
+      "risk_level": "观察",
+      "trend": "下行",
+      "impact_weight": 5,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "category": "橡胶替代指标",
+      "date": "2026-06-12",
+      "price": 17566.67,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "RU",
+      "change_1d": 1.05,
+      "change_7d": -1.36,
+      "change_30d": -2.18,
+      "change_90d": 3.74,
+      "volatility_30d": 0.81,
+      "future_premium_pct": -0.01,
+      "up_probability": 49,
+      "risk_level": "观察",
+      "trend": "短线下行",
+      "impact_weight": 2,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "category": "硅胶上游",
+      "date": "2026-06-12",
+      "price": 14700.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": 0.0,
+      "change_7d": -0.68,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 0.28,
+      "future_premium_pct": null,
+      "up_probability": 49,
+      "risk_level": "观察",
+      "trend": "震荡",
+      "impact_weight": 6,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "copper",
+      "material_name": "铜",
+      "category": "有色金属",
+      "date": "2026-06-12",
+      "price": 104683.33,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "CU",
+      "change_1d": 1.33,
+      "change_7d": -0.68,
+      "change_30d": -3.58,
+      "change_90d": 4.04,
+      "volatility_30d": 1.07,
+      "future_premium_pct": -0.02,
+      "up_probability": 49,
+      "risk_level": "观察",
+      "trend": "下行",
+      "impact_weight": 18,
+      "matched_news": [
+        {
+          "title": "长江有色：11日铜价四连跌 高价货源去库依然困难 - 新浪财经",
+          "link": "https://news.google.com/rss/articles/CBMiugJBVV95cUxOQ3BWMXd3eWV4MEZzVkhEM0lZYmx4N2lpV1AyUExyQzlORW04VTVlTVVBeFJsbHlYOUdYdlMyM3lOOUQ3RlhhRnkyVUQ3ejVQSWhRUy1tWGxLaHdHSXEtTFFHUVE1VUlmY3hZX3ZWQ0FBcDhFdTJmbzFFTWgxVFVpZHVBelYwbzQ4cUh4bi1lSUFuRmdCOXNLUGFWUVRLQVNVendwcjBJR3ZpOUNLM1Y2VURRdFA2WW5FT2dQYmlsRjl5d1g2WXJzek0tb29Pa2xXNDJJQ3NtVkxudGdfV0ptYjNyT1FBSUxaTnoxLVpENGZHZXBwVEM0cnRFNlMybXNET09tSndYZThzMklOdnBKUE84d2FVMkN0WkJBd0VfSnJtVFVPMDFmMDlCcGliUnV1UVE0Sloybk82Zw?oc=5",
+          "source": "新浪财经",
+          "published": "2026-06-11T19:29:09+08:00",
+          "query": "铜 铜矿 铜箔 供应 价格",
+          "signal": 0
+        },
+        {
+          "title": "全球铜矿：供需矛盾尖锐资源博弈加剧 市场呈现紧平衡 延续高价位运行 - hirohida.com",
+          "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE0wYkplaGFnbFc5V0F1a0xlOEE4X1htR3ZYYndxZmdMU2FIaUMwLVRUZFA2Y1A5TFdxTmQ3YTRTTWk1Q0txSHczVktQdmZzTGp0MzNyOG9fbTBMQzVGS05mVlBISQ?oc=5",
+          "source": "hirohida.com",
+          "published": "2026-06-06T16:40:00+08:00",
+          "query": "铜 铜矿 铜箔 供应 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "pp",
+      "material_name": "PP",
+      "category": "塑料树脂",
+      "date": "2026-06-12",
+      "price": 9690.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "PP",
+      "change_1d": 0.35,
+      "change_7d": 0.28,
+      "change_30d": 1.57,
+      "change_90d": 11.89,
+      "volatility_30d": 0.74,
+      "future_premium_pct": -11.29,
+      "up_probability": 48,
+      "risk_level": "观察",
+      "trend": "震荡",
+      "impact_weight": 5,
+      "matched_news": [
+        {
+          "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-06T09:18:00+08:00",
+          "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "category": "PCB/玻纤",
+      "date": "2026-06-12",
+      "price": 1028.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "FG",
+      "change_1d": 0.0,
+      "change_7d": -2.13,
+      "change_30d": -2.65,
+      "change_90d": -5.51,
+      "volatility_30d": 0.39,
+      "future_premium_pct": -3.99,
+      "up_probability": 47,
+      "risk_level": "观察",
+      "trend": "短线下行",
+      "impact_weight": 4,
+      "matched_news": [
+        {
+          "title": "年内5轮提价！电子布，价格大幅上涨 - 电子工程专辑",
+          "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9RUzRxODZZWjA2OF9xcXA2MzhGZzdITXoxcGFiVjZmMm1YMnFXMFRaUFBqMlByLUFFRVhHSnN1bDc5cVlvUlZpd3FIZXlLb0VyamFR?oc=5",
+          "source": "电子工程专辑",
+          "published": "2026-06-09T21:43:00+08:00",
+          "query": "玻纤布 电子纱 电子布 PCB 涨价",
+          "signal": 1
+        },
+        {
+          "title": "电子布涨超100%，谁能在这场周期复苏中笑到最后？ - 维科号",
+          "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9QTlRBUjN1UjZWaVFnX1BzX1gwOVpEUHpqSFNYY3BNSEo1OVFtWUg2MFZmQ1hrSlU0SUc1VVpvai1WelBYLWJTWUxJS3FiS19jQmw4dFFB?oc=5",
+          "source": "维科号",
+          "published": "2026-06-09T15:39:00+08:00",
+          "query": "玻纤布 电子纱 电子布 PCB 涨价",
+          "signal": 0
+        },
+        {
+          "title": "年内5轮提价！电子布，价格大幅上涨 - 搜狐网",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPbm9LMGVfNldyZExpN2RUTEhmcGxJUmp4MFN3QnUzSm9iaGxLMU9qRkxtWE5JSEtna18wQzE1WWRiQlZaSmxPZ0JTSmR1R1FqOGRsaXJGVTZfYjd2M2Y5c1VYcFhNamlyaC0wbUpNRDNrYS14MTNiN3BKRHdyUVhBWDM2dDRqc2VQYjhlRg?oc=5",
+          "source": "搜狐网",
+          "published": "2026-06-09T10:28:00+08:00",
+          "query": "玻纤布 电子纱 电子布 PCB 涨价",
+          "signal": 1
+        },
+        {
+          "title": "存储一幕重现！AI算力需求引爆电子布，连续5轮提价后价格已翻倍，金安国纪、中国巨石等闻风大涨 - 金融界",
+          "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE9mc2VSN3lmVkxFdzYzdDlNeTZob3pheFlubVYzV3poRzlTT0hBeTBRbjdqbjJLOVVlRHJNZTRwdGt3THYxR0Y2QUliV2NwWDlZMVRQVDR6d2xJMzlYX2RQQXdDUjZFX1M5QVB5Mi02SGNCUQ?oc=5",
+          "source": "金融界",
+          "published": "2026-06-09T10:27:14+08:00",
+          "query": "玻纤布 电子纱 电子布 PCB 涨价",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "tin",
+      "material_name": "锡",
+      "category": "有色金属",
+      "date": "2026-06-12",
+      "price": 410862.5,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "SN",
+      "change_1d": 3.26,
+      "change_7d": -3.0,
+      "change_30d": -5.02,
+      "change_90d": 6.11,
+      "volatility_30d": 2.26,
+      "future_premium_pct": -0.7,
+      "up_probability": 46,
+      "risk_level": "观察",
+      "trend": "下行",
+      "impact_weight": 4,
+      "matched_news": [
+        {
+          "title": "AI领域发展前景强势 沪锡需求延续乐观预期 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLXZ6QTQ1N1RQbXBiaC1iLXN2S2RXdGE5U1NqNmk4Z0RzbnpqSGtIaHIwMUo5VkV5aGpLVzhYd2J6bXRWeE9EbEtSOFZJVnEwMGRXRTFneF9lWHd1RERqWnFGNlBIWGM3Tm1WZlJVY0I4aFlZcnI1aXVoa0NFeVNHYVNadGRtMFNyVlgxRw?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-12T13:15:00+08:00",
+          "query": "锡 锡矿 焊锡 供应 价格",
+          "signal": 0
+        },
+        {
+          "title": "SMM：预计全球锡市场将维持紧平衡【印尼矿业大会】 - 上海有色金属网",
+          "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE84Q3FKMEdXTXZCalNFMU1OLWZvRnRfOF9menlvdjRQZGJPR09YYjd1LXh3cnZ2QUpOb0lVSGZIOE53SHlMQkRUdlRR?oc=5",
+          "source": "上海有色金属网",
+          "published": "2026-06-09T05:43:00+08:00",
+          "query": "锡 锡矿 焊锡 供应 价格",
+          "signal": 0
+        },
+        {
+          "title": "每日期货全景复盘2.27：消息扰动加剧价格波动，锡价延续强势-市场参考 - 金十数据",
+          "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBWYkMzUEdlbHpiaFdhLUhVdGladG82RS1wZ19lUVpIOGhWTGpveW94LW10cW5SZjk3Sko3eUhVd0VBNFRXbTU4NHpvcTRsMVk?oc=5",
+          "source": "金十数据",
+          "published": "2026-06-01T20:54:54+08:00",
+          "query": "铝 氧化铝 电解铝 能源 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "category": "PCB/树脂",
+      "date": "2026-06-12",
+      "price": 14333.33,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": -6.32,
+      "change_7d": -6.32,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 3.12,
+      "future_premium_pct": null,
+      "up_probability": 45,
+      "risk_level": "观察",
+      "trend": "短线下行",
+      "impact_weight": 8,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "category": "纸箱上游",
+      "date": "2026-06-12",
+      "price": 4983.33,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "SP",
+      "change_1d": 0.0,
+      "change_7d": 0.34,
+      "change_30d": -3.24,
+      "change_90d": -6.27,
+      "volatility_30d": 0.33,
+      "future_premium_pct": -1.75,
+      "up_probability": 45,
+      "risk_level": "观察",
+      "trend": "下行",
+      "impact_weight": 4,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "category": "硅材料",
+      "date": "2026-06-12",
+      "price": 9440.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "SI",
+      "change_1d": 0.0,
+      "change_7d": 0.0,
+      "change_30d": -0.74,
+      "change_90d": -1.26,
+      "volatility_30d": 0.21,
+      "future_premium_pct": -7.36,
+      "up_probability": 44,
+      "risk_level": "低",
+      "trend": "震荡",
+      "impact_weight": 3,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "category": "塑料树脂",
+      "date": "2026-06-12",
+      "price": 8301.67,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "L",
+      "change_1d": -0.14,
+      "change_7d": 0.22,
+      "change_30d": -2.22,
+      "change_90d": -1.85,
+      "volatility_30d": 0.51,
+      "future_premium_pct": -4.81,
+      "up_probability": 43,
+      "risk_level": "低",
+      "trend": "震荡",
+      "impact_weight": 3,
+      "matched_news": [
+        {
+          "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-06T09:18:00+08:00",
+          "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "material_id": "pc",
+      "material_name": "PC",
+      "category": "工程塑料",
+      "date": "2026-06-12",
+      "price": 14200.0,
+      "unit": "元/吨",
+      "source": "生意社基准价",
+      "provider": "sunsirs_vane",
+      "symbol": "",
+      "change_1d": -1.05,
+      "change_7d": -11.43,
+      "change_30d": null,
+      "change_90d": null,
+      "volatility_30d": 1.97,
+      "future_premium_pct": null,
+      "up_probability": 39,
+      "risk_level": "低",
+      "trend": "短线下行",
+      "impact_weight": 4,
+      "matched_news": [],
+      "notes": ""
+    },
+    {
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "category": "ABS上游",
+      "date": "2026-06-12",
+      "price": 8650.0,
+      "unit": "元/吨",
+      "source": "AKShare/生意社现货与期货",
+      "provider": "akshare_basis",
+      "symbol": "EB",
+      "change_1d": -0.92,
+      "change_7d": -1.59,
+      "change_30d": -9.9,
+      "change_90d": -16.83,
+      "volatility_30d": 1.14,
+      "future_premium_pct": -1.93,
+      "up_probability": 38,
+      "risk_level": "低",
+      "trend": "下行",
+      "impact_weight": 3,
+      "matched_news": [
+        {
+          "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+          "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+          "source": "Sina finance",
+          "published": "2026-06-06T09:18:00+08:00",
+          "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+          "signal": 0
+        }
+      ],
+      "notes": ""
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-05-22",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 10666.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 10133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 9516.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 9283.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 9266.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 9283.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "abs",
+      "material_name": "ABS",
+      "price": 9300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21723.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21760.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21736.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21938.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21883.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 21883.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22006.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22006.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22491.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22193.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22473.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23323.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23926.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24160.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24031.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24043.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24371.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24306.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24673.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24203.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24045.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23721.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23753.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24120.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24040.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23880.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24265.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24870.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24666.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22970.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23306.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23780.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23780.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23158.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23406.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23303.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 22676.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23368.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23223.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23391.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23396.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23443.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23406.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23636.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24406.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25223.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24483.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25020.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25273.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25130.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25130.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24526.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24506.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24090.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23456.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23486.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24543.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24621.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24646.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24576.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24416.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24553.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24458.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24458.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24763.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24763.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 25173.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24921.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24686.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24783.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24766.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24823.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24486.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24493.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24403.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24403.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24063.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24231.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24403.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24393.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24576.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24380.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24063.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24210.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24210.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24406.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24363.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24323.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24093.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24401.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24151.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24223.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24201.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24338.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24470.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24223.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24220.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24013.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23913.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23793.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 23986.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "aluminum",
+      "material_name": "铝",
+      "price": 24153.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 9680.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 9040.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 8820.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 8540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 8540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 8740.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "bisphenol_a",
+      "material_name": "双酚A",
+      "price": 8740.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 92298.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 91851.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 92196.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 92316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 92496.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 93843.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 93570.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 94853.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 94901.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 97885.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101053.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 97675.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 99180.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100653.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103741.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103571.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102418.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100515.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103276.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102405.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104121.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102551.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101810.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101140.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100221.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100231.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100920.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102426.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101520.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101628.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103206.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104496.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100853.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101388.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104786.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101288.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100035.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101646.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101858.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101353.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100356.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101598.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102146.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101981.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102136.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102186.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101821.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101851.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101608.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101121.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100168.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101503.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101356.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100871.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100615.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 99333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 100351.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 99083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95813.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 93006.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 93955.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95731.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95521.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95520.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95260.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 95666.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 96953.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 96155.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 96186.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 96750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 97785.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 97606.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 98331.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 98875.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102910.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102398.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102035.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102871.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102190.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102288.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102933.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102618.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102950.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101635.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 101498.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102590.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102858.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 102853.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104373.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 106546.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 108573.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 107511.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105588.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104278.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104185.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103398.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105220.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105661.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104938.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103580.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104843.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104911.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105861.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 106656.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105340.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 105398.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104195.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104210.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104126.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 103308.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "copper",
+      "material_name": "铜",
+      "price": 104683.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2830.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2866.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2882.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2901.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2911.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2931.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "corrugated_paper",
+      "material_name": "瓦楞原纸",
+      "price": 2941.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 12000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 11400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "epichlorohydrin",
+      "material_name": "环氧氯丙烷",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 16233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 15300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 15300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 15300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 15300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 15300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "epoxy_resin",
+      "material_name": "环氧树脂",
+      "price": 14333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1072.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1072.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1072.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1068.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1068.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1068.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1042.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1034.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1034.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1022.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1022.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1020.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1020.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1020.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1024.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1026.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1030.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1030.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1030.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1030.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1030.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1044.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1044.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1044.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1048.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1048.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1056.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1058.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1058.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1062.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1070.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1078.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1078.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1078.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1086.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1088.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1064.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1064.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1064.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1064.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1054.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1054.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1054.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1056.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1056.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1056.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1052.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1050.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1050.4,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1036.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "glass_proxy",
+      "material_name": "玻璃/玻纤替代指标",
+      "price": 1028.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9620.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9630.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9630.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9610.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9530.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9530.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9460.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9460.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9480.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9580.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9470.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9370.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9370.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9390.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9460.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9520.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9520.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9510.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9480.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9420.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "industrial_silicon",
+      "material_name": "工业硅",
+      "price": 9440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 96233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 97733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 100733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 101733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 102733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 107733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 108733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 110733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 111733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 117733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 122066.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 120400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 119400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 121566.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 129000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 135000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 138000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 140000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 162000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 147000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 159000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 165000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 170000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 169000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 167000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 165000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 145000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 146000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 147000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 140000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 136000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 136000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 136000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 138000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 147000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 145000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 152000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 162000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 173000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 153000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 152000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 154000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 158000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 158000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 157000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 157000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 153000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 142000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 167000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 159000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 158000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 158000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 157500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 158000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 155000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 150000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 157000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 161000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 162000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 167000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 168000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 170000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 169000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 170000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 176000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 174000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 177000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 177000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 190000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 193000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 190000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 196000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 199000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 195000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 192000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 191000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 190000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 184000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 179000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 179000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 179000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 180000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 177000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 175000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 176000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 178000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 177000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 174000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 170000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 166000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 160000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 162000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 162000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 164000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 167000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "lithium_carbonate",
+      "material_name": "碳酸锂",
+      "price": 172000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6670.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6645.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6616.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6608.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6513.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6430.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6388.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6376.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6380.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6415.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6410.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6483.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6573.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6615.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6675.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6773.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6921.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6840.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6810.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6725.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6668.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6696.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6846.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6871.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6915.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6905.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6958.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6930.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6975.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6915.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6708.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6736.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6723.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6605.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 6816.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7125.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7325.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7491.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7566.66,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8008.34,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 7866.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8458.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8516.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8476.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8708.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 9108.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 9075.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8766.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8816.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8783.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 9000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8766.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8716.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8768.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8880.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 9216.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8916.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8840.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8858.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8758.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8580.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8541.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8425.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8321.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8266.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8275.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8258.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8276.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8313.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8425.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8525.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8516.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8446.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8491.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8490.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8441.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8410.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8425.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8403.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8386.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8351.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8275.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8271.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8256.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8256.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8276.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8286.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8270.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8270.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8283.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8291.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8326.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8296.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8313.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "lldpe",
+      "material_name": "LLDPE",
+      "price": 8301.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 14991.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 14908.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15075.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 14983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 14950.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 14983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15358.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15458.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15408.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15416.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15341.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15941.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15850.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15716.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15816.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15816.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15866.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15741.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15583.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15475.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16016.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16275.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 15841.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16175.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16075.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16125.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16225.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16441.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16408.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16283.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16833.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17125.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16916.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16866.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16908.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16933.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16808.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16808.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16483.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16141.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16158.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16308.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16425.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16416.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16341.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16566.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16933.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16866.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16591.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16725.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16783.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16566.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16825.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 16983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17275.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17058.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17258.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17475.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17408.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17708.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17858.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17841.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17766.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17783.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17958.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17883.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17808.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17608.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17391.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17758.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17866.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17975.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 18091.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17891.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17808.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17516.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17358.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17383.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "natural_rubber",
+      "material_name": "天然橡胶",
+      "price": 17566.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "organic_silicon_dmc",
+      "material_name": "有机硅DMC",
+      "price": 14700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5583.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5583.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5583.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5616.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5583.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5483.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5483.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5383.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5366.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5383.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5333.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5266.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5183.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5166.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5216.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5216.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5200.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5116.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5100.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5083.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5066.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5050.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5050.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 5033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "paper_pulp",
+      "material_name": "纸浆",
+      "price": 4983.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 16366.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 16433.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 16033.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 15433.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 14633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 14350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "pc",
+      "material_name": "PC",
+      "price": 14200.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6153.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6153.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6153.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6153.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6170.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6170.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6253.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6270.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6326.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6376.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6393.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6426.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6543.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6593.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6576.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6553.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6580.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6646.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6633.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6676.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6690.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6656.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6690.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6686.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6663.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 6893.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 7270.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 7320.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 7703.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 7826.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9126.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 7993.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8660.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8960.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8943.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8943.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9063.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8743.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9443.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 8966.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9000.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9166.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9666.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9416.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9383.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9283.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9216.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9260.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9233.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9183.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9123.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9113.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9103.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9133.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9266.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9316.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9513.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9466.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9533.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9523.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9556.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9556.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9673.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9670.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9736.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9850.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9823.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9856.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9733.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9723.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9723.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9573.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9673.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9706.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9706.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9663.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9706.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9663.33,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9656.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9656.67,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "pp",
+      "material_name": "PP",
+      "price": 9690.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4287.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4314.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4322.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4332.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4324.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4268.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4346.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4374.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4383.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4405.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4430.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4409.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4415.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4498.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4603.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4567.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4513.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4524.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4543.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4522.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4544.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4496.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4461.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4461.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4429.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4478.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4637.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4624.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4615.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4592.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4640.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4698.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4721.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4813.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4742.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4691.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4678.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4659.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4677.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4665.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4616.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4693.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4710.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4639.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4555.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4632.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4702.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4758.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4821.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4901.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5502.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5147.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5658.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5694.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5875.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5772.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5766.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5671.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 6063.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5780.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5527.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5511.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5440.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5462.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5256.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5210.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5362.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5335.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5360.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5145.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4982.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4937.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4945.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4877.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4970.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4955.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4971.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4983.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4954.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5050.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4975.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4967.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5019.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5010.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5042.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5034.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5055.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4937.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4935.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4879.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 5004.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4855.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4845.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4897.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4820.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4760.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4670.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4665.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4685.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4730.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4760.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4630.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4545.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "pvc",
+      "material_name": "PVC",
+      "price": 4580.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6774.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6780.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6776.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6756.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6716.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6636.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6642.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6682.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6688.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6688.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6728.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6748.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6760.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6792.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6792.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6792.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6792.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6850.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 6964.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7080.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7090.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7116.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7122.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7196.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7202.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7242.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7470.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7754.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7748.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7740.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7830.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7874.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7840.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7800.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7752.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7730.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7688.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7678.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7608.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7608.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7594.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7530.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7636.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7630.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 7910.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8060.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8910.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 11570.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10320.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10310.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10280.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10290.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10610.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10590.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9990.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9990.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10552.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10540.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10720.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10170.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10180.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10140.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10146.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10120.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 10120.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9920.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9920.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9920.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9830.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9830.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9840.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9880.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9880.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9880.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9910.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9990.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9756.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9560.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9570.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9306.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9530.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9530.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9526.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9526.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9310.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 9150.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8844.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8844.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8860.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8790.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8760.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8730.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "styrene",
+      "material_name": "苯乙烯",
+      "price": 8650.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-15",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 324250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-16",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 319575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-17",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 325912.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-18",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 333012.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-19",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 337562.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-22",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 341062.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-23",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 340287.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-24",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 337500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-25",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 332637.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-26",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 334450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-29",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 343825.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-30",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 322700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2025-12-31",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 326300.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-05",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 332750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-06",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 341537.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-07",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 357112.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-08",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 354412.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-09",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 350700.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-12",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 370287.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-13",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 381175.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-14",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 402500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-15",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 431075.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-16",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 414662.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-19",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 390350.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-20",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 395525.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-21",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 397012.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-22",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 404012.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-23",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 423037.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-26",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 437625.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-27",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 428337.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-28",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 435812.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-29",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 437687.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-01-30",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 427212.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-02",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 392887.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-03",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 380087.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-04",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 395600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-05",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 377375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-06",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 361925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-09",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 373387.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-10",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 387237.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-11",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 387987.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-12",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 392637.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-13",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 378525.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-24",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 387750.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-25",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 403325.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-26",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 416025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-02-27",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 430950.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-02",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 434575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-03",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 410050.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-04",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 410012.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-05",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 406375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-06",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 401025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-09",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 379612.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-10",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 400887.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-11",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 395825.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-12",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 392212.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-13",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 387187.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-16",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 370600.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-17",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 380875.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-18",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 369387.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-19",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 355512.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-20",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 353775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-23",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 341925.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-24",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 343362.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-25",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 357500.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-26",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 353475.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-27",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 354212.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-30",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 362162.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-03-31",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 371037.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-01",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 375900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-02",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 368425.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-03",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 366287.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-07",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 363875.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-08",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 377037.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-09",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 370462.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-10",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 378037.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-13",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 371525.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-14",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 383087.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-15",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 390775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-16",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 389375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-17",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 389325.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-20",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 392437.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-21",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 395862.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-22",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 392612.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-23",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 390400.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-24",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 390375.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-27",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 391612.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-28",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 383137.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-29",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 385775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-04-30",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 386637.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-06",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 395575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-07",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 418087.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-08",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 424887.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-11",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 430250.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-12",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 430562.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-13",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 432575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-14",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 428062.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-15",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 422787.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-18",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 412550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-19",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 406025.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-20",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 404287.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-21",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 420450.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 420525.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-25",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 425775.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-26",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 423900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-27",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 425362.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 416687.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-29",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 425012.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-01",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 429962.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 442412.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-03",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 446962.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-04",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 442575.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-05",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 423550.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-08",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 403037.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 398587.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-10",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 396762.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 397900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "tin",
+      "material_name": "锡",
+      "price": 410862.5,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-22",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1780.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-05-28",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1832.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-02",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1802.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-06",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1808.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-09",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1890.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-11",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1900.0,
+      "unit": "元/吨"
+    },
+    {
+      "date": "2026-06-12",
+      "material_id": "waste_paper",
+      "material_name": "废纸",
+      "price": 1900.0,
+      "unit": "元/吨"
+    }
+  ],
+  "index_history": [
+    {
+      "date": "2025-12-15",
+      "value": 100.0
+    },
+    {
+      "date": "2025-12-16",
+      "value": 100.06
+    },
+    {
+      "date": "2025-12-17",
+      "value": 100.91
+    },
+    {
+      "date": "2025-12-18",
+      "value": 101.25
+    },
+    {
+      "date": "2025-12-19",
+      "value": 101.5
+    },
+    {
+      "date": "2025-12-22",
+      "value": 102.77
+    },
+    {
+      "date": "2025-12-23",
+      "value": 102.91
+    },
+    {
+      "date": "2025-12-24",
+      "value": 103.47
+    },
+    {
+      "date": "2025-12-25",
+      "value": 103.67
+    },
+    {
+      "date": "2025-12-26",
+      "value": 105.66
+    },
+    {
+      "date": "2025-12-29",
+      "value": 107.75
+    },
+    {
+      "date": "2025-12-30",
+      "value": 106.09
+    },
+    {
+      "date": "2025-12-31",
+      "value": 106.45
+    },
+    {
+      "date": "2026-01-05",
+      "value": 107.98
+    },
+    {
+      "date": "2026-01-06",
+      "value": 110.84
+    },
+    {
+      "date": "2026-01-07",
+      "value": 112.61
+    },
+    {
+      "date": "2026-01-08",
+      "value": 112.77
+    },
+    {
+      "date": "2026-01-09",
+      "value": 112.56
+    },
+    {
+      "date": "2026-01-12",
+      "value": 115.89
+    },
+    {
+      "date": "2026-01-13",
+      "value": 117.91
+    },
+    {
+      "date": "2026-01-14",
+      "value": 119.5
+    },
+    {
+      "date": "2026-01-15",
+      "value": 119.03
+    },
+    {
+      "date": "2026-01-16",
+      "value": 117.31
+    },
+    {
+      "date": "2026-01-19",
+      "value": 114.96
+    },
+    {
+      "date": "2026-01-20",
+      "value": 116.28
+    },
+    {
+      "date": "2026-01-21",
+      "value": 116.89
+    },
+    {
+      "date": "2026-01-22",
+      "value": 118.46
+    },
+    {
+      "date": "2026-01-23",
+      "value": 120.93
+    },
+    {
+      "date": "2026-01-26",
+      "value": 121.56
+    },
+    {
+      "date": "2026-01-27",
+      "value": 120.82
+    },
+    {
+      "date": "2026-01-28",
+      "value": 120.85
+    },
+    {
+      "date": "2026-01-29",
+      "value": 121.36
+    },
+    {
+      "date": "2026-01-30",
+      "value": 118.7
+    },
+    {
+      "date": "2026-02-02",
+      "value": 115.38
+    },
+    {
+      "date": "2026-02-03",
+      "value": 115.65
+    },
+    {
+      "date": "2026-02-04",
+      "value": 117.39
+    },
+    {
+      "date": "2026-02-05",
+      "value": 114.59
+    },
+    {
+      "date": "2026-02-06",
+      "value": 112.73
+    },
+    {
+      "date": "2026-02-09",
+      "value": 113.43
+    },
+    {
+      "date": "2026-02-10",
+      "value": 113.64
+    },
+    {
+      "date": "2026-02-11",
+      "value": 113.63
+    },
+    {
+      "date": "2026-02-12",
+      "value": 115.92
+    },
+    {
+      "date": "2026-02-13",
+      "value": 114.63
+    },
+    {
+      "date": "2026-02-24",
+      "value": 116.73
+    },
+    {
+      "date": "2026-02-25",
+      "value": 119.23
+    },
+    {
+      "date": "2026-02-26",
+      "value": 121.27
+    },
+    {
+      "date": "2026-02-27",
+      "value": 121.45
+    },
+    {
+      "date": "2026-03-02",
+      "value": 122.09
+    },
+    {
+      "date": "2026-03-03",
+      "value": 120.13
+    },
+    {
+      "date": "2026-03-04",
+      "value": 119.1
+    },
+    {
+      "date": "2026-03-05",
+      "value": 119.9
+    },
+    {
+      "date": "2026-03-06",
+      "value": 120.68
+    },
+    {
+      "date": "2026-03-09",
+      "value": 126.19
+    },
+    {
+      "date": "2026-03-10",
+      "value": 123.9
+    },
+    {
+      "date": "2026-03-11",
+      "value": 123.97
+    },
+    {
+      "date": "2026-03-12",
+      "value": 125.38
+    },
+    {
+      "date": "2026-03-13",
+      "value": 125.06
+    },
+    {
+      "date": "2026-03-16",
+      "value": 124.7
+    },
+    {
+      "date": "2026-03-17",
+      "value": 124.74
+    },
+    {
+      "date": "2026-03-18",
+      "value": 123.21
+    },
+    {
+      "date": "2026-03-19",
+      "value": 121.81
+    },
+    {
+      "date": "2026-03-20",
+      "value": 121.3
+    },
+    {
+      "date": "2026-03-23",
+      "value": 120.22
+    },
+    {
+      "date": "2026-03-24",
+      "value": 121.77
+    },
+    {
+      "date": "2026-03-25",
+      "value": 122.42
+    },
+    {
+      "date": "2026-03-26",
+      "value": 121.77
+    },
+    {
+      "date": "2026-03-27",
+      "value": 122.58
+    },
+    {
+      "date": "2026-03-30",
+      "value": 125.34
+    },
+    {
+      "date": "2026-03-31",
+      "value": 123.73
+    },
+    {
+      "date": "2026-04-01",
+      "value": 123.56
+    },
+    {
+      "date": "2026-04-02",
+      "value": 123.61
+    },
+    {
+      "date": "2026-04-03",
+      "value": 123.43
+    },
+    {
+      "date": "2026-04-07",
+      "value": 124.68
+    },
+    {
+      "date": "2026-04-08",
+      "value": 124.41
+    },
+    {
+      "date": "2026-04-09",
+      "value": 122.73
+    },
+    {
+      "date": "2026-04-10",
+      "value": 121.97
+    },
+    {
+      "date": "2026-04-13",
+      "value": 123.27
+    },
+    {
+      "date": "2026-04-14",
+      "value": 124.56
+    },
+    {
+      "date": "2026-04-15",
+      "value": 125.43
+    },
+    {
+      "date": "2026-04-16",
+      "value": 126.09
+    },
+    {
+      "date": "2026-04-17",
+      "value": 126.4
+    },
+    {
+      "date": "2026-04-20",
+      "value": 127.26
+    },
+    {
+      "date": "2026-04-21",
+      "value": 126.49
+    },
+    {
+      "date": "2026-04-22",
+      "value": 126.38
+    },
+    {
+      "date": "2026-04-23",
+      "value": 126.56
+    },
+    {
+      "date": "2026-04-24",
+      "value": 126.71
+    },
+    {
+      "date": "2026-04-27",
+      "value": 127.77
+    },
+    {
+      "date": "2026-04-28",
+      "value": 127.04
+    },
+    {
+      "date": "2026-04-29",
+      "value": 127.75
+    },
+    {
+      "date": "2026-04-30",
+      "value": 128.01
+    },
+    {
+      "date": "2026-05-06",
+      "value": 131.1
+    },
+    {
+      "date": "2026-05-07",
+      "value": 131.81
+    },
+    {
+      "date": "2026-05-08",
+      "value": 131.21
+    },
+    {
+      "date": "2026-05-11",
+      "value": 132.88
+    },
+    {
+      "date": "2026-05-12",
+      "value": 134.06
+    },
+    {
+      "date": "2026-05-13",
+      "value": 134.22
+    },
+    {
+      "date": "2026-05-14",
+      "value": 132.99
+    },
+    {
+      "date": "2026-05-15",
+      "value": 131.81
+    },
+    {
+      "date": "2026-05-18",
+      "value": 131.17
+    },
+    {
+      "date": "2026-05-19",
+      "value": 129.91
+    },
+    {
+      "date": "2026-05-20",
+      "value": 128.64
+    },
+    {
+      "date": "2026-05-21",
+      "value": 129.5
+    },
+    {
+      "date": "2026-05-22",
+      "value": 118.01
+    },
+    {
+      "date": "2026-05-25",
+      "value": 129.78
+    },
+    {
+      "date": "2026-05-26",
+      "value": 128.57
+    },
+    {
+      "date": "2026-05-27",
+      "value": 128.28
+    },
+    {
+      "date": "2026-05-28",
+      "value": 116.17
+    },
+    {
+      "date": "2026-05-29",
+      "value": 128.66
+    },
+    {
+      "date": "2026-06-01",
+      "value": 128.46
+    },
+    {
+      "date": "2026-06-02",
+      "value": 115.75
+    },
+    {
+      "date": "2026-06-03",
+      "value": 128.14
+    },
+    {
+      "date": "2026-06-04",
+      "value": 126.61
+    },
+    {
+      "date": "2026-06-05",
+      "value": 124.94
+    },
+    {
+      "date": "2026-06-06",
+      "value": 94.28
+    },
+    {
+      "date": "2026-06-08",
+      "value": 124.55
+    },
+    {
+      "date": "2026-06-09",
+      "value": 112.67
+    },
+    {
+      "date": "2026-06-10",
+      "value": 124.4
+    },
+    {
+      "date": "2026-06-11",
+      "value": 113.16
+    },
+    {
+      "date": "2026-06-12",
+      "value": 113.78
+    }
+  ],
+  "news": [
+    {
+      "title": "AI领域发展前景强势 沪锡需求延续乐观预期 - Sina finance",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLXZ6QTQ1N1RQbXBiaC1iLXN2S2RXdGE5U1NqNmk4Z0RzbnpqSGtIaHIwMUo5VkV5aGpLVzhYd2J6bXRWeE9EbEtSOFZJVnEwMGRXRTFneF9lWHd1RERqWnFGNlBIWGM3Tm1WZlJVY0I4aFlZcnI1aXVoa0NFeVNHYVNadGRtMFNyVlgxRw?oc=5",
+      "source": "Sina finance",
+      "published": "2026-06-12T13:15:00+08:00",
+      "query": "锡 锡矿 焊锡 供应 价格",
+      "signal": 0
+    },
+    {
+      "title": "全球铝业大地震！世界最大单体铝冶炼厂减产 印度铝业巨头宣布不可抗力 - 财联社",
+      "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5TMTBhb1hLSEVqc0xyY2ZtVzVHOVF0TENlQ1BDV1JLUExZMG9YbnJ5T0pMaWZNbFZuRWdFMlNwWWgxWWo3dmxMZw?oc=5",
+      "source": "财联社",
+      "published": "2026-06-12T12:00:59+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 1
+    },
+    {
+      "title": "华泰期货：碳酸锂价格区间震荡，关注供给端边际变化 - 新浪财经",
+      "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOLTdCa056XzFaLW51SVRHQjNXS2xKcVF6WjEzTjQ2aDNhc1NGRGVHN1ktY0psZ0lIZE8xbXZkX0tsQVAxMEFaMlNUMWxpSlkyQVEwcHFzUmh1SUhuWlhmaHIwRVk3aVQ1ZjdZa1luWW9FR1hUOXR3U0YwQjF1cUsxMWVPaWMycnlkakQ1M2Zpc3E?oc=5",
+      "source": "新浪财经",
+      "published": "2026-06-11T20:56:15+08:00",
+      "query": "碳酸锂 锂矿 电池级 价格 供应",
+      "signal": 0
+    },
+    {
+      "title": "长江有色：11日铜价四连跌 高价货源去库依然困难 - 新浪财经",
+      "link": "https://news.google.com/rss/articles/CBMiugJBVV95cUxOQ3BWMXd3eWV4MEZzVkhEM0lZYmx4N2lpV1AyUExyQzlORW04VTVlTVVBeFJsbHlYOUdYdlMyM3lOOUQ3RlhhRnkyVUQ3ejVQSWhRUy1tWGxLaHdHSXEtTFFHUVE1VUlmY3hZX3ZWQ0FBcDhFdTJmbzFFTWgxVFVpZHVBelYwbzQ4cUh4bi1lSUFuRmdCOXNLUGFWUVRLQVNVendwcjBJR3ZpOUNLM1Y2VURRdFA2WW5FT2dQYmlsRjl5d1g2WXJzek0tb29Pa2xXNDJJQ3NtVkxudGdfV0ptYjNyT1FBSUxaTnoxLVpENGZHZXBwVEM0cnRFNlMybXNET09tSndYZThzMklOdnBKUE84d2FVMkN0WkJBd0VfSnJtVFVPMDFmMDlCcGliUnV1UVE0Sloybk82Zw?oc=5",
+      "source": "新浪财经",
+      "published": "2026-06-11T19:29:09+08:00",
+      "query": "铜 铜矿 铜箔 供应 价格",
+      "signal": 0
+    },
+    {
+      "title": "中国铝冶炼产业月度景气指数报告2026年5月 - 中国有色网",
+      "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLZHhkYV9IZ041UlBDNkNlSHdjZGgtek9VY3pnVUhNbDR0WEZzV01zOV9qbV9sd1VDY3kxb3hSWUttX1lYaWVKQnVnUVlQQ2xoakk5N2VWbWt3NDh6?oc=5",
+      "source": "中国有色网",
+      "published": "2026-06-11T15:14:00+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "几内亚“限矿”冲击波：氧化铝产业深度洗牌在即 氧化铝行业如何破局？ - 上海有色金属网",
+      "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE1pN1ZoejdvcXd1WlBJTjNmXzlORkJOQW9rR3o1UExBQkt5bjF4VVhnNTgtVlhnODN4T092Wi1KM3hLUGdnV3YzNkFB?oc=5",
+      "source": "上海有色金属网",
+      "published": "2026-06-10T22:42:00+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "2026-2033年全球氧化铝细分市场、下游需求及价格走势分析报告 - 北京研精毕智",
+      "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBkZ0M5bUJEOHNmSjNqOTNzZHNFZi1ENTdKQmFnVnNXOWt1UnN0dmFuSF9wX3dhY3dBYVpUYlVrY0N2bXpLTlpDYmtka1JBZDBTLXc?oc=5",
+      "source": "北京研精毕智",
+      "published": "2026-06-10T10:34:49+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "年内5轮提价！电子布，价格大幅上涨 - 电子工程专辑",
+      "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9RUzRxODZZWjA2OF9xcXA2MzhGZzdITXoxcGFiVjZmMm1YMnFXMFRaUFBqMlByLUFFRVhHSnN1bDc5cVlvUlZpd3FIZXlLb0VyamFR?oc=5",
+      "source": "电子工程专辑",
+      "published": "2026-06-09T21:43:00+08:00",
+      "query": "玻纤布 电子纱 电子布 PCB 涨价",
+      "signal": 1
+    },
+    {
+      "title": "电子布涨超100%，谁能在这场周期复苏中笑到最后？ - 维科号",
+      "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9QTlRBUjN1UjZWaVFnX1BzX1gwOVpEUHpqSFNYY3BNSEo1OVFtWUg2MFZmQ1hrSlU0SUc1VVpvai1WelBYLWJTWUxJS3FiS19jQmw4dFFB?oc=5",
+      "source": "维科号",
+      "published": "2026-06-09T15:39:00+08:00",
+      "query": "玻纤布 电子纱 电子布 PCB 涨价",
+      "signal": 0
+    },
+    {
+      "title": "长安期货张晨：紧平衡未破 碳酸锂高位回调后做空风险加大 - Sina finance",
+      "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNQS15T1ZRWHdVRkJIVXFQSTRYYnFERjR3eFZodE9MNm52RkRPSXNBRUtXdmRFbURaNFg0Z1hadmxlU1RITkQwTExRQUlyV3BXWWtURmpzV1VXRUZPN2hBNmxBYkN5TGtNNFNXdXphZzViZExjbWQ3RzREZnYyU3VpZ0l4aE9tVjRTX2JaSXFHVVFEZEpHMkYzWUJFai1nNVRISUkxNFJQRGhyblMyMVp2RjhFUzVGaXU2Nk5rZWw2ME1waGxjWVUtcExqTlhHN3ZIX2Y1alpPOWw0Zw?oc=5",
+      "source": "Sina finance",
+      "published": "2026-06-09T10:47:00+08:00",
+      "query": "碳酸锂 锂矿 电池级 价格 供应",
+      "signal": 0
+    },
+    {
+      "title": "年内5轮提价！电子布，价格大幅上涨 - 搜狐网",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPbm9LMGVfNldyZExpN2RUTEhmcGxJUmp4MFN3QnUzSm9iaGxLMU9qRkxtWE5JSEtna18wQzE1WWRiQlZaSmxPZ0JTSmR1R1FqOGRsaXJGVTZfYjd2M2Y5c1VYcFhNamlyaC0wbUpNRDNrYS14MTNiN3BKRHdyUVhBWDM2dDRqc2VQYjhlRg?oc=5",
+      "source": "搜狐网",
+      "published": "2026-06-09T10:28:00+08:00",
+      "query": "玻纤布 电子纱 电子布 PCB 涨价",
+      "signal": 1
+    },
+    {
+      "title": "存储一幕重现！AI算力需求引爆电子布，连续5轮提价后价格已翻倍，金安国纪、中国巨石等闻风大涨 - 金融界",
+      "link": "https://news.google.com/rss/articles/CBMickFVX3lxTE9mc2VSN3lmVkxFdzYzdDlNeTZob3pheFlubVYzV3poRzlTT0hBeTBRbjdqbjJLOVVlRHJNZTRwdGt3THYxR0Y2QUliV2NwWDlZMVRQVDR6d2xJMzlYX2RQQXdDUjZFX1M5QVB5Mi02SGNCUQ?oc=5",
+      "source": "金融界",
+      "published": "2026-06-09T10:27:14+08:00",
+      "query": "玻纤布 电子纱 电子布 PCB 涨价",
+      "signal": 0
+    },
+    {
+      "title": "SMM：预计全球锡市场将维持紧平衡【印尼矿业大会】 - 上海有色金属网",
+      "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE84Q3FKMEdXTXZCalNFMU1OLWZvRnRfOF9menlvdjRQZGJPR09YYjd1LXh3cnZ2QUpOb0lVSGZIOE53SHlMQkRUdlRR?oc=5",
+      "source": "上海有色金属网",
+      "published": "2026-06-09T05:43:00+08:00",
+      "query": "锡 锡矿 焊锡 供应 价格",
+      "signal": 0
+    },
+    {
+      "title": "全球铜矿：供需矛盾尖锐资源博弈加剧 市场呈现紧平衡 延续高价位运行 - hirohida.com",
+      "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE0wYkplaGFnbFc5V0F1a0xlOEE4X1htR3ZYYndxZmdMU2FIaUMwLVRUZFA2Y1A5TFdxTmQ3YTRTTWk1Q0txSHczVktQdmZzTGp0MzNyOG9fbTBMQzVGS05mVlBISQ?oc=5",
+      "source": "hirohida.com",
+      "published": "2026-06-06T16:40:00+08:00",
+      "query": "铜 铜矿 铜箔 供应 价格",
+      "signal": 0
+    },
+    {
+      "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+      "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+      "source": "Sina finance",
+      "published": "2026-06-06T09:18:00+08:00",
+      "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+      "signal": 0
+    },
+    {
+      "title": "碳酸锂最近怎么涨不动了？六个反常信号看清当下的市场困局 - 维科号",
+      "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1rck9aWnplNDFmcEVOV0pxdXBDUkphc1RkV1NKVDNBV016ZXZUNU1OX0p3Mk5xTzFrNUlmR3YzVzFxajVVZmdEekgzTW9yQVZyeldNRU83QUU?oc=5",
+      "source": "维科号",
+      "published": "2026-06-05T13:49:00+08:00",
+      "query": "碳酸锂 锂矿 电池级 价格 供应",
+      "signal": 0
+    },
+    {
+      "title": "5月份中国大宗商品价格指数同比上涨20.2%_纽约_新闻 - 华人头条",
+      "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE1MT2hWNXpLWjAtZmpQcVRnRGptT01taFV6Y0RoYlAtZmJnR3dZdmZ0OVJnT1pPQ0VLU1F0cmxDLVlrOThSSWxMalpvMF90VThHb3VXYzY2SWxXbDhMQWc?oc=5",
+      "source": "华人头条",
+      "published": "2026-06-05T10:52:00+08:00",
+      "query": "锡 锡矿 焊锡 供应 价格",
+      "signal": 1
+    },
+    {
+      "title": "长江有色：4日碳酸锂价下跌，仓单压顶VS需求强劲，多空博弈加剧 - 新浪财经",
+      "link": "https://news.google.com/rss/articles/CBMilgNBVV95cUxNdTgtakJIWGFVb2FoeTdydWlZSVZxbTRKUEpwd0pYejNrZFZINzhaRUJxR19LNUdxbkRqdjdZZmZFOFZjbXZyOWdYRW9CMnRMRlBXQzcxSzZSMnp2NDZkQ0psV0FNREJ5d2hvcFhNOGhlNlgyOXRxam5MVUVxUk1JM0diNkU3RkVOc1BYRkpOVTdlb2xzOG5KY0NJN21fdUFuVVRoZ0xmMmxMMnJ1YjA3dldLS05yaWZRUk9QOWNaT2hhc2ZlQ1hLcmVuTF9LUVNCVTZjTWswczVQQW96Y3ZwWDdIdjlVOG9PclVYSktQbXBvQjA4RmdRVzJyQjZqaXBZUkoybXg3TU5wcXpMUXFtT09nLVNzeG5qMFFoek1OajJLdHZZbW9BWnduSzd2R0Q4QjRJclhwWFBUOWtZenZhU2xZS2tHVGZPUmZWOUNuZWluekxkVmZ4UDZOWnNpeVFUUGRDN2RwUHJkaFlwbFhhUHEzNUtrRXR6MU1ucmpBZ2RfTUVSM3JqYTczLW5waVU1THpaSEln?oc=5",
+      "source": "新浪财经",
+      "published": "2026-06-05T08:56:03+08:00",
+      "query": "碳酸锂 锂矿 电池级 价格 供应",
+      "signal": -1
+    },
+    {
+      "title": "长江有色：4日铝价大跌 下游畏高慎采 - 新浪财经",
+      "link": "https://news.google.com/rss/articles/CBMigAJBVV95cUxOS3hfSl9SMVRrMXg2MVhicVg2UGJmUWhlUXBlc2sxTmVFR0FMOEVjR0FmM0JFWU5Sb1p3dU9oY01EUTJkb1M5VmQyNTZ5Y0J1dUd0ZXE1QUpEZGxFd1I2ZDhSLVQzc2R2MC0zT01LVTV6NEVMVlprLU5McUpZRV8waWFqaE9fd19Ldl9oRktJQ1FuZTduZkppaEFGaEY5T3BWOWwxbk9URXA4VXlVNHdlWEg5TDVkR2lud2JVZ1ZGTF9zUmlYWmllX1RZLWdhcTR0TG1ieGxoN0FLSElFaTJhcGlNaVJvajhLRE1xSHk1aW44Q01GcXlydnZqeHM4V2Rn?oc=5",
+      "source": "新浪财经",
+      "published": "2026-06-04T23:06:21+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "碳酸锂期货价格大跌！后市怎么走？ - 证券时报",
+      "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9MQW1qRXA5MlJnVEU1WWg5TFVoQ1hvUUcwdlRNTGNkemR3QzdYMTY3YWp2d1hncXlacnN2RFdobFdueEV6c1c4MzBCaFV4SFB0ck9DZTl4aHJBOGt3?oc=5",
+      "source": "证券时报",
+      "published": "2026-06-04T21:16:39+08:00",
+      "query": "碳酸锂 锂矿 电池级 价格 供应",
+      "signal": 0
+    },
+    {
+      "title": "全球最大铝土矿生产国政策生变，计划出口“限流”！影响几何？ - Sina finance",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQUUxoaWc2bm5HcDhEczVYblNZeEFXSFRqb3V1Qjctbi0tdF9aWkZqX2NHZ0ZFUmpndXlYdWo5MHQyTFJYQ1J6RzRJWWpxSlVWR2xsZVpWOHNEandaMEp5YkwwSDJlM1dYdl9TMWRNeEdHaVE4dHlORHAzVDRmWHRfSDdsZDRtekJkSVB0TQ?oc=5",
+      "source": "Sina finance",
+      "published": "2026-06-04T07:09:00+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "丰水期临近！电价推动5月电解铝成本下降！ - Sina finance",
+      "link": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9rdHhWNzlLemJsLWswWTNLUzRNTVlTa0NmeVh5dUV0TzlUbVpUeDRpUWdtSzJsbFBpUXVZaV9MdWNxb2V4M1YzZmY0OV85UTU0a1MtWVBvajg4RHI2Q0REN0liOUMwazNfQUl0VWVDbE1FaUJm?oc=5",
+      "source": "Sina finance",
+      "published": "2026-06-03T17:40:00+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    },
+    {
+      "title": "每日期货全景复盘2.27：消息扰动加剧价格波动，锡价延续强势-市场参考 - 金十数据",
+      "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBWYkMzUEdlbHpiaFdhLUhVdGladG82RS1wZ19lUVpIOGhWTGpveW94LW10cW5SZjk3Sko3eUhVd0VBNFRXbTU4NHpvcTRsMVk?oc=5",
+      "source": "金十数据",
+      "published": "2026-06-01T20:54:54+08:00",
+      "query": "铝 氧化铝 电解铝 能源 价格",
+      "signal": 0
+    }
+  ],
+  "brief": {
+    "date": "2026-06-12",
+    "summary": {
+      "pressure_index": 49.0,
+      "rising_count": 9,
+      "high_risk_count": 0,
+      "tracked_count": 20,
+      "news_risk_count": 4
+    },
+    "top_risers": [
+      {
+        "material_id": "tin",
+        "material_name": "锡",
+        "category": "有色金属",
+        "date": "2026-06-12",
+        "price": 410862.5,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "SN",
+        "change_1d": 3.26,
+        "change_7d": -3.0,
+        "change_30d": -5.02,
+        "change_90d": 6.11,
+        "volatility_30d": 2.26,
+        "future_premium_pct": -0.7,
+        "up_probability": 46,
+        "risk_level": "观察",
+        "trend": "下行",
+        "impact_weight": 4,
+        "matched_news": [
+          {
+            "title": "AI领域发展前景强势 沪锡需求延续乐观预期 - Sina finance",
+            "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLXZ6QTQ1N1RQbXBiaC1iLXN2S2RXdGE5U1NqNmk4Z0RzbnpqSGtIaHIwMUo5VkV5aGpLVzhYd2J6bXRWeE9EbEtSOFZJVnEwMGRXRTFneF9lWHd1RERqWnFGNlBIWGM3Tm1WZlJVY0I4aFlZcnI1aXVoa0NFeVNHYVNadGRtMFNyVlgxRw?oc=5",
+            "source": "Sina finance",
+            "published": "2026-06-12T13:15:00+08:00",
+            "query": "锡 锡矿 焊锡 供应 价格",
+            "signal": 0
+          },
+          {
+            "title": "SMM：预计全球锡市场将维持紧平衡【印尼矿业大会】 - 上海有色金属网",
+            "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE84Q3FKMEdXTXZCalNFMU1OLWZvRnRfOF9menlvdjRQZGJPR09YYjd1LXh3cnZ2QUpOb0lVSGZIOE53SHlMQkRUdlRR?oc=5",
+            "source": "上海有色金属网",
+            "published": "2026-06-09T05:43:00+08:00",
+            "query": "锡 锡矿 焊锡 供应 价格",
+            "signal": 0
+          },
+          {
+            "title": "每日期货全景复盘2.27：消息扰动加剧价格波动，锡价延续强势-市场参考 - 金十数据",
+            "link": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBWYkMzUEdlbHpiaFdhLUhVdGladG82RS1wZ19lUVpIOGhWTGpveW94LW10cW5SZjk3Sko3eUhVd0VBNFRXbTU4NHpvcTRsMVk?oc=5",
+            "source": "金十数据",
+            "published": "2026-06-01T20:54:54+08:00",
+            "query": "铝 氧化铝 电解铝 能源 价格",
+            "signal": 0
+          }
+        ],
+        "notes": ""
+      },
+      {
+        "material_id": "lithium_carbonate",
+        "material_name": "碳酸锂",
+        "category": "电池材料",
+        "date": "2026-06-12",
+        "price": 172000.0,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "LC",
+        "change_1d": 2.99,
+        "change_7d": 7.5,
+        "change_30d": -11.79,
+        "change_90d": 9.55,
+        "volatility_30d": 2.27,
+        "future_premium_pct": 1.92,
+        "up_probability": 56,
+        "risk_level": "中偏高",
+        "trend": "下行",
+        "impact_weight": 13,
+        "matched_news": [
+          {
+            "title": "华泰期货：碳酸锂价格区间震荡，关注供给端边际变化 - 新浪财经",
+            "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOLTdCa056XzFaLW51SVRHQjNXS2xKcVF6WjEzTjQ2aDNhc1NGRGVHN1ktY0psZ0lIZE8xbXZkX0tsQVAxMEFaMlNUMWxpSlkyQVEwcHFzUmh1SUhuWlhmaHIwRVk3aVQ1ZjdZa1luWW9FR1hUOXR3U0YwQjF1cUsxMWVPaWMycnlkakQ1M2Zpc3E?oc=5",
+            "source": "新浪财经",
+            "published": "2026-06-11T20:56:15+08:00",
+            "query": "碳酸锂 锂矿 电池级 价格 供应",
+            "signal": 0
+          },
+          {
+            "title": "长安期货张晨：紧平衡未破 碳酸锂高位回调后做空风险加大 - Sina finance",
+            "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNQS15T1ZRWHdVRkJIVXFQSTRYYnFERjR3eFZodE9MNm52RkRPSXNBRUtXdmRFbURaNFg0Z1hadmxlU1RITkQwTExRQUlyV3BXWWtURmpzV1VXRUZPN2hBNmxBYkN5TGtNNFNXdXphZzViZExjbWQ3RzREZnYyU3VpZ0l4aE9tVjRTX2JaSXFHVVFEZEpHMkYzWUJFai1nNVRISUkxNFJQRGhyblMyMVp2RjhFUzVGaXU2Nk5rZWw2ME1waGxjWVUtcExqTlhHN3ZIX2Y1alpPOWw0Zw?oc=5",
+            "source": "Sina finance",
+            "published": "2026-06-09T10:47:00+08:00",
+            "query": "碳酸锂 锂矿 电池级 价格 供应",
+            "signal": 0
+          },
+          {
+            "title": "碳酸锂最近怎么涨不动了？六个反常信号看清当下的市场困局 - 维科号",
+            "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE1rck9aWnplNDFmcEVOV0pxdXBDUkphc1RkV1NKVDNBV016ZXZUNU1OX0p3Mk5xTzFrNUlmR3YzVzFxajVVZmdEekgzTW9yQVZyeldNRU83QUU?oc=5",
+            "source": "维科号",
+            "published": "2026-06-05T13:49:00+08:00",
+            "query": "碳酸锂 锂矿 电池级 价格 供应",
+            "signal": 0
+          },
+          {
+            "title": "长江有色：4日碳酸锂价下跌，仓单压顶VS需求强劲，多空博弈加剧 - 新浪财经",
+            "link": "https://news.google.com/rss/articles/CBMilgNBVV95cUxNdTgtakJIWGFVb2FoeTdydWlZSVZxbTRKUEpwd0pYejNrZFZINzhaRUJxR19LNUdxbkRqdjdZZmZFOFZjbXZyOWdYRW9CMnRMRlBXQzcxSzZSMnp2NDZkQ0psV0FNREJ5d2hvcFhNOGhlNlgyOXRxam5MVUVxUk1JM0diNkU3RkVOc1BYRkpOVTdlb2xzOG5KY0NJN21fdUFuVVRoZ0xmMmxMMnJ1YjA3dldLS05yaWZRUk9QOWNaT2hhc2ZlQ1hLcmVuTF9LUVNCVTZjTWswczVQQW96Y3ZwWDdIdjlVOG9PclVYSktQbXBvQjA4RmdRVzJyQjZqaXBZUkoybXg3TU5wcXpMUXFtT09nLVNzeG5qMFFoek1OajJLdHZZbW9BWnduSzd2R0Q4QjRJclhwWFBUOWtZenZhU2xZS2tHVGZPUmZWOUNuZWluekxkVmZ4UDZOWnNpeVFUUGRDN2RwUHJkaFlwbFhhUHEzNUtrRXR6MU1ucmpBZ2RfTUVSM3JqYTczLW5waVU1THpaSEln?oc=5",
+            "source": "新浪财经",
+            "published": "2026-06-05T08:56:03+08:00",
+            "query": "碳酸锂 锂矿 电池级 价格 供应",
+            "signal": -1
+          }
+        ],
+        "notes": ""
+      },
+      {
+        "material_id": "copper",
+        "material_name": "铜",
+        "category": "有色金属",
+        "date": "2026-06-12",
+        "price": 104683.33,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "CU",
+        "change_1d": 1.33,
+        "change_7d": -0.68,
+        "change_30d": -3.58,
+        "change_90d": 4.04,
+        "volatility_30d": 1.07,
+        "future_premium_pct": -0.02,
+        "up_probability": 49,
+        "risk_level": "观察",
+        "trend": "下行",
+        "impact_weight": 18,
+        "matched_news": [
+          {
+            "title": "长江有色：11日铜价四连跌 高价货源去库依然困难 - 新浪财经",
+            "link": "https://news.google.com/rss/articles/CBMiugJBVV95cUxOQ3BWMXd3eWV4MEZzVkhEM0lZYmx4N2lpV1AyUExyQzlORW04VTVlTVVBeFJsbHlYOUdYdlMyM3lOOUQ3RlhhRnkyVUQ3ejVQSWhRUy1tWGxLaHdHSXEtTFFHUVE1VUlmY3hZX3ZWQ0FBcDhFdTJmbzFFTWgxVFVpZHVBelYwbzQ4cUh4bi1lSUFuRmdCOXNLUGFWUVRLQVNVendwcjBJR3ZpOUNLM1Y2VURRdFA2WW5FT2dQYmlsRjl5d1g2WXJzek0tb29Pa2xXNDJJQ3NtVkxudGdfV0ptYjNyT1FBSUxaTnoxLVpENGZHZXBwVEM0cnRFNlMybXNET09tSndYZThzMklOdnBKUE84d2FVMkN0WkJBd0VfSnJtVFVPMDFmMDlCcGliUnV1UVE0Sloybk82Zw?oc=5",
+            "source": "新浪财经",
+            "published": "2026-06-11T19:29:09+08:00",
+            "query": "铜 铜矿 铜箔 供应 价格",
+            "signal": 0
+          },
+          {
+            "title": "全球铜矿：供需矛盾尖锐资源博弈加剧 市场呈现紧平衡 延续高价位运行 - hirohida.com",
+            "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE0wYkplaGFnbFc5V0F1a0xlOEE4X1htR3ZYYndxZmdMU2FIaUMwLVRUZFA2Y1A5TFdxTmQ3YTRTTWk1Q0txSHczVktQdmZzTGp0MzNyOG9fbTBMQzVGS05mVlBISQ?oc=5",
+            "source": "hirohida.com",
+            "published": "2026-06-06T16:40:00+08:00",
+            "query": "铜 铜矿 铜箔 供应 价格",
+            "signal": 0
+          }
+        ],
+        "notes": ""
+      },
+      {
+        "material_id": "natural_rubber",
+        "material_name": "天然橡胶",
+        "category": "橡胶替代指标",
+        "date": "2026-06-12",
+        "price": 17566.67,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "RU",
+        "change_1d": 1.05,
+        "change_7d": -1.36,
+        "change_30d": -2.18,
+        "change_90d": 3.74,
+        "volatility_30d": 0.81,
+        "future_premium_pct": -0.01,
+        "up_probability": 49,
+        "risk_level": "观察",
+        "trend": "短线下行",
+        "impact_weight": 2,
+        "matched_news": [],
+        "notes": ""
+      },
+      {
+        "material_id": "aluminum",
+        "material_name": "铝",
+        "category": "有色金属",
+        "date": "2026-06-12",
+        "price": 24153.33,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "AL",
+        "change_1d": 0.69,
+        "change_7d": -0.28,
+        "change_30d": -1.72,
+        "change_90d": -3.89,
+        "volatility_30d": 0.73,
+        "future_premium_pct": 0.05,
+        "up_probability": 52,
+        "risk_level": "观察",
+        "trend": "震荡",
+        "impact_weight": 7,
+        "matched_news": [
+          {
+            "title": "全球铝业大地震！世界最大单体铝冶炼厂减产 印度铝业巨头宣布不可抗力 - 财联社",
+            "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5TMTBhb1hLSEVqc0xyY2ZtVzVHOVF0TENlQ1BDV1JLUExZMG9YbnJ5T0pMaWZNbFZuRWdFMlNwWWgxWWo3dmxMZw?oc=5",
+            "source": "财联社",
+            "published": "2026-06-12T12:00:59+08:00",
+            "query": "铝 氧化铝 电解铝 能源 价格",
+            "signal": 1
+          },
+          {
+            "title": "中国铝冶炼产业月度景气指数报告2026年5月 - 中国有色网",
+            "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLZHhkYV9IZ041UlBDNkNlSHdjZGgtek9VY3pnVUhNbDR0WEZzV01zOV9qbV9sd1VDY3kxb3hSWUttX1lYaWVKQnVnUVlQQ2xoakk5N2VWbWt3NDh6?oc=5",
+            "source": "中国有色网",
+            "published": "2026-06-11T15:14:00+08:00",
+            "query": "铝 氧化铝 电解铝 能源 价格",
+            "signal": 0
+          },
+          {
+            "title": "几内亚“限矿”冲击波：氧化铝产业深度洗牌在即 氧化铝行业如何破局？ - 上海有色金属网",
+            "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE1pN1ZoejdvcXd1WlBJTjNmXzlORkJOQW9rR3o1UExBQkt5bjF4VVhnNTgtVlhnODN4T092Wi1KM3hLUGdnV3YzNkFB?oc=5",
+            "source": "上海有色金属网",
+            "published": "2026-06-10T22:42:00+08:00",
+            "query": "铝 氧化铝 电解铝 能源 价格",
+            "signal": 0
+          },
+          {
+            "title": "2026-2033年全球氧化铝细分市场、下游需求及价格走势分析报告 - 北京研精毕智",
+            "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBkZ0M5bUJEOHNmSjNqOTNzZHNFZi1ENTdKQmFnVnNXOWt1UnN0dmFuSF9wX3dhY3dBYVpUYlVrY0N2bXpLTlpDYmtka1JBZDBTLXc?oc=5",
+            "source": "北京研精毕智",
+            "published": "2026-06-10T10:34:49+08:00",
+            "query": "铝 氧化铝 电解铝 能源 价格",
+            "signal": 0
+          }
+        ],
+        "notes": ""
+      }
+    ],
+    "top_fallers": [
+      {
+        "material_id": "epoxy_resin",
+        "material_name": "环氧树脂",
+        "category": "PCB/树脂",
+        "date": "2026-06-12",
+        "price": 14333.33,
+        "unit": "元/吨",
+        "source": "生意社基准价",
+        "provider": "sunsirs_vane",
+        "symbol": "",
+        "change_1d": -6.32,
+        "change_7d": -6.32,
+        "change_30d": null,
+        "change_90d": null,
+        "volatility_30d": 3.12,
+        "future_premium_pct": null,
+        "up_probability": 45,
+        "risk_level": "观察",
+        "trend": "短线下行",
+        "impact_weight": 8,
+        "matched_news": [],
+        "notes": ""
+      },
+      {
+        "material_id": "pc",
+        "material_name": "PC",
+        "category": "工程塑料",
+        "date": "2026-06-12",
+        "price": 14200.0,
+        "unit": "元/吨",
+        "source": "生意社基准价",
+        "provider": "sunsirs_vane",
+        "symbol": "",
+        "change_1d": -1.05,
+        "change_7d": -11.43,
+        "change_30d": null,
+        "change_90d": null,
+        "volatility_30d": 1.97,
+        "future_premium_pct": null,
+        "up_probability": 39,
+        "risk_level": "低",
+        "trend": "短线下行",
+        "impact_weight": 4,
+        "matched_news": [],
+        "notes": ""
+      },
+      {
+        "material_id": "styrene",
+        "material_name": "苯乙烯",
+        "category": "ABS上游",
+        "date": "2026-06-12",
+        "price": 8650.0,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "EB",
+        "change_1d": -0.92,
+        "change_7d": -1.59,
+        "change_30d": -9.9,
+        "change_90d": -16.83,
+        "volatility_30d": 1.14,
+        "future_premium_pct": -1.93,
+        "up_probability": 38,
+        "risk_level": "低",
+        "trend": "下行",
+        "impact_weight": 3,
+        "matched_news": [
+          {
+            "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+            "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+            "source": "Sina finance",
+            "published": "2026-06-06T09:18:00+08:00",
+            "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+            "signal": 0
+          }
+        ],
+        "notes": ""
+      },
+      {
+        "material_id": "lldpe",
+        "material_name": "LLDPE",
+        "category": "塑料树脂",
+        "date": "2026-06-12",
+        "price": 8301.67,
+        "unit": "元/吨",
+        "source": "AKShare/生意社现货与期货",
+        "provider": "akshare_basis",
+        "symbol": "L",
+        "change_1d": -0.14,
+        "change_7d": 0.22,
+        "change_30d": -2.22,
+        "change_90d": -1.85,
+        "volatility_30d": 0.51,
+        "future_premium_pct": -4.81,
+        "up_probability": 43,
+        "risk_level": "低",
+        "trend": "震荡",
+        "impact_weight": 3,
+        "matched_news": [
+          {
+            "title": "爆冷！ABS大跌1200元！PE跌1000，PP跌200！下游老板：跌麻了 - Sina finance",
+            "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1ia0g4NkZmMUVlUnppVkZKb3NyZmIzZ1BfaVVUaHJhVTFBQWJtR193Y3A5RnRScE00V1dsRkpjU0J0dFRXMzdIZ2hYS19VQUtSRmQ1YnZncm53NURCd2U2Zjk2WXRENXMyRWRJZ3ZrMk85Q2o1Z1E?oc=5",
+            "source": "Sina finance",
+            "published": "2026-06-06T09:18:00+08:00",
+            "query": "ABS 苯乙烯 丁二烯 丙烯腈 价格",
+            "signal": 0
+          }
+        ],
+        "notes": ""
+      },
+      {
+        "material_id": "waste_paper",
+        "material_name": "废纸",
+        "category": "纸箱上游",
+        "date": "2026-06-12",
+        "price": 1900.0,
+        "unit": "元/吨",
+        "source": "生意社基准价",
+        "provider": "sunsirs_vane",
+        "symbol": "",
+        "change_1d": 0.0,
+        "change_7d": 5.44,
+        "change_30d": null,
+        "change_90d": null,
+        "volatility_30d": 2.22,
+        "future_premium_pct": null,
+        "up_probability": 58,
+        "risk_level": "中偏高",
+        "trend": "短线上行",
+        "impact_weight": 3,
+        "matched_news": [],
+        "notes": ""
+      }
+    ],
+    "high_risk": [],
+    "actions": [
+      "目前未出现高风险品种，建议维持日度监控并重点观察短线上行品种。"
+    ],
+    "news": [
+      {
+        "title": "AI领域发展前景强势 沪锡需求延续乐观预期 - Sina finance",
+        "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLXZ6QTQ1N1RQbXBiaC1iLXN2S2RXdGE5U1NqNmk4Z0RzbnpqSGtIaHIwMUo5VkV5aGpLVzhYd2J6bXRWeE9EbEtSOFZJVnEwMGRXRTFneF9lWHd1RERqWnFGNlBIWGM3Tm1WZlJVY0I4aFlZcnI1aXVoa0NFeVNHYVNadGRtMFNyVlgxRw?oc=5",
+        "source": "Sina finance",
+        "published": "2026-06-12T13:15:00+08:00",
+        "query": "锡 锡矿 焊锡 供应 价格",
+        "signal": 0
+      },
+      {
+        "title": "全球铝业大地震！世界最大单体铝冶炼厂减产 印度铝业巨头宣布不可抗力 - 财联社",
+        "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5TMTBhb1hLSEVqc0xyY2ZtVzVHOVF0TENlQ1BDV1JLUExZMG9YbnJ5T0pMaWZNbFZuRWdFMlNwWWgxWWo3dmxMZw?oc=5",
+        "source": "财联社",
+        "published": "2026-06-12T12:00:59+08:00",
+        "query": "铝 氧化铝 电解铝 能源 价格",
+        "signal": 1
+      },
+      {
+        "title": "华泰期货：碳酸锂价格区间震荡，关注供给端边际变化 - 新浪财经",
+        "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOLTdCa056XzFaLW51SVRHQjNXS2xKcVF6WjEzTjQ2aDNhc1NGRGVHN1ktY0psZ0lIZE8xbXZkX0tsQVAxMEFaMlNUMWxpSlkyQVEwcHFzUmh1SUhuWlhmaHIwRVk3aVQ1ZjdZa1luWW9FR1hUOXR3U0YwQjF1cUsxMWVPaWMycnlkakQ1M2Zpc3E?oc=5",
+        "source": "新浪财经",
+        "published": "2026-06-11T20:56:15+08:00",
+        "query": "碳酸锂 锂矿 电池级 价格 供应",
+        "signal": 0
+      },
+      {
+        "title": "长江有色：11日铜价四连跌 高价货源去库依然困难 - 新浪财经",
+        "link": "https://news.google.com/rss/articles/CBMiugJBVV95cUxOQ3BWMXd3eWV4MEZzVkhEM0lZYmx4N2lpV1AyUExyQzlORW04VTVlTVVBeFJsbHlYOUdYdlMyM3lOOUQ3RlhhRnkyVUQ3ejVQSWhRUy1tWGxLaHdHSXEtTFFHUVE1VUlmY3hZX3ZWQ0FBcDhFdTJmbzFFTWgxVFVpZHVBelYwbzQ4cUh4bi1lSUFuRmdCOXNLUGFWUVRLQVNVendwcjBJR3ZpOUNLM1Y2VURRdFA2WW5FT2dQYmlsRjl5d1g2WXJzek0tb29Pa2xXNDJJQ3NtVkxudGdfV0ptYjNyT1FBSUxaTnoxLVpENGZHZXBwVEM0cnRFNlMybXNET09tSndYZThzMklOdnBKUE84d2FVMkN0WkJBd0VfSnJtVFVPMDFmMDlCcGliUnV1UVE0Sloybk82Zw?oc=5",
+        "source": "新浪财经",
+        "published": "2026-06-11T19:29:09+08:00",
+        "query": "铜 铜矿 铜箔 供应 价格",
+        "signal": 0
+      },
+      {
+        "title": "中国铝冶炼产业月度景气指数报告2026年5月 - 中国有色网",
+        "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLZHhkYV9IZ041UlBDNkNlSHdjZGgtek9VY3pnVUhNbDR0WEZzV01zOV9qbV9sd1VDY3kxb3hSWUttX1lYaWVKQnVnUVlQQ2xoakk5N2VWbWt3NDh6?oc=5",
+        "source": "中国有色网",
+        "published": "2026-06-11T15:14:00+08:00",
+        "query": "铝 氧化铝 电解铝 能源 价格",
+        "signal": 0
+      },
+      {
+        "title": "几内亚“限矿”冲击波：氧化铝产业深度洗牌在即 氧化铝行业如何破局？ - 上海有色金属网",
+        "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE1pN1ZoejdvcXd1WlBJTjNmXzlORkJOQW9rR3o1UExBQkt5bjF4VVhnNTgtVlhnODN4T092Wi1KM3hLUGdnV3YzNkFB?oc=5",
+        "source": "上海有色金属网",
+        "published": "2026-06-10T22:42:00+08:00",
+        "query": "铝 氧化铝 电解铝 能源 价格",
+        "signal": 0
+      },
+      {
+        "title": "2026-2033年全球氧化铝细分市场、下游需求及价格走势分析报告 - 北京研精毕智",
+        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBkZ0M5bUJEOHNmSjNqOTNzZHNFZi1ENTdKQmFnVnNXOWt1UnN0dmFuSF9wX3dhY3dBYVpUYlVrY0N2bXpLTlpDYmtka1JBZDBTLXc?oc=5",
+        "source": "北京研精毕智",
+        "published": "2026-06-10T10:34:49+08:00",
+        "query": "铝 氧化铝 电解铝 能源 价格",
+        "signal": 0
+      },
+      {
+        "title": "年内5轮提价！电子布，价格大幅上涨 - 电子工程专辑",
+        "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9RUzRxODZZWjA2OF9xcXA2MzhGZzdITXoxcGFiVjZmMm1YMnFXMFRaUFBqMlByLUFFRVhHSnN1bDc5cVlvUlZpd3FIZXlLb0VyamFR?oc=5",
+        "source": "电子工程专辑",
+        "published": "2026-06-09T21:43:00+08:00",
+        "query": "玻纤布 电子纱 电子布 PCB 涨价",
+        "signal": 1
+      },
+      {
+        "title": "电子布涨超100%，谁能在这场周期复苏中笑到最后？ - 维科号",
+        "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9QTlRBUjN1UjZWaVFnX1BzX1gwOVpEUHpqSFNYY3BNSEo1OVFtWUg2MFZmQ1hrSlU0SUc1VVpvai1WelBYLWJTWUxJS3FiS19jQmw4dFFB?oc=5",
+        "source": "维科号",
+        "published": "2026-06-09T15:39:00+08:00",
+        "query": "玻纤布 电子纱 电子布 PCB 涨价",
+        "signal": 0
+      },
+      {
+        "title": "长安期货张晨：紧平衡未破 碳酸锂高位回调后做空风险加大 - Sina finance",
+        "link": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNQS15T1ZRWHdVRkJIVXFQSTRYYnFERjR3eFZodE9MNm52RkRPSXNBRUtXdmRFbURaNFg0Z1hadmxlU1RITkQwTExRQUlyV3BXWWtURmpzV1VXRUZPN2hBNmxBYkN5TGtNNFNXdXphZzViZExjbWQ3RzREZnYyU3VpZ0l4aE9tVjRTX2JaSXFHVVFEZEpHMkYzWUJFai1nNVRISUkxNFJQRGhyblMyMVp2RjhFUzVGaXU2Nk5rZWw2ME1waGxjWVUtcExqTlhHN3ZIX2Y1alpPOWw0Zw?oc=5",
+        "source": "Sina finance",
+        "published": "2026-06-09T10:47:00+08:00",
+        "query": "碳酸锂 锂矿 电池级 价格 供应",
+        "signal": 0
+      }
+    ],
+    "cost_buckets": [
+      {
+        "name": "电池",
+        "materials": [
+          "lithium_carbonate",
+          "aluminum",
+          "copper",
+          "industrial_silicon"
+        ]
+      },
+      {
+        "name": "硅胶线",
+        "materials": [
+          "copper",
+          "organic_silicon_dmc",
+          "industrial_silicon",
+          "natural_rubber"
+        ]
+      },
+      {
+        "name": "电路板",
+        "materials": [
+          "copper",
+          "tin",
+          "epoxy_resin",
+          "bisphenol_a",
+          "epichlorohydrin",
+          "styrene",
+          "glass_proxy"
+        ]
+      },
+      {
+        "name": "塑料件",
+        "materials": [
+          "abs",
+          "pp",
+          "pvc",
+          "pc",
+          "lldpe",
+          "styrene"
+        ]
+      },
+      {
+        "name": "纸箱",
+        "materials": [
+          "corrugated_paper",
+          "paper_pulp",
+          "waste_paper"
+        ]
+      }
+    ]
+  },
+  "cost_buckets": [
+    {
+      "name": "电池",
+      "materials": [
+        "lithium_carbonate",
+        "aluminum",
+        "copper",
+        "industrial_silicon"
+      ]
+    },
+    {
+      "name": "硅胶线",
+      "materials": [
+        "copper",
+        "organic_silicon_dmc",
+        "industrial_silicon",
+        "natural_rubber"
+      ]
+    },
+    {
+      "name": "电路板",
+      "materials": [
+        "copper",
+        "tin",
+        "epoxy_resin",
+        "bisphenol_a",
+        "epichlorohydrin",
+        "styrene",
+        "glass_proxy"
+      ]
+    },
+    {
+      "name": "塑料件",
+      "materials": [
+        "abs",
+        "pp",
+        "pvc",
+        "pc",
+        "lldpe",
+        "styrene"
+      ]
+    },
+    {
+      "name": "纸箱",
+      "materials": [
+        "corrugated_paper",
+        "paper_pulp",
+        "waste_paper"
+      ]
+    }
+  ],
+  "manual_watch_items": [
+    {
+      "id": "copper_foil_supplier",
+      "name": "铜箔供应商报价",
+      "unit": "元/公斤或元/平方米",
+      "reason": "铜箔价格常由铜价、加工费、厚度和供应商报价共同决定，建议录入实际采购报价。"
+    },
+    {
+      "id": "fiberglass_cloth_supplier",
+      "name": "玻纤布/电子布供应商报价",
+      "unit": "元/米或元/平方米",
+      "reason": "电子级玻纤布公开日价稀疏，建议结合供应商报价与行业新闻监测。"
+    },
+    {
+      "id": "ccl_supplier",
+      "name": "覆铜板/CCL供应商报价",
+      "unit": "元/张或元/平方米",
+      "reason": "覆铜板受铜箔、玻纤布、环氧树脂和加工费共同影响，建议单独跟踪。"
+    }
+  ],
+  "sources": [
+    "AKShare 期货现货与基差接口",
+    "生意社商品基准价公开页面",
+    "Google News RSS",
+    "供应商人工报价文件 data/manual_prices.csv"
+  ]
+};

@@ -1,0 +1,4 @@
+date,material_id,material_name,price,unit,source,notes
+2026-06-12,copper_foil_supplier,铜箔供应商报价,,元/公斤或元/平方米,供应商报价,填入实际采购报价后保存为 data/manual_prices.csv
+2026-06-12,fiberglass_cloth_supplier,玻纤布/电子布供应商报价,,元/米或元/平方米,供应商报价,填入实际采购报价后保存为 data/manual_prices.csv
+2026-06-12,ccl_supplier,覆铜板/CCL供应商报价,,元/张或元/平方米,供应商报价,填入实际采购报价后保存为 data/manual_prices.csv

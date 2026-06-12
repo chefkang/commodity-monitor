@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>大宗商品价格监测看板</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">CM</div>
+          <div>
+            <h1>大宗商品价格监测</h1>
+            <p id="updatedAt">等待数据</p>
+          </div>
+        </div>
+
+        <div class="pressure-block">
+          <span>采购成本压力指数</span>
+          <strong id="pressureIndex">--</strong>
+          <small id="pressureStatus">--</small>
+        </div>
+
+        <nav class="category-nav" id="categoryNav"></nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Daily Commodity Desk</p>
+            <h2>原材料价格、趋势与涨价风险</h2>
+          </div>
+          <div class="top-actions">
+            <a id="briefLink" class="icon-button" title="打开今日简报" href="../briefs/" target="_blank">简报</a>
+            <button class="icon-button" id="reloadButton" title="重新载入数据">刷新</button>
+          </div>
+        </header>
+
+        <section class="metric-grid">
+          <article class="metric-card">
+            <span>跟踪品种</span>
+            <strong id="trackedCount">--</strong>
+            <small>价格与替代指标</small>
+          </article>
+          <article class="metric-card">
+            <span>高风险</span>
+            <strong id="highRiskCount">--</strong>
+            <small>涨价概率偏高</small>
+          </article>
+          <article class="metric-card">
+            <span>今日上涨</span>
+            <strong id="risingCount">--</strong>
+            <small>相对上一有效价格</small>
+          </article>
+          <article class="metric-card">
+            <span>新闻风险</span>
+            <strong id="newsRiskCount">--</strong>
+            <small>供应链扰动信号</small>
+          </article>
+        </section>
+
+        <section class="main-grid">
+          <section class="panel chart-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Trend</p>
+                <h3 id="chartTitle">成本压力指数</h3>
+              </div>
+              <div class="chart-controls">
+                <select id="materialSelect" aria-label="选择品种"></select>
+                <div class="segmented" id="rangeControl">
+                  <button data-days="30">30D</button>
+                  <button data-days="90" class="active">90D</button>
+                  <button data-days="180">180D</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="价格趋势图"></svg>
+            </div>
+          </section>
+
+          <section class="panel risk-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Risk</p>
+                <h3>优先关注</h3>
+              </div>
+            </div>
+            <div class="risk-list" id="riskList"></div>
+          </section>
+        </section>
+
+        <section class="panel table-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Materials</p>
+              <h3>每日价格趋势表</h3>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>品种</th>
+                  <th>类别</th>
+                  <th>最新价</th>
+                  <th>1日</th>
+                  <th>7日</th>
+                  <th>30日</th>
+                  <th>90日</th>
+                  <th>涨价概率</th>
+                  <th>趋势</th>
+                  <th>来源</th>
+                </tr>
+              </thead>
+              <tbody id="materialsTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="bottom-grid">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Cost Map</p>
+                <h3>成本结构联动</h3>
+              </div>
+            </div>
+            <div class="bucket-grid" id="bucketGrid"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">News</p>
+                <h3>国际与产业新闻</h3>
+              </div>
+            </div>
+            <div class="news-feed" id="newsFeed"></div>
+          </section>
+        </section>
+
+        <section class="panel watch-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Supplier Quotes</p>
+              <h3>需补录的关键报价</h3>
+            </div>
+          </div>
+          <div class="watch-grid" id="manualWatch"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
