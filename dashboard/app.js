@@ -58,6 +58,13 @@
     return `${formatNumber(item.price)} ${item.unit || ""}`;
   }
 
+  function shortName(item) {
+    return (item.material_name || "")
+      .replace(/（.*?）/g, "")
+      .replace(/\(.*?\)/g, "")
+      .trim();
+  }
+
   function riskClass(item) {
     if (item.risk_level === "高") return "high";
     if (item.risk_level === "中偏高") return "medium";
@@ -87,6 +94,54 @@
       el("briefLink").href = `../briefs/${today}.md`;
     }
     el("reloadButton").addEventListener("click", () => window.location.reload());
+    renderDecisionStrip(Number(pressure || 0));
+  }
+
+  function renderDecisionStrip(pressure) {
+    const topRisk = data.latest.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0));
+    const risers = data.latest
+      .filter((item) => item.change_1d !== null && item.change_1d !== undefined)
+      .sort((a, b) => (b.change_1d || 0) - (a.change_1d || 0));
+    const focus = topRisk.slice(0, 3).map((item) => `${shortName(item)} ${item.up_probability ?? "-"}%`).join("、");
+    const risingFocus = risers.slice(0, 3).map((item) => `${shortName(item)} ${plainPct(item.change_1d)}`).join("、");
+    const highRiskCount = Number(data.summary.high_risk_count || 0);
+    const newsRiskCount = Number(data.summary.news_risk_count || 0);
+    const risingCount = Number(data.summary.rising_count || 0);
+    const trackedCount = Number(data.summary.tracked_count || data.latest.length || 0);
+
+    let title = "成本压力处于观察区";
+    let body = "暂不需要被单一价格牵着走，先按产品大类看传导链条，重点盯短线上行品种和供应链新闻。";
+    let actionTitle = "滚动补库";
+    if (pressure >= 65) {
+      title = "成本压力偏高";
+      body = "高风险品种已经进入预警区，建议当天复核主力供应商报价、锁价条款和安全库存。";
+      actionTitle = "锁价复核";
+    } else if (pressure >= 55) {
+      title = "成本压力中偏高";
+      body = "价格压力开始抬头，优先复核电池包、PCBA、线束夹等高占比物料的报价有效期。";
+      actionTitle = "补库评估";
+    } else if (risingCount > trackedCount / 2) {
+      title = "短线上涨品种较多";
+      body = "整体指数仍可控，但今日上涨覆盖面偏广，建议关注是否从上游原料传导到供应商报价。";
+      actionTitle = "询价确认";
+    } else if (newsRiskCount > 0) {
+      title = "新闻扰动需跟踪";
+      body = "价格端暂未明显失控，但产业新闻已有扰动信号，适合提前问价而不是临时追单。";
+      actionTitle = "供应链复核";
+    }
+
+    const firstAction = data.brief && data.brief.actions && data.brief.actions[0] ? data.brief.actions[0] : "维持日度监控，重点观察短线上行品种。";
+    const setText = (id, value) => {
+      const node = el(id);
+      if (node) node.textContent = value;
+    };
+    setText("marketSummary", `更新 ${formatDateTime(data.generated_at)}，覆盖 ${trackedCount || data.latest.length} 个价格与代理指标。`);
+    setText("decisionTitle", title);
+    setText("decisionBody", body);
+    setText("decisionFocus", focus || "暂无重点");
+    setText("decisionFocusMeta", risingFocus ? `今日涨幅靠前：${risingFocus}` : "暂无有效涨幅数据。");
+    setText("decisionActionTitle", actionTitle);
+    setText("decisionActionBody", firstAction);
   }
 
   function initCategories() {

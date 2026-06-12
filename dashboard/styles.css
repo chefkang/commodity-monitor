@@ -22,6 +22,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
+  overflow-x: hidden;
 }
 
 button,
@@ -32,6 +33,8 @@ a {
 
 .app-shell {
   min-height: 100vh;
+  width: 100%;
+  min-width: 0;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
 }
@@ -40,6 +43,7 @@ a {
   position: sticky;
   top: 0;
   height: 100vh;
+  min-width: 0;
   padding: 24px 18px;
   background: #23211f;
   color: #fff;
@@ -109,6 +113,8 @@ a {
 .category-nav {
   display: grid;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
   overflow: auto;
   padding-right: 4px;
 }
@@ -148,8 +154,23 @@ a {
   margin-bottom: 18px;
 }
 
+.topbar-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
 .title-block {
   min-width: 0;
+}
+
+.title-block p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .topbar-logo {
@@ -162,6 +183,57 @@ a {
   padding: 0;
   margin-left: auto;
   filter: drop-shadow(0 8px 14px rgba(36, 87, 166, 0.12));
+}
+
+.decision-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr) minmax(0, 0.95fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.decision-card {
+  min-height: 128px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.decision-card.primary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #25211c;
+}
+
+.decision-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.decision-card.primary span {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.decision-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.decision-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.58;
+}
+
+.decision-card.primary p {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .eyebrow {
@@ -577,6 +649,8 @@ td strong {
   .sidebar {
     position: relative;
     height: auto;
+    width: 100%;
+    max-width: 100vw;
   }
 
   .category-nav {
@@ -585,6 +659,7 @@ td strong {
 
   .main-grid,
   .bottom-grid,
+  .decision-strip,
   .metric-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -602,18 +677,46 @@ td strong {
     flex-direction: column;
   }
 
+  .topbar {
+    gap: 12px;
+  }
+
+  .topbar-main {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
   .topbar-logo {
     margin-left: 0;
+    width: 176px;
+    height: 52px;
   }
 
   .main-grid,
   .bottom-grid,
   .metric-grid,
+  .decision-strip,
   .chart-summary,
   .bucket-grid,
-  .watch-grid,
-  .category-nav {
+  .watch-grid {
     grid-template-columns: 1fr;
+  }
+
+  .category-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    max-width: calc(100vw - 36px);
+    padding-bottom: 2px;
+  }
+
+  .category-nav button {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 148px;
+    white-space: nowrap;
   }
 
   .chart-wrap {
@@ -621,7 +724,11 @@ td strong {
   }
 
   h2 {
-    font-size: 21px;
+    font-size: 23px;
+  }
+
+  .title-block p {
+    font-size: 13px;
   }
 
   .pressure-block strong {

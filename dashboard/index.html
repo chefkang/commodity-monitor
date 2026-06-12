@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>大宗商品价格监测看板</title>
+    <title>迈瑟伦原材料价格监测</title>
     <link rel="icon" href="./assets/maxcellent-favicon.png" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -15,7 +15,7 @@
             <img src="./assets/maxcellent-logo-wordmark.png" alt="MAXCELLENT 迈瑟伦" />
           </div>
           <div>
-            <h1>大宗商品价格监测</h1>
+            <h1>迈瑟伦原材料监测</h1>
             <p id="updatedAt">等待数据</p>
           </div>
         </div>
@@ -31,16 +31,36 @@
 
       <main class="content">
         <header class="topbar">
-          <div class="title-block">
-            <p class="eyebrow">老板原材料驾驶舱</p>
-            <h2>迈瑟伦原材料价格、趋势与涨价风险</h2>
+          <div class="topbar-main">
+            <img class="topbar-logo" src="./assets/maxcellent-logo-wordmark.png" alt="MAXCELLENT 迈瑟伦" />
+            <div class="title-block">
+              <h2>原材料价格监测与采购预警</h2>
+              <p id="marketSummary">围绕电池包、PCBA、线束夹、充气泵、塑料外壳与包装，跟踪关键成本变化。</p>
+            </div>
           </div>
-          <img class="topbar-logo" src="./assets/maxcellent-logo-wordmark.png" alt="MAXCELLENT 迈瑟伦" />
           <div class="top-actions">
             <a id="briefLink" class="icon-button" title="打开今日简报" href="../briefs/" target="_blank">简报</a>
             <button class="icon-button" id="reloadButton" title="重新载入数据">刷新</button>
           </div>
         </header>
+
+        <section class="decision-strip">
+          <article class="decision-card primary">
+            <span>今日判断</span>
+            <strong id="decisionTitle">等待数据</strong>
+            <p id="decisionBody">正在汇总今日价格、趋势和新闻风险。</p>
+          </article>
+          <article class="decision-card">
+            <span>重点盯盘</span>
+            <strong id="decisionFocus">--</strong>
+            <p id="decisionFocusMeta">按涨价概率与短线涨幅排序。</p>
+          </article>
+          <article class="decision-card">
+            <span>采购动作</span>
+            <strong id="decisionActionTitle">--</strong>
+            <p id="decisionActionBody">等待今日建议。</p>
+          </article>
+        </section>
 
         <section class="metric-grid">
           <article class="metric-card">
