@@ -13,7 +13,11 @@
 
 通常是：
 
-`https://你的GitHub用户名.github.io/commodity-monitor/`
+`https://chefkang.github.io/commodity-monitor/`
+
+完整趋势看板：
+
+`https://chefkang.github.io/commodity-monitor/trend.html`
 
 如果仓库名不是 `commodity-monitor`，网址里的最后一段会换成实际仓库名。
 

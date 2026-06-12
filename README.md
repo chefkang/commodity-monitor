@@ -2,6 +2,14 @@
 
 这是一个本地价格监测看板，用于每天跟踪电池、硅胶线、电路板、塑料件、纸箱相关原材料。
 
+## 长期公网地址
+
+- 日报首页: https://chefkang.github.io/commodity-monitor/
+- 趋势看板: https://chefkang.github.io/commodity-monitor/trend.html
+- GitHub 仓库: https://github.com/chefkang/commodity-monitor
+
+GitHub Actions 会在每个工作日上午 10 点自动刷新行情并发布网页。
+
 ## 主要入口
 
 - `打开大宗商品价格日报.cmd`: 后台刷新数据并打开汇报式可视化日报。
