@@ -3,8 +3,8 @@ name: Daily Commodity Monitor
 on:
   workflow_dispatch:
   schedule:
-    # 10:00 Asia/Shanghai on weekdays
-    - cron: "0 2 * * 1-5"
+    # 10:00 and 15:00 Asia/Shanghai every day
+    - cron: "0 2,7 * * *"
 
 permissions:
   contents: read
@@ -54,3 +54,58 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  notify:
+    needs: [build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+    steps:
+      - name: Compose notification
+        run: |
+          if [ "${{ needs.build.result }}" = "success" ] && [ "${{ needs.deploy.result }}" = "success" ]; then
+            status="成功"
+            summary="本次数据刷新和网页发布均已完成。"
+          else
+            status="失败"
+            summary="本次自动更新未完全成功，请进入 GitHub Actions 查看日志。"
+          fi
+          echo "MAIL_SUBJECT=迈瑟伦原材料监测更新${status} - $(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M')" >> "$GITHUB_ENV"
+          {
+            echo "MAIL_BODY<<EOF"
+            echo "迈瑟伦原材料价格监测自动更新状态：${status}"
+            echo ""
+            echo "${summary}"
+            echo ""
+            echo "运行时间：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S')"
+            echo "数据构建：${{ needs.build.result }}"
+            echo "网页发布：${{ needs.deploy.result }}"
+            echo "日报首页：https://chefkang.github.io/commodity-monitor/"
+            echo "趋势看板：https://chefkang.github.io/commodity-monitor/trend.html"
+            echo "运行日志：https://github.com/chefkang/commodity-monitor/actions/runs/${{ github.run_id }}"
+            echo ""
+            echo "说明：价格来自公开行情源或明确标注的代理指标；涨价概率为采购风险预警模型，不作为市场事实。"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Send email notification
+        if: ${{ env.SMTP_SERVER != '' && env.SMTP_USERNAME != '' && env.SMTP_PASSWORD != '' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT || 465 }}
+          secure: true
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: ${{ env.MAIL_SUBJECT }}
+          to: 1977513586@qq.com
+          from: ${{ secrets.MAIL_FROM || secrets.SMTP_USERNAME }}
+          body: ${{ env.MAIL_BODY }}
+
+      - name: Email not configured
+        if: ${{ env.SMTP_SERVER == '' || env.SMTP_USERNAME == '' || env.SMTP_PASSWORD == '' }}
+        run: |
+          echo "邮件通知未发送：请在仓库 Secrets 配置 SMTP_SERVER、SMTP_PORT、SMTP_USERNAME、SMTP_PASSWORD、MAIL_FROM。"

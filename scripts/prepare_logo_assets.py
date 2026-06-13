@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageOps
+from PIL import Image, ImageChops, ImageFilter, ImageOps
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,6 +59,13 @@ def make_logo_card(wordmark: Image.Image) -> Image.Image:
     return canvas
 
 
+def make_sharp_logo(cropped: Image.Image, scale: int = 2) -> Image.Image:
+    rgb = cropped.convert("RGB")
+    width, height = rgb.size
+    logo = rgb.resize((width * scale, height * scale), Image.Resampling.LANCZOS)
+    return logo.filter(ImageFilter.UnsharpMask(radius=1.1, percent=160, threshold=2))
+
+
 def make_favicon(source: Image.Image) -> Image.Image:
     card = ImageOps.contain(source.convert("RGBA"), (512, 512), Image.Resampling.LANCZOS)
     canvas = Image.new("RGBA", (512, 512), (255, 255, 255, 255))
@@ -74,6 +81,9 @@ def main() -> int:
     cropped = source.crop(content_box(source))
     cropped.save(ASSETS / "maxcellent-logo-cropped-source.png")
 
+    sharp = make_sharp_logo(cropped)
+    sharp.save(ASSETS / "maxcellent-logo-sharp.png")
+
     wordmark = make_transparent_logo(cropped)
     wordmark.save(ASSETS / "maxcellent-logo-wordmark.png")
 
@@ -85,6 +95,7 @@ def main() -> int:
 
     print(f"source: {source.size}")
     print(f"cropped: {cropped.size}")
+    print(f"sharp: {sharp.size}")
     print(f"wordmark: {wordmark.size}")
     print(f"card: {card.size}")
     return 0

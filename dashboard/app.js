@@ -138,7 +138,7 @@
       const node = el(id);
       if (node) node.textContent = value;
     };
-    setText("marketSummary", `更新 ${formatDateTime(data.generated_at)}，覆盖 ${trackedCount || data.latest.length} 个价格与代理指标。`);
+    setText("marketSummary", `更新 ${formatDateTime(data.generated_at)}，覆盖 ${trackedCount || data.latest.length} 个价格与代理指标，所有行情来源与代理关系均在明细中标注。`);
     setText("decisionTitle", title);
     setText("decisionBody", body);
     setText("decisionFocus", focus || "暂无重点");
@@ -225,12 +225,14 @@
     el("riskList").innerHTML =
       rows
         .map((item) => {
-          const newsTitle = item.matched_news && item.matched_news[0] ? item.matched_news[0].title : "";
+          const news = item.matched_news && item.matched_news[0] ? item.matched_news[0] : null;
+          const newsTitle = news ? news.title : "";
+          const newsSource = news && news.source ? ` · ${news.source}` : "";
           return `
             <article class="risk-item ${riskClass(item)}">
               <h4>${item.material_name} · ${item.up_probability ?? "-"}%</h4>
               <p>${item.trend || "震荡"}，30日${item.change_30d ?? "-"}%，最新 ${formatNumber(item.price)} ${item.unit || ""}</p>
-              ${newsTitle ? `<p>${newsTitle}</p>` : ""}
+              ${newsTitle ? `<p>新闻线索：${newsTitle}${newsSource}</p>` : ""}
             </article>
           `;
         })

@@ -1,17 +1,18 @@
 :root {
-  --paper: #f5f1e9;
-  --ink: #171513;
-  --muted: #6b6359;
-  --line: #ded5c8;
-  --panel: #fffdf8;
-  --panel-2: #f9f6ef;
-  --teal: #087c7a;
+  --paper: #f5f5f7;
+  --ink: #1d1d1f;
+  --muted: #6e6e73;
+  --line: #d2d2d7;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-2: #fbfbfd;
+  --teal: #0071e3;
   --red: #b42318;
   --green: #147b3d;
-  --amber: #af6700;
-  --blue: #2457a6;
-  --shadow: 0 18px 50px rgba(36, 29, 18, 0.08);
-  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+  --amber: #b86e00;
+  --blue: #0066cc;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.055);
+  --shadow-hover: 0 18px 42px rgba(0, 0, 0, 0.075);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
 }
 
 * {
@@ -43,8 +44,9 @@ a {
   justify-content: space-between;
   gap: 24px;
   padding: 30px;
-  background: #25211c;
-  color: #fff;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
 }
@@ -62,7 +64,7 @@ a {
 .hero .subline,
 .hero-score span,
 .hero-score small {
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
 }
 
 .hero-brand {
@@ -80,11 +82,10 @@ a {
   border: 0;
   border-radius: 0;
   padding: 0;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.28)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
 }
 
 .hero-brand span {
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--muted);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0;
@@ -118,9 +119,10 @@ h2 {
 .hero-score {
   min-width: 250px;
   padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #1d1d1f;
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -145,6 +147,23 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
+}
+
+.hero,
+.summary-grid article,
+.panel,
+.brief-card,
+.component-card,
+.material-row,
+.news-item {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.summary-grid article:hover,
+.panel:hover,
+.brief-card:hover,
+.component-card:hover {
+  box-shadow: var(--shadow-hover);
 }
 
 .summary-grid article {
@@ -414,6 +433,25 @@ h2 {
   font-size: 12px;
 }
 
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero,
+  .summary-grid article,
+  .panel {
+    animation: fadeUp 420ms ease both;
+  }
+}
+
 .report-footer {
   display: flex;
   align-items: center;
@@ -428,7 +466,6 @@ h2 {
   width: 188px;
   height: 58px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 14px rgba(36, 87, 166, 0.12));
 }
 
 @media (max-width: 1180px) {
