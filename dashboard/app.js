@@ -69,6 +69,48 @@
     return `${formatNumber(item.price)} ${item.unit || ""}`;
   }
 
+  function basisInfo(item) {
+    const provider = item && item.provider;
+    if (provider === "derived_from") {
+      return {
+        cls: "proxy",
+        label: "上游代理指标",
+        hint: "非该材料直接报价",
+        source: item.source || "上游真实行情",
+      };
+    }
+    if (provider === "manual") {
+      return {
+        cls: "manual",
+        label: "供应商报价",
+        hint: "人工补录",
+        source: item.source || "供应商报价",
+      };
+    }
+    return {
+      cls: "real",
+      label: "真实行情",
+      hint: "公开市场价格",
+      source: item.source || "公开行情",
+    };
+  }
+
+  function basisBadge(item) {
+    const basis = basisInfo(item);
+    return `<span class="basis-badge ${basis.cls}">${basis.label}</span>`;
+  }
+
+  function sourceCell(item) {
+    const basis = basisInfo(item);
+    return `
+      <div class="source-cell">
+        ${basisBadge(item)}
+        <span>${escapeHtml(basis.source)}</span>
+        <small>${escapeHtml(basis.hint)}</small>
+      </div>
+    `;
+  }
+
   function shortName(item) {
     return (item.material_name || "")
       .replace(/（.*?）/g, "")
@@ -149,7 +191,7 @@
       const node = el(id);
       if (node) node.textContent = value;
     };
-    setText("marketSummary", `更新 ${formatDateTime(data.generated_at)}，覆盖 ${trackedCount || data.latest.length} 个价格与代理指标，所有行情来源与代理关系均在明细中标注。`);
+    setText("marketSummary", `更新 ${formatDateTime(data.generated_at)}，覆盖 ${trackedCount || data.latest.length} 个价格与指标；真实行情、上游代理指标和供应商补录会在明细中分开标注。`);
     setText("decisionTitle", title);
     setText("decisionBody", body);
     setText("decisionFocus", focus || "暂无重点");
@@ -214,14 +256,14 @@
           <tr>
             <td><strong>${item.material_name}</strong><br><span class="neutral">${item.date || ""}</span></td>
             <td><span class="tag">${item.category || "-"}</span></td>
-            <td>${formatNumber(item.price)} ${item.unit || ""}</td>
+            <td><strong>${formatNumber(item.price)} ${item.unit || ""}</strong><br>${basisBadge(item)}</td>
             <td>${pct(item.change_1d)}</td>
             <td>${pct(item.change_7d)}</td>
             <td>${pct(item.change_30d)}</td>
             <td>${pct(item.change_90d)}</td>
             <td><span class="probability ${riskClass(item)}">${item.up_probability ?? "-"}%</span></td>
             <td>${item.trend || "-"}</td>
-            <td>${item.source || "-"}</td>
+            <td>${sourceCell(item)}</td>
           </tr>
         `
       )
@@ -242,7 +284,7 @@
           return `
             <article class="risk-item ${riskClass(item)}">
               <h4>${item.material_name} · ${item.up_probability ?? "-"}%</h4>
-              <p>${item.trend || "震荡"}，30日${item.change_30d ?? "-"}%，最新 ${formatNumber(item.price)} ${item.unit || ""}</p>
+              <p>${item.trend || "震荡"}，30日${item.change_30d ?? "-"}%，${basisInfo(item).cls === "proxy" ? "最新指标" : "最新价格"} ${formatNumber(item.price)} ${item.unit || ""} · ${basisInfo(item).label}</p>
               ${newsTitle ? `<p>新闻线索：${newsTitle}${newsSource}</p>` : ""}
             </article>
           `;
@@ -331,7 +373,7 @@
         <article>
           <span>最新价格</span>
           <strong>${priceLine(selected)}</strong>
-          <small>${selected.date || ""} · ${selected.source || "公开价格"}</small>
+          <small>${selected.date || ""} · ${basisInfo(selected).label} · ${basisInfo(selected).source}</small>
         </article>
         <article>
           <span>1日变化</span>

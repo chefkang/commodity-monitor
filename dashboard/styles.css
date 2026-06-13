@@ -528,6 +528,46 @@ td strong {
   color: var(--red);
 }
 
+.basis-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.basis-badge.real {
+  background: rgba(20, 123, 61, 0.12);
+  color: var(--green);
+}
+
+.basis-badge.proxy {
+  background: rgba(185, 109, 0, 0.14);
+  color: var(--amber);
+}
+
+.basis-badge.manual {
+  background: rgba(36, 87, 166, 0.12);
+  color: var(--blue);
+}
+
+.source-cell {
+  display: grid;
+  gap: 4px;
+  min-width: 170px;
+}
+
+.source-cell span:not(.basis-badge),
+.source-cell small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .positive {
   color: var(--red);
   font-weight: 700;

@@ -3,7 +3,7 @@ name: Daily Commodity Monitor
 on:
   workflow_dispatch:
   schedule:
-    # 10:00 and 15:00 Asia/Shanghai every day
+    # 10:00 and 15:00 Asia/Shanghai every day, including weekends and holidays
     - cron: "0 2,7 * * *"
 
 permissions:
