@@ -5,6 +5,7 @@ public/
 outputs/
 .private/
 data/internal/
+dashboard/internal-quotes.js
 outputs/internal/
 runtime/internal/
 *.secret.json

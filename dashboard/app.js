@@ -18,6 +18,17 @@
   const el = (id) => document.getElementById(id);
   const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
   const costBucketByName = new Map((data.cost_buckets || []).map((bucket) => [bucket.name, bucket]));
+  const internalQuotes = window.MTN_INTERNAL_SUPPLIER_QUOTES || { items: [] };
+  const internalQuoteByWatchId = new Map((internalQuotes.items || []).map((item) => [item.watch_id || item.id, item]));
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
   function formatDateTime(value) {
     if (!value) return "等待数据";
@@ -422,15 +433,46 @@
   function renderManualWatch() {
     el("manualWatch").innerHTML =
       data.manual_watch_items
-        .map(
-          (item) => `
+        .map((item) => {
+          const quote = internalQuoteByWatchId.get(item.id);
+          const quoteRows = quote && quote.quotes
+            ? quote.quotes
+                .map(
+                  (row) => `
+                    <tr>
+                      <td>${escapeHtml(row.spec)}</td>
+                      <td>${formatNumber(row.ah)} Ah</td>
+                      <td>${formatNumber(row.price_per_ah)} 元/Ah</td>
+                      <td>${formatNumber(row.estimated_cell_cost)} 元/颗</td>
+                    </tr>
+                  `
+                )
+                .join("")
+            : "";
+          const quoteBlock = quote
+            ? `
+              <div class="quote-block">
+                <div class="quote-meta">
+                  <span>已补录</span>
+                  <small>${escapeHtml(quote.updated_at || "")}${quote.source ? ` · ${escapeHtml(quote.source)}` : ""}</small>
+                </div>
+                <table class="quote-table">
+                  <thead><tr><th>规格</th><th>容量</th><th>报价</th><th>估算单颗</th></tr></thead>
+                  <tbody>${quoteRows}</tbody>
+                </table>
+                ${quote.note ? `<p class="quote-note">${escapeHtml(quote.note)}</p>` : ""}
+              </div>
+            `
+            : "";
+          return `
             <article class="watch-item">
-              <h4>${item.name}</h4>
-              <p>${item.unit}</p>
-              <p>${item.reason}</p>
+              <h4>${escapeHtml(item.name)}</h4>
+              <p>${escapeHtml(item.unit)}</p>
+              <p>${escapeHtml(item.reason)}</p>
+              ${quoteBlock}
             </article>
-          `
-        )
+          `;
+        })
         .join("") || '<div class="empty">暂无补录项</div>';
   }
 

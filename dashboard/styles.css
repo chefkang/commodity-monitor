@@ -643,6 +643,65 @@ td strong {
   line-height: 1.45;
 }
 
+.quote-block {
+  margin-top: 12px;
+  border: 1px solid rgba(0, 113, 227, 0.16);
+  border-radius: 6px;
+  background: rgba(0, 113, 227, 0.035);
+  overflow: hidden;
+}
+
+.quote-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(0, 113, 227, 0.12);
+}
+
+.quote-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  background: rgba(20, 123, 61, 0.12);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.quote-meta small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.quote-table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.quote-table th,
+.quote-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0, 113, 227, 0.1);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.quote-table th {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.watch-item .quote-note {
+  margin: 0;
+  padding: 0 10px 10px;
+}
+
 .watch-panel {
   margin-bottom: 18px;
 }

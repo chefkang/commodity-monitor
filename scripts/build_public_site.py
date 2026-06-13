@@ -42,6 +42,7 @@ def main() -> int:
     trend_html = trend_html.replace('href="./styles.css"', f'href="./styles.css?v={asset_version}"')
     trend_html = trend_html.replace('src="./data.js"', f'src="./data.js?v={asset_version}"')
     trend_html = trend_html.replace('src="./app.js"', f'src="./app.js?v={asset_version}"')
+    trend_html = trend_html.replace('    <script src="./internal-quotes.js" data-local-only="true"></script>\n', "")
     (PUBLIC / "trend.html").write_text(trend_html, encoding="utf-8")
 
     briefs = ROOT / "briefs"
