@@ -6,6 +6,7 @@ import math
 import re
 from collections import defaultdict
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,23 @@ def clean_text(value: Any) -> str:
 
 def md_cell(value: Any) -> str:
     return clean_text(value).replace("|", " / ")
+
+
+def fmt_number(value: Any, digits: int = 0) -> str:
+    number = clean_number(value)
+    if digits:
+        return f"{number:,.{digits}f}"
+    return f"{number:,.0f}"
+
+
+def action_class(action: str) -> str:
+    if "立即" in action:
+        return "urgent"
+    if "锁价" in action or "分批" in action or "确认" in action:
+        return "watch"
+    if "暂" in action or "观察" in action or "压价" in action:
+        return "hold"
+    return "quiet"
 
 
 def load_market_risk() -> dict[str, float]:
@@ -259,6 +277,157 @@ def write_report(path: Path, rows: list[dict[str, Any]], source: str) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
+def write_html(path: Path, rows: list[dict[str, Any]], source: str) -> None:
+    by_horizon: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        by_horizon[int(row["horizon_days"])].append(row)
+
+    cards: list[str] = []
+    sections: list[str] = []
+    for horizon in (30, 90, 180, 365):
+        items = sorted(by_horizon.get(horizon, []), key=lambda item: clean_number(item["estimated_budget"]), reverse=True)
+        budget = sum(clean_number(item["estimated_budget"]) for item in items)
+        buy_count = sum(1 for item in items if clean_number(item["recommended_buy_qty"]) > 0)
+        top_action = "观察"
+        if buy_count:
+            top_action = "需要采购"
+        if horizon >= 180 and buy_count:
+            top_action = "中长期备货"
+
+        cards.append(
+            f"""
+            <button class="horizon-card" data-target="h{horizon}" type="button">
+              <span>{horizon}天</span>
+              <strong>{buy_count}</strong>
+              <small>{top_action} · 预算 ¥{budget:,.0f}</small>
+            </button>
+            """
+        )
+
+        table_rows = []
+        for item in items:
+            action = clean_text(item["recommended_action"])
+            table_rows.append(
+                f"""
+                <tr>
+                  <td>
+                    <strong>{escape(clean_text(item["material_name"]))}</strong>
+                    <span>{escape(clean_text(item["material_type"]))}</span>
+                  </td>
+                  <td>{escape(clean_text(item["supplier"]) or "-")}</td>
+                  <td>{escape(clean_text(item["recommended_action"]))}</td>
+                  <td class="num">{fmt_number(item["recommended_buy_qty"])}</td>
+                  <td class="num">¥{fmt_number(item["estimated_budget"], 2)}</td>
+                  <td class="num">{escape(clean_text(item["stock_days"]) or "-")}</td>
+                  <td class="num">{fmt_number(item["market_up_probability"])}%</td>
+                  <td>{escape(clean_text(item["h3_expected_delivery"]) or "-")}</td>
+                  <td>{escape(clean_text(item["impacted_skus"]) or "-")}</td>
+                  <td><span class="pill {action_class(action)}">{escape(action)}</span></td>
+                </tr>
+                """
+            )
+
+        sections.append(
+            f"""
+            <section class="panel horizon" id="h{horizon}">
+              <div class="panel-head">
+                <div>
+                  <span>滚动周期</span>
+                  <h2>{horizon}天采购备货测算</h2>
+                </div>
+                <p>建议采购物料 {buy_count} 项，测算预算 ¥{budget:,.0f}。</p>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>物料</th><th>供应商</th><th>建议动作</th><th>建议数量</th><th>测算预算</th>
+                      <th>库存天数</th><th>涨价概率</th><th>预计交期</th><th>影响SKU</th><th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>{''.join(table_rows)}</tbody>
+                </table>
+              </div>
+            </section>
+            """
+        )
+
+    html = f"""<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>采购备货滚动测算</title>
+  <style>
+    :root {{
+      --bg:#f5f5f7; --panel:#fff; --ink:#1d1d1f; --muted:#6e6e73; --line:#d2d2d7;
+      --blue:#0071e3; --green:#147b3d; --amber:#b86e00; --red:#b42318;
+      font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC","Segoe UI",Arial,sans-serif;
+    }}
+    * {{ box-sizing:border-box; }}
+    html {{ scroll-behavior:smooth; }}
+    body {{ margin:0; background:radial-gradient(circle at top,#fff 0,#f5f5f7 42%,#ececf1 100%); color:var(--ink); }}
+    main {{ max-width:1480px; margin:0 auto; padding:30px; }}
+    header {{ display:grid; grid-template-columns:1fr auto; gap:20px; align-items:start; margin-bottom:18px; }}
+    h1 {{ margin:0; font-size:36px; letter-spacing:0; }}
+    p {{ color:var(--muted); margin:8px 0 0; line-height:1.65; }}
+    .stamp {{ color:var(--muted); font-size:13px; text-align:right; }}
+    .source {{ display:inline-flex; margin-top:12px; padding:7px 10px; border-radius:999px; background:#fff; border:1px solid var(--line); color:var(--muted); font-size:13px; }}
+    .horizon-grid {{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:18px 0; }}
+    .horizon-card {{ text-align:left; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow:0 18px 45px rgba(0,0,0,.06); cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; color:inherit; }}
+    .horizon-card:hover {{ transform:translateY(-2px); box-shadow:0 22px 52px rgba(0,0,0,.09); border-color:#9ec9ff; }}
+    .horizon-card span,.horizon-card small {{ display:block; color:var(--muted); font-size:13px; }}
+    .horizon-card strong {{ display:block; font-size:34px; margin:9px 0 5px; }}
+    .panel {{ background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 18px 45px rgba(0,0,0,.06); margin-top:16px; }}
+    .panel-head {{ display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:18px; border-bottom:1px solid #e8e8ed; }}
+    .panel-head span {{ color:var(--muted); font-size:12px; font-weight:800; }}
+    .panel-head h2 {{ margin:4px 0 0; font-size:23px; }}
+    .panel-head p {{ margin:0; max-width:420px; }}
+    .table-wrap {{ overflow:auto; }}
+    table {{ width:100%; border-collapse:collapse; min-width:1180px; }}
+    th,td {{ padding:14px; border-bottom:1px solid #e8e8ed; text-align:left; vertical-align:top; font-size:14px; }}
+    th {{ color:var(--muted); font-size:12px; font-weight:800; background:#fbfbfd; position:sticky; top:0; }}
+    td strong {{ display:block; }}
+    td span {{ display:block; color:var(--muted); font-size:12px; margin-top:4px; }}
+    .num {{ text-align:right; white-space:nowrap; }}
+    .pill {{ display:inline-flex; align-items:center; border-radius:999px; padding:5px 9px; font-size:12px; font-weight:800; }}
+    .urgent {{ background:rgba(180,35,24,.12); color:var(--red); }}
+    .watch {{ background:rgba(0,113,227,.1); color:var(--blue); }}
+    .hold {{ background:rgba(184,110,0,.12); color:var(--amber); }}
+    .quiet {{ background:#ececf1; color:var(--muted); }}
+    @media (max-width: 860px) {{
+      main {{ padding:18px; }}
+      header {{ grid-template-columns:1fr; }}
+      .stamp {{ text-align:left; }}
+      .horizon-grid {{ grid-template-columns:1fr 1fr; }}
+      h1 {{ font-size:28px; }}
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>采购备货滚动测算</h1>
+        <p>把库存天数、未到货数量、BOM 影响、公开行情涨价概率放在一起，按 30/90/180/365 天给出采购动作和预算测算。</p>
+        <div class="source">当前数据源：{escape(source)}</div>
+      </div>
+      <div class="stamp">生成 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+    </header>
+    <nav class="horizon-grid">{''.join(cards)}</nav>
+    {''.join(sections)}
+  </main>
+  <script>
+    document.querySelectorAll('.horizon-card').forEach((card) => {{
+      card.addEventListener('click', () => document.getElementById(card.dataset.target).scrollIntoView({{block:'start'}}));
+    }});
+  </script>
+</body>
+</html>
+"""
+    path.write_text(html, encoding="utf-8")
+
+
 def main() -> int:
     h3_purchase_rows = read_csv(H3_DIR / "purchase_orders.csv")
     h3_purchase = group_h3_purchase_orders(h3_purchase_rows)
@@ -273,6 +442,7 @@ def main() -> int:
     )
     write_csv(PROCUREMENT_DIR / "stock_forecast.csv", rows)
     write_report(PROCUREMENT_DIR / "stock_forecast.md", rows, source)
+    write_html(PROCUREMENT_DIR / "stock_forecast.html", rows, source)
     print(f"Rows: {len(rows)}")
     print(f"Source: {source}")
     print(f"Output: {PROCUREMENT_DIR}")
