@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "privacy": {
+    "public_dashboard_allowed": false,
+    "internal_data_dirs": [
+      "data/internal",
+      "outputs/internal",
+      "runtime/internal",
+      ".private"
+    ],
+    "rule": "BOM, supplier quotes, inventory, purchase price, customer sales and drawings must stay out of the public GitHub Pages site."
+  },
+  "tables": [
+    {
+      "id": "sales_history",
+      "name": "sales_history",
+      "recommended_history_months": 24,
+      "required_fields": [
+        "order_date",
+        "sku",
+        "product_name",
+        "quantity",
+        "customer_type",
+        "sales_channel",
+        "unit_price",
+        "currency",
+        "order_status"
+      ]
+    },
+    {
+      "id": "inventory_snapshot",
+      "name": "inventory_snapshot",
+      "recommended_frequency": "daily",
+      "required_fields": [
+        "snapshot_date",
+        "item_code",
+        "item_name",
+        "item_type",
+        "warehouse",
+        "available_qty",
+        "locked_qty",
+        "inbound_qty",
+        "unit"
+      ]
+    },
+    {
+      "id": "bom_lines",
+      "name": "bom_lines",
+      "required_fields": [
+        "sku",
+        "product_name",
+        "bom_version",
+        "material_code",
+        "material_name",
+        "material_spec",
+        "qty_per_unit",
+        "unit",
+        "loss_rate",
+        "standard_price",
+        "supplier_code",
+        "commodity_id"
+      ]
+    },
+    {
+      "id": "purchase_history",
+      "name": "purchase_history",
+      "recommended_history_months": 24,
+      "required_fields": [
+        "po_date",
+        "receipt_date",
+        "material_code",
+        "material_name",
+        "supplier_code",
+        "supplier_name",
+        "quantity",
+        "unit_price",
+        "currency",
+        "tax_rate",
+        "unit",
+        "po_status"
+      ]
+    },
+    {
+      "id": "supplier_master",
+      "name": "supplier_master",
+      "required_fields": [
+        "supplier_code",
+        "supplier_name",
+        "material_code",
+        "moq",
+        "lead_time_days",
+        "payment_terms",
+        "price_valid_days",
+        "can_lock_price",
+        "quality_level",
+        "on_time_rate",
+        "backup_supplier"
+      ]
+    },
+    {
+      "id": "production_plan",
+      "name": "production_plan",
+      "required_fields": [
+        "plan_date",
+        "sku",
+        "planned_qty",
+        "production_line",
+        "plan_status"
+      ]
+    },
+    {
+      "id": "material_commodity_map",
+      "name": "material_commodity_map",
+      "required_fields": [
+        "material_code",
+        "material_name",
+        "commodity_id",
+        "commodity_name",
+        "mapping_type",
+        "sensitivity",
+        "note"
+      ]
+    }
+  ],
+  "decision_scores": {
+    "purchase_priority": {
+      "commodity_price_risk": 0.25,
+      "inventory_shortage_risk": 0.25,
+      "bom_cost_impact": 0.2,
+      "demand_strength": 0.15,
+      "supplier_delivery_risk": 0.1,
+      "news_disruption_risk": 0.05
+    },
+    "bands": [
+      {
+        "min": 80,
+        "action": "immediate"
+      },
+      {
+        "min": 65,
+        "action": "within_week"
+      },
+      {
+        "min": 50,
+        "action": "watch"
+      },
+      {
+        "min": 0,
+        "action": "no_action"
+      }
+    ]
+  }
+}

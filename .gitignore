@@ -3,6 +3,12 @@ runtime/
 tools/
 public/
 outputs/
+.private/
+data/internal/
+outputs/internal/
+runtime/internal/
+*.secret.json
+*.secret.csv
 *.zip
 mobile_access.html
 __pycache__/
