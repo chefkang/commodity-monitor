@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "primary_system": "美途能进销存系统",
+  "platform": "钉钉 / 氚云",
+  "privacy_rule": "Only schema and mapping rules are committed. Exported business data must stay under data/internal/.",
+  "trust_order": [
+    "美途能进销存系统",
+    "公共盘现有库存/BOM表",
+    "手工模板"
+  ],
+  "notes": [
+    "采购管理系统目前仍在搭建，暂不作为采购计划主数据源。",
+    "美途能进销存系统内的采购下单、库存、入库、出库、供应商、原材料主数据优先用于采购和备货计划。"
+  ],
+  "export_dir": "data/internal/h3_exports",
+  "normalized_dir": "data/internal/h3_normalized",
+  "tables": [
+    {
+      "id": "purchase_orders",
+      "app": "美途能进销存系统",
+      "form": "采购下单",
+      "trust": "primary",
+      "filename_keywords": ["采购下单", "采购订单", "物料采购"],
+      "required_any": ["采购订单编号", "物料采购", "采购总价"],
+      "fields": {
+        "created_at": ["创建时间"],
+        "workflow_status": ["流程状态"],
+        "purchase_order_no": ["采购订单编号", "采购单号"],
+        "expected_delivery_date": ["预计交期", "预计到货时间"],
+        "material_purchase": ["物料采购", "选择物料"],
+        "purchase_total_qty": ["采购总数", "采购数量"],
+        "purchase_total_amount": ["采购总价", "采购金额", "采购总额"],
+        "purchase_link": ["采购链接"],
+        "supplier_selection": ["物料关联供应商选择", "关联供应商", "供应商"],
+        "purchase_note": ["采购备注", "备注"],
+        "has_customer_material": ["是/否(有客供物料)", "是否有客供物料"],
+        "customer_material": ["客供物料选择"],
+        "tracking_status": ["跟进状态"],
+        "attachment": ["订单/截图", "附件"],
+        "remaining_payment_amount": ["剩余付款金额"],
+        "payment_status": ["付款状态"],
+        "receipt_status": ["签收状态"],
+        "customer_material_outbound_status": ["客供出库状态"],
+        "paid_amount": ["已付款金额"],
+        "remaining_tracking_qty": ["剩余跟进数量"],
+        "inbound_amount": ["入库总金额"],
+        "supplier_name": ["关联供应商", "供应商"],
+        "inbound_unpaid_amount": ["已入库未付款金额"],
+        "buyer_entity": ["付款主体"],
+        "order_type": ["订单类型"],
+        "is_backfill": ["是/否（补单）", "是否补单"]
+      }
+    },
+    {
+      "id": "purchase_tracking",
+      "app": "美途能进销存系统",
+      "form": "采购订单跟踪",
+      "trust": "primary",
+      "filename_keywords": ["采购订单跟踪", "采购跟踪"],
+      "required_any": ["采购单号", "供应商", "物流状态"],
+      "fields": {
+        "tracking_at": ["跟进时间"],
+        "purchase_order_no": ["采购单号", "采购订单编号"],
+        "purchase_order_selection": ["采购订单选择"],
+        "supplier_name": ["供应商"],
+        "tracking_note": ["跟进情况"],
+        "shipment_type": ["发货类型"],
+        "tracking_no": ["物流单号"],
+        "logistics_trace": ["物流轨迹"],
+        "logistics_status": ["物流状态"],
+        "expected_ship_date": ["预计发货时间"],
+        "is_signed": ["是/否(签收)", "是否签收"],
+        "express_company_code": ["快递公司编码"]
+      }
+    },
+    {
+      "id": "inventory_movements",
+      "app": "美途能进销存系统",
+      "form": "物料出入库明细",
+      "trust": "primary",
+      "filename_keywords": ["物料出入库明细", "出入库明细"],
+      "required_any": ["物料名称", "出入库类型", "操作日期"],
+      "fields": {
+        "movement_type": ["出入库类型"],
+        "warehouse": ["出入库仓库", "仓库"],
+        "material_name": ["物料名称"],
+        "material_spec": ["规格类型/材料", "规格型号", "规格"],
+        "material_code": ["物料编号", "物料编码"],
+        "quantity": ["出入库数量", "数量"],
+        "unit_price": ["单价"],
+        "amount": ["金额"],
+        "operation_date": ["操作日期", "出入库日期", "创建时间"],
+        "source_order_no": ["单号", "来源单号"]
+      }
+    },
+    {
+      "id": "inventory_count",
+      "app": "美途能进销存系统",
+      "form": "库存盘点",
+      "trust": "primary",
+      "filename_keywords": ["库存盘点", "库存"],
+      "required_any": ["盘点单号", "盘点日期", "盘点仓库"],
+      "fields": {
+        "count_no": ["盘点单号"],
+        "count_date": ["盘点日期"],
+        "warehouse": ["盘点仓库"],
+        "owner": ["负责人"],
+        "warehouse_code": ["仓库编号"],
+        "warehouse_location": ["仓库位置"],
+        "warehouse_type": ["仓库类型"],
+        "note": ["备注"]
+      }
+    },
+    {
+      "id": "material_master",
+      "app": "美途能进销存系统",
+      "form": "原材料管理",
+      "trust": "primary",
+      "filename_keywords": ["原材料", "物料基础", "物料档案"],
+      "required_any": ["物料编号", "物料名称"],
+      "fields": {
+        "material_code": ["物料编号", "物料编码"],
+        "material_name": ["物料名称"],
+        "material_category": ["物料类别", "原材料类别"],
+        "material_spec": ["规格型号", "规格类型/材料", "规格"],
+        "unit": ["单位"],
+        "supplier_name": ["供应商", "默认供应商"],
+        "standard_price": ["单价", "标准单价", "采购单价"],
+        "safe_stock": ["安全库存"],
+        "lead_time_days": ["交期", "交货周期"]
+      }
+    },
+    {
+      "id": "supplier_master",
+      "app": "美途能进销存系统",
+      "form": "供应商管理",
+      "trust": "primary",
+      "filename_keywords": ["供应商管理", "供应商"],
+      "required_any": ["供应商名称", "供应商编号"],
+      "fields": {
+        "supplier_name": ["供应商名称（公司名称）", "供应商名称", "供应商"],
+        "supplier_source": ["供应商来源"],
+        "supplier_short_name": ["供应商简称"],
+        "supplier_contact": ["供应商联系人", "采购联系人"],
+        "supplier_phone": ["供应商电话", "采购联系人电话"],
+        "payment_terms": ["商定付款方式", "付款方式", "账期"],
+        "supplier_code": ["供应商编号"],
+        "cooperation_status": ["当前合作状态"],
+        "tax_rate": ["税点"]
+      }
+    },
+    {
+      "id": "inbound_receipts",
+      "app": "美途能进销存系统",
+      "form": "入库管理",
+      "trust": "primary",
+      "filename_keywords": ["入库", "来料入库"],
+      "required_any": ["入库", "物料名称"],
+      "fields": {
+        "inbound_no": ["入库单号", "数据标题"],
+        "inbound_date": ["入库日期", "创建时间", "操作日期"],
+        "purchase_order_no": ["采购订单编号", "采购单号"],
+        "supplier_name": ["供应商", "关联供应商"],
+        "material_name": ["物料名称", "物料"],
+        "quantity": ["入库数量", "数量"],
+        "amount": ["入库金额", "金额"]
+      }
+    },
+    {
+      "id": "outbound_issues",
+      "app": "美途能进销存系统",
+      "form": "出库管理",
+      "trust": "primary",
+      "filename_keywords": ["出库", "物料出库"],
+      "required_any": ["出库", "物料名称"],
+      "fields": {
+        "outbound_no": ["出库单号", "数据标题"],
+        "outbound_date": ["出库日期", "创建时间", "操作日期"],
+        "outbound_type": ["出库类型"],
+        "material_name": ["物料名称", "物料选择"],
+        "quantity": ["本次出库总数", "出库数量", "数量"],
+        "available_qty": ["当前可出库数量总数", "当前可出库数量"],
+        "production_order": ["组装单选择", "生产单"]
+      }
+    }
+  ]
+}

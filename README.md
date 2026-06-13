@@ -31,6 +31,7 @@ GitHub Actions 每天北京时间 10:00 和 15:00 自动刷新数据、发布网
 - `docs/PROCUREMENT_MODEL.md`：采购计划与备货计划模型蓝图。
 - `docs/PROCUREMENT_FORMULAS.md`：库存天数、补货点、建议采购量等公式口径。
 - `docs/INTERNAL_DATA_DICTIONARY.md`：钉钉、进销存、BOM、采购、供应商等内部数据字段清单。
+- `docs/MTN_H3_DATA_SOURCE.md`：美途能进销存系统作为最高可信源的接入说明。
 - `templates/internal-data/`：内部数据导入模板。
 
 ## 数据安全
@@ -47,4 +48,3 @@ GitHub Actions 每天北京时间 10:00 和 15:00 自动刷新数据、发布网
 ## 当前监测范围
 
 铜、锡、铝、碳酸锂、ABS、PP、PVC、PC、LLDPE、环氧树脂、双酚A、环氧氯丙烷、有机硅DMC、工业硅、天然橡胶、瓦楞纸、废纸、纸浆，以及铜箔、玻纤布、焊锡、电解液、磷酸铁锂正极材料等代理指标。
-

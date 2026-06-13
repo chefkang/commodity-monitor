@@ -159,6 +159,11 @@ def parse_args() -> argparse.Namespace:
         default=sorted(EXTENSIONS),
         help="File extensions to include.",
     )
+    parser.add_argument(
+        "--follow-links",
+        action="store_true",
+        help="Follow directory links. Use for DingDrive virtual folders.",
+    )
     return parser.parse_args()
 
 
@@ -182,7 +187,13 @@ def classify(text: str, ext: str) -> tuple[list[str], int]:
     return matched, score
 
 
-def iter_files(root: Path, max_depth: int, max_files: int, extensions: set[str]) -> Iterable[Path]:
+def iter_files(
+    root: Path,
+    max_depth: int,
+    max_files: int,
+    extensions: set[str],
+    follow_links: bool = False,
+) -> Iterable[Path]:
     queue: deque[tuple[Path, int]] = deque([(root, 0)])
     yielded = 0
     while queue and yielded < max_files:
@@ -191,7 +202,7 @@ def iter_files(root: Path, max_depth: int, max_files: int, extensions: set[str])
             with os.scandir(current) as entries:
                 for entry in entries:
                     try:
-                        if entry.is_dir(follow_symlinks=False):
+                        if entry.is_dir(follow_symlinks=follow_links):
                             if depth < max_depth:
                                 queue.append((Path(entry.path), depth + 1))
                             continue
@@ -210,14 +221,26 @@ def iter_files(root: Path, max_depth: int, max_files: int, extensions: set[str])
             continue
 
 
-def build_records(roots: list[str], max_depth: int, max_files: int, extensions: set[str]) -> list[FileRecord]:
+def build_records(
+    roots: list[str],
+    max_depth: int,
+    max_files: int,
+    extensions: set[str],
+    follow_links: bool = False,
+) -> list[FileRecord]:
     records: list[FileRecord] = []
     for root_text in roots:
         root = Path(root_text)
         if not root.exists():
             continue
         root_label = str(root)
-        for path in iter_files(root, max_depth=max_depth, max_files=max_files, extensions=extensions):
+        for path in iter_files(
+            root,
+            max_depth=max_depth,
+            max_files=max_files,
+            extensions=extensions,
+            follow_links=follow_links,
+        ):
             try:
                 stat = path.stat()
             except OSError:
@@ -325,6 +348,7 @@ def main() -> int:
         max_depth=args.max_depth,
         max_files=args.max_files_per_root,
         extensions=extensions,
+        follow_links=args.follow_links,
     )
     candidates = sorted(
         [record for record in records if record.score > 0],
