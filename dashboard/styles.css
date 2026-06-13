@@ -46,7 +46,7 @@ a {
   height: 100vh;
   min-width: 0;
   padding: 24px 18px;
-  background: rgba(251, 251, 253, 0.96);
+  background: var(--bg);
   border-right: 1px solid var(--line);
   color: var(--ink);
   display: flex;
@@ -62,10 +62,10 @@ a {
 }
 
 .brand-mark {
-  width: 184px;
-  height: 64px;
+  width: 172px;
+  height: 60px;
   border: 0;
-  background: transparent;
+  background: var(--bg);
   border-radius: 0;
   display: grid;
   place-items: center;
@@ -76,6 +76,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  background: var(--bg);
 }
 
 .brand h1 {
@@ -176,10 +177,10 @@ a {
 }
 
 .topbar-logo {
-  width: 192px;
-  height: 56px;
+  width: 156px;
+  height: 54px;
   object-fit: contain;
-  background: transparent;
+  background: var(--bg);
   border: 0;
   border-radius: 0;
   padding: 0;
@@ -657,9 +658,10 @@ td strong {
 }
 
 .brand-footer img {
-  width: 178px;
+  width: 156px;
   height: 54px;
   object-fit: contain;
+  background: var(--bg);
 }
 
 .empty {
@@ -738,7 +740,7 @@ td strong {
 
   .topbar-logo {
     margin-left: 0;
-    width: 176px;
+    width: 150px;
     height: 52px;
   }
 

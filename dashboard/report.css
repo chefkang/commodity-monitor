@@ -75,10 +75,10 @@ a {
 }
 
 .hero-brand img {
-  width: 248px;
+  width: 218px;
   height: 76px;
   object-fit: contain;
-  background: transparent;
+  background: var(--paper);
   border: 0;
   border-radius: 0;
   padding: 0;
@@ -463,9 +463,10 @@ h2 {
 }
 
 .report-footer img {
-  width: 188px;
+  width: 166px;
   height: 58px;
   object-fit: contain;
+  background: var(--paper);
 }
 
 @media (max-width: 1180px) {

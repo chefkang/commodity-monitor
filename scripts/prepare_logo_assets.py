@@ -8,6 +8,7 @@ from PIL import Image, ImageChops, ImageFilter, ImageOps
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "dashboard" / "assets"
 SOURCE = ASSETS / "maxcellent-logo.png"
+THEME_BG = (245, 245, 247, 255)
 
 
 def content_box(image: Image.Image) -> tuple[int, int, int, int]:
@@ -48,7 +49,7 @@ def make_transparent_logo(cropped: Image.Image, scale: int = 4) -> Image.Image:
 def make_logo_card(wordmark: Image.Image) -> Image.Image:
     width = 760
     height = 220
-    canvas = Image.new("RGBA", (width, height), (255, 255, 255, 255))
+    canvas = Image.new("RGBA", (width, height), THEME_BG)
     max_w = 660
     max_h = 150
     logo = wordmark.copy()
@@ -59,16 +60,23 @@ def make_logo_card(wordmark: Image.Image) -> Image.Image:
     return canvas
 
 
-def make_sharp_logo(cropped: Image.Image, scale: int = 2) -> Image.Image:
-    rgb = cropped.convert("RGB")
-    width, height = rgb.size
-    logo = rgb.resize((width * scale, height * scale), Image.Resampling.LANCZOS)
-    return logo.filter(ImageFilter.UnsharpMask(radius=1.1, percent=160, threshold=2))
+def make_clean_logo(cropped: Image.Image, scale: int = 4) -> Image.Image:
+    rgba = cropped.convert("RGBA")
+    width, height = rgba.size
+    logo = rgba.resize((width * scale, height * scale), Image.Resampling.LANCZOS)
+    return logo.filter(ImageFilter.UnsharpMask(radius=1.0, percent=120, threshold=2))
+
+
+def make_theme_logo(cropped: Image.Image, scale: int = 4) -> Image.Image:
+    logo = make_clean_logo(cropped, scale)
+    canvas = Image.new("RGBA", logo.size, THEME_BG)
+    canvas.alpha_composite(logo)
+    return canvas.convert("RGB")
 
 
 def make_favicon(source: Image.Image) -> Image.Image:
     card = ImageOps.contain(source.convert("RGBA"), (512, 512), Image.Resampling.LANCZOS)
-    canvas = Image.new("RGBA", (512, 512), (255, 255, 255, 255))
+    canvas = Image.new("RGBA", (512, 512), THEME_BG)
     x = (512 - card.width) // 2
     y = (512 - card.height) // 2
     canvas.alpha_composite(card, (x, y))
@@ -81,8 +89,12 @@ def main() -> int:
     cropped = source.crop(content_box(source))
     cropped.save(ASSETS / "maxcellent-logo-cropped-source.png")
 
-    sharp = make_sharp_logo(cropped)
-    sharp.save(ASSETS / "maxcellent-logo-sharp.png")
+    clean = make_clean_logo(cropped)
+    clean.save(ASSETS / "maxcellent-logo-clean.png")
+
+    theme_logo = make_theme_logo(cropped)
+    theme_logo.save(ASSETS / "maxcellent-logo-on-theme.png")
+    theme_logo.save(ASSETS / "maxcellent-logo-sharp.png")
 
     wordmark = make_transparent_logo(cropped)
     wordmark.save(ASSETS / "maxcellent-logo-wordmark.png")
@@ -95,7 +107,8 @@ def main() -> int:
 
     print(f"source: {source.size}")
     print(f"cropped: {cropped.size}")
-    print(f"sharp: {sharp.size}")
+    print(f"clean: {clean.size}")
+    print(f"theme logo: {theme_logo.size}")
     print(f"wordmark: {wordmark.size}")
     print(f"card: {card.size}")
     return 0
