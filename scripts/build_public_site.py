@@ -28,13 +28,20 @@ def main() -> int:
     if assets.exists():
         shutil.copytree(assets, PUBLIC / "assets", dirs_exist_ok=True)
 
+    asset_version = datetime.now().strftime("%Y%m%d%H%M%S")
+
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
+    report_html = report_html.replace('href="./report.css"', f'href="./report.css?v={asset_version}"')
+    report_html = report_html.replace('src="./data.js"', f'src="./data.js?v={asset_version}"')
+    report_html = report_html.replace('src="./report.js"', f'src="./report.js?v={asset_version}"')
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")
 
     trend_html = (DASHBOARD / "index.html").read_text(encoding="utf-8")
-    trend_html = trend_html.replace('href="../briefs/"', 'href="./briefs/"')
-    trend_html = trend_html.replace("`../briefs/${today}.md`", "`./briefs/${today}.md`")
+    trend_html = trend_html.replace('href="./report.html"', 'href="./index.html"')
+    trend_html = trend_html.replace('href="./styles.css"', f'href="./styles.css?v={asset_version}"')
+    trend_html = trend_html.replace('src="./data.js"', f'src="./data.js?v={asset_version}"')
+    trend_html = trend_html.replace('src="./app.js"', f'src="./app.js?v={asset_version}"')
     (PUBLIC / "trend.html").write_text(trend_html, encoding="utf-8")
 
     briefs = ROOT / "briefs"

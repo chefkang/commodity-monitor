@@ -79,6 +79,12 @@
     return "偏低，采购压力可控";
   }
 
+  function reportPageHref() {
+    const path = window.location.pathname.toLowerCase();
+    if (path.endsWith("/trend.html")) return "./index.html";
+    return "./report.html";
+  }
+
   function initHeader() {
     el("updatedAt").textContent = `更新 ${formatDateTime(data.generated_at)}`;
     const pressure = data.summary.pressure_index;
@@ -89,10 +95,7 @@
     el("risingCount").textContent = data.summary.rising_count ?? 0;
     el("newsRiskCount").textContent = data.summary.news_risk_count ?? 0;
 
-    const today = data.brief && data.brief.date ? data.brief.date : "";
-    if (today) {
-      el("briefLink").href = `../briefs/${today}.md`;
-    }
+    el("briefLink").href = reportPageHref();
     el("reloadButton").addEventListener("click", () => window.location.reload());
     renderDecisionStrip(Number(pressure || 0));
   }
