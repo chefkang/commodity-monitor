@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Refresh commodity data
-        run: python scripts/commodity_monitor.py --backfill-days 180
+        run: python scripts/commodity_monitor.py --history-start 2024-01-01
 
       - name: Build public site
         run: python scripts/build_public_site.py

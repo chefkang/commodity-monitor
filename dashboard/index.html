@@ -98,6 +98,8 @@
                   <button data-days="30">30天</button>
                   <button data-days="90" class="active">90天</button>
                   <button data-days="180">180天</button>
+                  <button data-days="365">1年</button>
+                  <button data-days="all">2024起</button>
                 </div>
               </div>
             </div>
@@ -108,10 +110,15 @@
             <div class="history-panel">
               <div class="history-head">
                 <div>
-                  <p class="eyebrow">90天历史</p>
-                  <h3 id="historyTitle">单品历史价格</h3>
+                  <p class="eyebrow">历史查询</p>
+                  <h3 id="historyTitle">单品累计历史价格</h3>
                 </div>
-                <span id="historyMeta">请选择品种</span>
+                <div class="history-tools">
+                  <label>开始 <input id="historyStartInput" type="date" /></label>
+                  <label>结束 <input id="historyEndInput" type="date" /></label>
+                  <button id="historyResetButton" type="button">2024起</button>
+                  <span id="historyMeta">请选择品种</span>
+                </div>
               </div>
               <div class="history-table-wrap">
                 <table class="history-table">

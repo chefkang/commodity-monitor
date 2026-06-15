@@ -3,20 +3,26 @@
     summary: {},
     latest: [],
     history: [],
+    history_coverage: [],
     index_history: [],
     news: [],
     cost_buckets: [],
     manual_watch_items: [],
   };
 
+  const defaultHistoryStart = (data.summary && data.summary.history_start_date) || "2024-01-01";
+
   const state = {
     category: "全部",
     selectedMaterial: "index",
     rangeDays: 90,
+    historyStart: defaultHistoryStart,
+    historyEnd: "",
   };
 
   const el = (id) => document.getElementById(id);
   const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
+  const coverageById = new Map((data.history_coverage || []).map((item) => [item.material_id, item]));
   const costBucketByName = new Map((data.cost_buckets || []).map((bucket) => [bucket.name, bucket]));
   const materialSortOrder = new Map();
   (data.cost_buckets || []).forEach((bucket, bucketIndex) => {
@@ -70,6 +76,10 @@
     const number = Number(value);
     const sign = number > 0 ? "+" : "";
     return `${sign}${number.toFixed(2)}%`;
+  }
+
+  function rangeLabel() {
+    return state.rangeDays === "all" ? "2024起" : `${state.rangeDays}天`;
   }
 
   function priceLine(item) {
@@ -253,12 +263,40 @@
     });
     el("rangeControl").querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", () => {
-        state.rangeDays = Number(button.dataset.days);
+        state.rangeDays = button.dataset.days === "all" ? "all" : Number(button.dataset.days);
         el("rangeControl").querySelectorAll("button").forEach((item) => item.classList.remove("active"));
         button.classList.add("active");
         renderChart();
       });
     });
+  }
+
+  function initHistoryFilters() {
+    const startInput = el("historyStartInput");
+    const endInput = el("historyEndInput");
+    const resetButton = el("historyResetButton");
+    if (startInput) {
+      startInput.value = state.historyStart;
+      startInput.addEventListener("change", (event) => {
+        state.historyStart = event.target.value || defaultHistoryStart;
+        renderHistoryTable();
+      });
+    }
+    if (endInput) {
+      endInput.addEventListener("change", (event) => {
+        state.historyEnd = event.target.value || "";
+        renderHistoryTable();
+      });
+    }
+    if (resetButton) {
+      resetButton.addEventListener("click", () => {
+        state.historyStart = defaultHistoryStart;
+        state.historyEnd = "";
+        if (startInput) startInput.value = state.historyStart;
+        if (endInput) endInput.value = "";
+        renderHistoryTable();
+      });
+    }
   }
 
   function filteredLatest() {
@@ -298,21 +336,18 @@
     return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  function rowsWithinLast90Days(rows) {
-    const dates = rows.map(rowDate).filter(Boolean);
-    if (!dates.length) return [];
-    const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
-    const cutoff = new Date(maxDate);
-    cutoff.setDate(cutoff.getDate() - 90);
+  function rowsWithinHistoryRange(rows) {
+    const start = state.historyStart ? new Date(`${state.historyStart}T00:00:00`) : null;
+    const end = state.historyEnd ? new Date(`${state.historyEnd}T23:59:59`) : null;
     return rows.filter((row) => {
       const date = rowDate(row);
-      return date && date >= cutoff;
+      return date && (!start || date >= start) && (!end || date <= end);
     });
   }
 
   function selectedHistoryRows() {
     if (state.selectedMaterial === "index") {
-      return rowsWithinLast90Days(
+      return rowsWithinHistoryRange(
         (data.index_history || []).map((row) => ({
           date: row.date,
           price: row.value,
@@ -322,13 +357,12 @@
       );
     }
     const latest = latestById.get(state.selectedMaterial);
-    const basis = basisInfo(latest || {});
-    return rowsWithinLast90Days(
+    return rowsWithinHistoryRange(
       (data.history || [])
         .filter((row) => row.material_id === state.selectedMaterial)
         .map((row) => ({
           ...row,
-          basis,
+          basis: basisInfo({ ...(latest || {}), ...row }),
         }))
     );
   }
@@ -345,8 +379,12 @@
         return { ...row, change };
       })
       .reverse();
-    const title = state.selectedMaterial === "index" ? "成本压力指数近90天历史" : `${latest ? latest.material_name : "原材料"}近90天历史`;
-    const meta = rows.length ? `${rows[rows.length - 1].date} 至 ${rows[0].date} · ${rows.length} 条记录` : "暂无90天历史记录";
+    const coverage = coverageById.get(state.selectedMaterial);
+    const coverageText = coverage
+      ? (coverage.full_from_target ? `已覆盖 ${coverage.target_start_date} 起首个有效行情日` : `可验证起点 ${coverage.first_date || "-"}，早于该日暂未取到真实源`)
+      : `目标起点 ${defaultHistoryStart}`;
+    const title = state.selectedMaterial === "index" ? "成本压力指数累计历史" : `${latest ? latest.material_name : "原材料"}累计历史价格`;
+    const meta = rows.length ? `${rows[rows.length - 1].date} 至 ${rows[0].date} · ${rows.length} 条 · ${coverageText}` : `暂无该区间历史记录 · ${coverageText}`;
     const setText = (id, value) => {
       const node = el(id);
       if (node) node.textContent = value;
@@ -362,11 +400,11 @@
               <td>${escapeHtml(row.date || "-")}</td>
               <td><strong>${formatNumber(row.price)} ${escapeHtml(row.unit || (latest && latest.unit) || "")}</strong></td>
               <td>${row.change === null || row.change === undefined ? '<span class="neutral">-</span>' : pct(row.change)}</td>
-              <td><span class="basis-badge ${basis.cls || "real"}">${escapeHtml(basis.label || "真实行情")}</span><small>${escapeHtml(basis.source || "")}</small></td>
+              <td><span class="basis-badge ${basis.cls || "real"}">${escapeHtml(basis.label || "真实行情")}</span><small>${escapeHtml([basis.source, row.source_date].filter(Boolean).join(" · "))}</small></td>
             </tr>
           `;
         })
-        .join("") || '<tr><td colspan="4" class="empty">暂无90天历史记录</td></tr>';
+        .join("") || '<tr><td colspan="4" class="empty">暂无该区间历史记录</td></tr>';
   }
 
   function renderRiskList() {
@@ -392,19 +430,21 @@
   }
 
   function seriesForChart() {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - state.rangeDays);
-
-    if (state.selectedMaterial === "index") {
-      return data.index_history
-        .filter((row) => new Date(row.date) >= cutoff)
-        .map((row) => ({ date: row.date, value: Number(row.value) }));
+    const rows = state.selectedMaterial === "index"
+      ? (data.index_history || []).map((row) => ({ date: row.date, value: Number(row.value) }))
+      : (data.history || [])
+          .filter((row) => row.material_id === state.selectedMaterial)
+          .map((row) => ({ date: row.date, value: Number(row.price) }));
+    const sorted = rows
+      .filter((row) => row.date && Number.isFinite(row.value))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    if (state.rangeDays === "all" || sorted.length === 0) {
+      return sorted;
     }
-
-    return data.history
-      .filter((row) => row.material_id === state.selectedMaterial)
-      .filter((row) => new Date(row.date) >= cutoff)
-      .map((row) => ({ date: row.date, value: Number(row.price) }));
+    const maxDate = new Date(`${sorted[sorted.length - 1].date}T00:00:00`);
+    const cutoff = new Date(maxDate);
+    cutoff.setDate(cutoff.getDate() - Number(state.rangeDays));
+    return sorted.filter((row) => new Date(`${row.date}T00:00:00`) >= cutoff);
   }
 
   function renderChart() {
@@ -503,7 +543,7 @@
         <small>${latest ? latest.date : "等待数据"}</small>
       </article>
       <article>
-        <span>${state.rangeDays}天变化</span>
+        <span>${rangeLabel()}变化</span>
         <strong>${plainPct(change)}</strong>
         <small>综合成本压力方向</small>
       </article>
@@ -620,6 +660,7 @@
   initHeader();
   initCategories();
   initMaterialSelect();
+  initHistoryFilters();
   renderMaterials();
   renderRiskList();
   renderChart();

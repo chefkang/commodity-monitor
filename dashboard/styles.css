@@ -416,6 +416,52 @@ select:hover {
   text-align: right;
 }
 
+.history-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: min(100%, 520px);
+}
+
+.history-tools label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.history-tools input,
+.history-tools button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.history-tools input {
+  width: 138px;
+  padding: 0 8px;
+}
+
+.history-tools button {
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.history-tools button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.history-tools #historyMeta {
+  flex-basis: 100%;
+}
+
 .history-table-wrap {
   max-height: 320px;
   overflow: auto;

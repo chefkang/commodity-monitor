@@ -672,13 +672,12 @@ def make_latest(config: dict[str, Any], prices: pd.DataFrame, news: list[dict[st
     return latest_rows, summary
 
 
-def make_history(prices: pd.DataFrame, lookback_days: int) -> list[dict[str, Any]]:
+def make_history(prices: pd.DataFrame, start_date: date) -> list[dict[str, Any]]:
     if prices.empty:
         return []
-    cutoff = now_cn().date() - timedelta(days=lookback_days)
     df = prices.copy()
     df["_date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
-    df = df[df["_date"] >= cutoff]
+    df = df[df["_date"] >= start_date]
     df = df.sort_values(["material_id", "_date"])
     return [
         {
@@ -687,6 +686,10 @@ def make_history(prices: pd.DataFrame, lookback_days: int) -> list[dict[str, Any
             "material_name": row["material_name"],
             "price": round(float(row["price"]), 4),
             "unit": row.get("unit", ""),
+            "source": row.get("source", ""),
+            "provider": row.get("provider", ""),
+            "source_date": row.get("source_date", row["date"]),
+            "notes": row.get("notes", ""),
         }
         for _, row in df.iterrows()
     ]
@@ -719,6 +722,35 @@ def make_index_history(history: list[dict[str, Any]], latest: list[dict[str, Any
         index_value = sum(value * weight for value, weight in values) / weight_sum
         result.append({"date": day, "value": round(index_value, 2)})
     return result
+
+
+def make_history_coverage(config: dict[str, Any], history: list[dict[str, Any]], start_date: date) -> list[dict[str, Any]]:
+    by_material: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in history:
+        by_material[row["material_id"]].append(row)
+
+    coverage: list[dict[str, Any]] = []
+    for material in config.get("materials", []):
+        material_id = material["id"]
+        rows = sorted(by_material.get(material_id, []), key=lambda row: row["date"])
+        first_date = rows[0]["date"] if rows else None
+        last_date = rows[-1]["date"] if rows else None
+        first_dt = date.fromisoformat(first_date) if first_date else None
+        is_full = bool(first_dt and first_dt <= start_date + timedelta(days=7))
+        coverage.append(
+            {
+                "material_id": material_id,
+                "material_name": material.get("name", material_id),
+                "target_start_date": start_date.isoformat(),
+                "first_date": first_date,
+                "last_date": last_date,
+                "count": len(rows),
+                "provider": material.get("provider", ""),
+                "source_name": material.get("source_name", ""),
+                "full_from_target": is_full,
+            }
+        )
+    return coverage
 
 
 def make_brief(config: dict[str, Any], latest: list[dict[str, Any]], summary: dict[str, Any], news: list[dict[str, Any]]) -> dict[str, Any]:
@@ -820,6 +852,7 @@ def write_dashboard_data(
     latest: list[dict[str, Any]],
     summary: dict[str, Any],
     history: list[dict[str, Any]],
+    history_coverage: list[dict[str, Any]],
     index_history: list[dict[str, Any]],
     news: list[dict[str, Any]],
     brief: dict[str, Any],
@@ -830,6 +863,7 @@ def write_dashboard_data(
         "summary": summary,
         "latest": latest,
         "history": history,
+        "history_coverage": history_coverage,
         "index_history": index_history,
         "news": news[:30],
         "brief": brief,
@@ -853,14 +887,20 @@ def write_dashboard_data(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Daily commodity price monitor")
     parser.add_argument("--backfill-days", type=int, default=None, help="Days of history to refresh")
+    parser.add_argument("--history-start", default=None, help="Start date for verified history, YYYY-MM-DD")
     parser.add_argument("--no-news", action="store_true", help="Skip news RSS fetch")
     args = parser.parse_args()
 
     ensure_dirs()
     config = load_config()
     today = now_cn().date()
-    lookback = args.backfill_days or int(config["settings"].get("lookback_days", 180))
-    start = today - timedelta(days=lookback)
+    history_start_text = args.history_start or config["settings"].get("history_start_date")
+    if args.backfill_days is not None:
+        start = today - timedelta(days=args.backfill_days)
+    elif history_start_text:
+        start = date.fromisoformat(history_start_text)
+    else:
+        start = today - timedelta(days=int(config["settings"].get("lookback_days", 180)))
 
     print(f"刷新行情: {start.isoformat()} 至 {today.isoformat()}")
     records: list[PriceRecord] = []
@@ -876,11 +916,13 @@ def main() -> int:
     prices = merge_price_records(records)
     news = [] if args.no_news else fetch_news(config)
     latest, summary = make_latest(config, prices, news)
-    history = make_history(prices, lookback)
+    history = make_history(prices, start)
+    history_coverage = make_history_coverage(config, history, start)
     index_history = make_index_history(history, latest)
     brief = make_brief(config, latest, summary, news)
     brief_path = write_brief_markdown(brief)
-    write_dashboard_data(config, latest, summary, history, index_history, news, brief)
+    summary["history_start_date"] = start.isoformat()
+    write_dashboard_data(config, latest, summary, history, history_coverage, index_history, news, brief)
 
     print(f"已更新: {PRICE_CSV}")
     print(f"已生成看板数据: {DASHBOARD_DATA}")
