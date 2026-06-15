@@ -105,6 +105,28 @@
             <div class="chart-wrap">
               <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="价格趋势图"></svg>
             </div>
+            <div class="history-panel">
+              <div class="history-head">
+                <div>
+                  <p class="eyebrow">90天历史</p>
+                  <h3 id="historyTitle">单品历史价格</h3>
+                </div>
+                <span id="historyMeta">请选择品种</span>
+              </div>
+              <div class="history-table-wrap">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>日期</th>
+                      <th>价格/指标值</th>
+                      <th>较上一条</th>
+                      <th>口径</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTable"></tbody>
+                </table>
+              </div>
+            </div>
           </section>
 
           <section class="panel risk-panel">

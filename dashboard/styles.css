@@ -387,6 +387,51 @@ select:hover {
   overflow: hidden;
 }
 
+.history-panel {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.history-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.history-head h3 {
+  margin: 3px 0 0;
+  font-size: 17px;
+}
+
+.history-head span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.history-table-wrap {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.history-table {
+  min-width: 640px;
+}
+
+.history-table td small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .chart-summary {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

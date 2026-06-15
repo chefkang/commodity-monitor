@@ -18,6 +18,14 @@
   const el = (id) => document.getElementById(id);
   const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
   const costBucketByName = new Map((data.cost_buckets || []).map((bucket) => [bucket.name, bucket]));
+  const materialSortOrder = new Map();
+  (data.cost_buckets || []).forEach((bucket, bucketIndex) => {
+    (bucket.materials || []).forEach((materialId, materialIndex) => {
+      if (!materialSortOrder.has(materialId)) {
+        materialSortOrder.set(materialId, { bucketIndex, materialIndex, bucketName: bucket.name });
+      }
+    });
+  });
   const internalQuotes = window.MTN_INTERNAL_SUPPLIER_QUOTES || { items: [] };
   const internalQuoteByWatchId = new Map((internalQuotes.items || []).map((item) => [item.watch_id || item.id, item]));
 
@@ -109,6 +117,23 @@
         <small>${escapeHtml(basis.hint)}</small>
       </div>
     `;
+  }
+
+  function sortMaterialsByCategory(rows) {
+    const activeBucket = state.category !== "全部" ? costBucketByName.get(state.category) : null;
+    const activeOrder = new Map((activeBucket ? activeBucket.materials : []).map((materialId, index) => [materialId, index]));
+    return rows.slice().sort((a, b) => {
+      if (activeBucket) {
+        const left = activeOrder.has(a.material_id) ? activeOrder.get(a.material_id) : 9999;
+        const right = activeOrder.has(b.material_id) ? activeOrder.get(b.material_id) : 9999;
+        if (left !== right) return left - right;
+      }
+      const leftOrder = materialSortOrder.get(a.material_id) || { bucketIndex: 9999, materialIndex: 9999 };
+      const rightOrder = materialSortOrder.get(b.material_id) || { bucketIndex: 9999, materialIndex: 9999 };
+      if (leftOrder.bucketIndex !== rightOrder.bucketIndex) return leftOrder.bucketIndex - rightOrder.bucketIndex;
+      if (leftOrder.materialIndex !== rightOrder.materialIndex) return leftOrder.materialIndex - rightOrder.materialIndex;
+      return (a.material_name || "").localeCompare(b.material_name || "", "zh-CN");
+    });
   }
 
   function shortName(item) {
@@ -218,15 +243,13 @@
   function initMaterialSelect() {
     const options = [
       '<option value="index">成本压力指数</option>',
-      ...data.latest
-        .slice()
-        .sort((a, b) => a.material_name.localeCompare(b.material_name, "zh-CN"))
-        .map((item) => `<option value="${item.material_id}">${item.material_name}</option>`),
+      ...sortMaterialsByCategory(data.latest).map((item) => `<option value="${item.material_id}">${item.material_name}</option>`),
     ];
     el("materialSelect").innerHTML = options.join("");
     el("materialSelect").addEventListener("change", (event) => {
       state.selectedMaterial = event.target.value;
       renderChart();
+      renderHistoryTable();
     });
     el("rangeControl").querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -245,7 +268,7 @@
       const materialIds = new Set(bucket ? bucket.materials : []);
       rows = rows.filter((item) => materialIds.has(item.material_id));
     }
-    return rows;
+    return sortMaterialsByCategory(rows);
   }
 
   function renderMaterials() {
@@ -268,6 +291,82 @@
         `
       )
       .join("");
+  }
+
+  function rowDate(row) {
+    const date = new Date(`${row.date}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function rowsWithinLast90Days(rows) {
+    const dates = rows.map(rowDate).filter(Boolean);
+    if (!dates.length) return [];
+    const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
+    const cutoff = new Date(maxDate);
+    cutoff.setDate(cutoff.getDate() - 90);
+    return rows.filter((row) => {
+      const date = rowDate(row);
+      return date && date >= cutoff;
+    });
+  }
+
+  function selectedHistoryRows() {
+    if (state.selectedMaterial === "index") {
+      return rowsWithinLast90Days(
+        (data.index_history || []).map((row) => ({
+          date: row.date,
+          price: row.value,
+          unit: "指数",
+          basis: { label: "综合指数", source: "成本压力模型" },
+        }))
+      );
+    }
+    const latest = latestById.get(state.selectedMaterial);
+    const basis = basisInfo(latest || {});
+    return rowsWithinLast90Days(
+      (data.history || [])
+        .filter((row) => row.material_id === state.selectedMaterial)
+        .map((row) => ({
+          ...row,
+          basis,
+        }))
+    );
+  }
+
+  function renderHistoryTable() {
+    const latest = latestById.get(state.selectedMaterial);
+    const rowsAsc = selectedHistoryRows().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    const rows = rowsAsc
+      .map((row, index) => {
+        const prev = rowsAsc[index - 1];
+        const current = Number(row.price);
+        const previous = prev ? Number(prev.price) : NaN;
+        const change = Number.isFinite(current) && Number.isFinite(previous) && previous !== 0 ? ((current - previous) / previous) * 100 : null;
+        return { ...row, change };
+      })
+      .reverse();
+    const title = state.selectedMaterial === "index" ? "成本压力指数近90天历史" : `${latest ? latest.material_name : "原材料"}近90天历史`;
+    const meta = rows.length ? `${rows[rows.length - 1].date} 至 ${rows[0].date} · ${rows.length} 条记录` : "暂无90天历史记录";
+    const setText = (id, value) => {
+      const node = el(id);
+      if (node) node.textContent = value;
+    };
+    setText("historyTitle", title);
+    setText("historyMeta", meta);
+    el("historyTable").innerHTML =
+      rows
+        .map((row) => {
+          const basis = row.basis || basisInfo(latest || {});
+          return `
+            <tr>
+              <td>${escapeHtml(row.date || "-")}</td>
+              <td><strong>${formatNumber(row.price)} ${escapeHtml(row.unit || (latest && latest.unit) || "")}</strong></td>
+              <td>${row.change === null || row.change === undefined ? '<span class="neutral">-</span>' : pct(row.change)}</td>
+              <td><span class="basis-badge ${basis.cls || "real"}">${escapeHtml(basis.label || "真实行情")}</span><small>${escapeHtml(basis.source || "")}</small></td>
+            </tr>
+          `;
+        })
+        .join("") || '<tr><td colspan="4" class="empty">暂无90天历史记录</td></tr>';
   }
 
   function renderRiskList() {
@@ -524,6 +623,7 @@
   renderMaterials();
   renderRiskList();
   renderChart();
+  renderHistoryTable();
   renderBuckets();
   renderNews();
   renderManualWatch();
