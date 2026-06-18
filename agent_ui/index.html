@@ -41,6 +41,14 @@
               <dt>研究模型</dt>
               <dd id="researchModel">-</dd>
             </div>
+            <div>
+              <dt>Key 来源</dt>
+              <dd id="keySource">-</dd>
+            </div>
+            <div>
+              <dt>API 地址</dt>
+              <dd id="baseUrlLabel">-</dd>
+            </div>
           </dl>
           <div id="setupNotice" class="setup-notice hidden"></div>
         </section>
@@ -55,10 +63,10 @@
         </section>
 
         <section class="prompt-card">
-          <p class="eyebrow">常用追问</p>
+          <p class="eyebrow">今日可直接追问</p>
           <div class="prompt-list" id="promptList">
             <button type="button" data-prompt="今天哪些原材料最值得盯盘，为什么？">今天哪些原材料最值得盯盘，为什么？</button>
-            <button type="button" data-prompt="铜、铝、ABS 的短线风险和采购动作分别是什么？">铜、铝、ABS 的短线风险和采购动作分别是什么？</button>
+            <button type="button" data-prompt="请把今天的高风险品种短线风险、价格口径和采购动作分别讲清楚。">请把今天的高风险品种短线风险、价格口径和采购动作分别讲清楚。</button>
             <button type="button" data-prompt="请结合今天的本地监测和联网新闻，判断未来一周成本压力会不会抬升。">未来一周成本压力会不会抬升？</button>
             <button type="button" data-prompt="把今天的行情结论整理成老板能直接看的短汇报。">整理成老板能直接看的短汇报。</button>
           </div>
@@ -95,6 +103,65 @@
           <div class="meta-pill">
             <span>Key 状态</span>
             <strong id="keyStatus">检测中</strong>
+          </div>
+        </section>
+
+        <section class="snapshot-card">
+          <div class="snapshot-head">
+            <div>
+              <p class="eyebrow">今日快照</p>
+              <h3>先看本地监测，再决定问什么</h3>
+            </div>
+            <p class="snapshot-note" id="snapshotUpdatedAt">正在读取本地监测快照</p>
+          </div>
+          <div class="snapshot-grid">
+            <article class="snapshot-block summary-block">
+              <span class="snapshot-label">成本压力指数</span>
+              <strong id="snapshotPressure">--</strong>
+              <p id="snapshotBriefSummary">正在整理今日本地简报摘要。</p>
+            </article>
+            <article class="snapshot-block metric-block">
+              <div>
+                <span class="snapshot-label">高风险</span>
+                <strong id="snapshotHighRisk">--</strong>
+              </div>
+              <div>
+                <span class="snapshot-label">今日上涨</span>
+                <strong id="snapshotRising">--</strong>
+              </div>
+              <div>
+                <span class="snapshot-label">新闻扰动</span>
+                <strong id="snapshotNewsRisk">--</strong>
+              </div>
+            </article>
+            <article class="snapshot-block">
+              <div class="snapshot-block-head">
+                <span class="snapshot-label">重点盯盘</span>
+                <small>按风险排序</small>
+              </div>
+              <div id="topRiskList" class="signal-list"></div>
+            </article>
+            <article class="snapshot-block">
+              <div class="snapshot-block-head">
+                <span class="snapshot-label">涨幅靠前</span>
+                <small>按 1 日变化</small>
+              </div>
+              <div id="topRisersList" class="signal-list"></div>
+            </article>
+            <article class="snapshot-block">
+              <div class="snapshot-block-head">
+                <span class="snapshot-label">建议动作</span>
+                <small>来自今日简报</small>
+              </div>
+              <div id="actionList" class="action-list"></div>
+            </article>
+            <article class="snapshot-block">
+              <div class="snapshot-block-head">
+                <span class="snapshot-label">新闻线索</span>
+                <small>当天监测到的外部扰动</small>
+              </div>
+              <div id="newsHeadlineList" class="news-hint-list"></div>
+            </article>
           </div>
         </section>
 

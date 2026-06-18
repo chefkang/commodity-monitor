@@ -68,6 +68,7 @@ a {
 .guide-card,
 .prompt-card,
 .hero-card,
+.snapshot-card,
 .chat-card {
   position: relative;
   overflow: hidden;
@@ -83,6 +84,7 @@ a {
 .guide-card::after,
 .prompt-card::after,
 .hero-card::after,
+.snapshot-card::after,
 .chat-card::after {
   content: "";
   position: absolute;
@@ -213,6 +215,11 @@ h3 {
   line-height: 1.55;
 }
 
+.setup-notice code {
+  font-family: "Consolas", "SFMono-Regular", monospace;
+  color: var(--danger);
+}
+
 .guide-card ul {
   margin: 0;
   padding-left: 18px;
@@ -258,6 +265,7 @@ h3 {
 }
 
 .hero-card,
+.snapshot-card,
 .chat-card {
   padding: 24px;
 }
@@ -339,6 +347,141 @@ h3 {
   font-size: 15px;
   color: var(--ink);
   text-decoration: none;
+}
+
+.snapshot-card {
+  display: grid;
+  gap: 18px;
+  background:
+    linear-gradient(160deg, rgba(255, 248, 241, 0.92), rgba(246, 235, 223, 0.84)),
+    var(--panel);
+}
+
+.snapshot-head,
+.snapshot-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.snapshot-note,
+.snapshot-label,
+.snapshot-block-head small,
+.signal-meta,
+.news-hint-list span {
+  color: var(--muted);
+}
+
+.snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.snapshot-block {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(69, 45, 31, 0.08);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: var(--shadow-soft);
+}
+
+.summary-block strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--accent-strong);
+}
+
+.summary-block p {
+  margin-top: 12px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.metric-block {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-block div {
+  padding: 14px 12px;
+  border-radius: 18px;
+  background: rgba(255, 248, 241, 0.92);
+}
+
+.metric-block strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.signal-list,
+.action-list,
+.news-hint-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.signal-item,
+.action-item,
+.news-hint-item {
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 250, 244, 0.88);
+  border: 1px solid rgba(69, 45, 31, 0.08);
+}
+
+.news-hint-item strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.signal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.signal-top strong {
+  font-size: 15px;
+}
+
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(166, 59, 34, 0.12);
+  color: var(--accent-strong);
+  font-size: 12px;
+}
+
+.signal-meta {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.action-item {
+  line-height: 1.55;
+}
+
+.news-hint-item a {
+  text-decoration: none;
+}
+
+.news-hint-item span {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
 }
 
 .chat-card {
@@ -464,6 +607,10 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+
   .hero-actions {
     align-items: stretch;
   }
@@ -480,6 +627,7 @@ textarea:focus {
   .guide-card,
   .prompt-card,
   .hero-card,
+  .snapshot-card,
   .chat-card {
     border-radius: 22px;
   }
@@ -488,9 +636,15 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .metric-block {
+    grid-template-columns: 1fr;
+  }
+
   .composer-actions,
   .status-head,
-  .chat-head {
+  .chat-head,
+  .snapshot-head,
+  .snapshot-block-head {
     flex-direction: column;
     align-items: flex-start;
   }

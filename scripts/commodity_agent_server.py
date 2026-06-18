@@ -17,11 +17,17 @@ from typing import Any
 
 import requests
 
+try:
+    import winreg
+except ImportError:  # pragma: no cover - non-Windows fallback
+    winreg = None
+
 
 ROOT = Path(__file__).resolve().parents[1]
 UI_DIR = ROOT / "agent_ui"
 ASSETS_DIR = ROOT / "dashboard" / "assets"
 CONFIG_PATH = ROOT / "config" / "materials.json"
+SECRET_CONFIG_PATH = ROOT / "config" / "commodity_agent.secret.json"
 LATEST_JSON = ROOT / "data" / "latest.json"
 BRIEFS_DIR = ROOT / "briefs"
 RUNTIME_DIR = ROOT / "runtime" / "agent"
@@ -29,10 +35,9 @@ SESSION_PATH = RUNTIME_DIR / "sessions.json"
 LOG_PATH = RUNTIME_DIR / "agent.log"
 
 PUBLIC_SITE_URL = "https://chefkang.github.io/commodity-monitor/"
-DEFAULT_MODEL = os.environ.get("COMMODITY_AGENT_MODEL", "gpt-5.5")
-DEFAULT_RESEARCH_MODEL = os.environ.get("COMMODITY_AGENT_RESEARCH_MODEL", "o4-mini-deep-research")
-OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
-OPENAI_PROJECT = os.environ.get("OPENAI_PROJECT", "").strip()
+DEFAULT_MODEL = "gpt-5.5"
+DEFAULT_RESEARCH_MODEL = "o4-mini-deep-research"
+DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1"
 REQUEST_TIMEOUT = int(os.environ.get("COMMODITY_AGENT_TIMEOUT_SECONDS", "180"))
 RESEARCH_TIMEOUT = int(os.environ.get("COMMODITY_AGENT_RESEARCH_TIMEOUT_SECONDS", "600"))
 
@@ -50,7 +55,7 @@ def now_iso() -> str:
 
 
 def load_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -61,6 +66,13 @@ def append_log(event: dict[str, Any]) -> None:
     ensure_runtime()
     with LOG_PATH.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+
+
+def safe_load_json(path: Path) -> Any | None:
+    try:
+        return load_json(path)
+    except (OSError, json.JSONDecodeError):
+        return None
 
 
 def clean_number(value: Any, digits: int = 2) -> str:
@@ -181,12 +193,122 @@ def summarize_history(material: dict[str, Any], history_map: dict[str, list[dict
     return [f"  - 最近6条历史: {values}"]
 
 
-def build_local_context(question: str) -> tuple[str, dict[str, Any]]:
+def read_latest_payload() -> dict[str, Any]:
     if not LATEST_JSON.exists():
         raise AgentError("缺少 data/latest.json，请先运行今日刷新。")
+    payload = load_json(LATEST_JSON)
+    if not isinstance(payload, dict):
+        raise AgentError("data/latest.json 格式异常，无法读取本地监测结果。")
+    return payload
 
+
+def snapshot_item(item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "material_id": item.get("material_id"),
+        "material_name": item.get("material_name", item.get("material_id")),
+        "price_text": f"{clean_number(item.get('price'))} {item.get('unit', '')}".strip(),
+        "change_1d_text": pct_text(item.get("change_1d")),
+        "change_30d_text": pct_text(item.get("change_30d")),
+        "up_probability": item.get("up_probability", "-"),
+        "trend": item.get("trend", "-"),
+        "basis_label": provider_label(str(item.get("provider", ""))),
+        "source": item.get("source", "-"),
+    }
+
+
+def build_dynamic_prompts(
+    top_risk: list[dict[str, Any]],
+    top_risers: list[dict[str, Any]],
+    news_items: list[dict[str, Any]],
+) -> list[str]:
+    risk_names = [str(item.get("material_name", item.get("material_id", ""))) for item in top_risk[:3] if item]
+    riser_names = [str(item.get("material_name", item.get("material_id", ""))) for item in top_risers[:3] if item]
+
+    prompts = ["今天哪些原材料最值得盯盘，为什么？"]
+    if risk_names:
+        prompts.append(f"请把{'、'.join(risk_names)}这几个高风险品种的短线风险、价格口径和采购动作分别讲清楚。")
+    if riser_names:
+        prompts.append(f"{'、'.join(riser_names)}今天为什么会排到涨幅前列？哪些是真实行情，哪些只是代理指标？")
+    if news_items:
+        prompts.append("请结合今天的本地监测和最新外部新闻，判断未来一周成本压力会不会抬升。")
+    else:
+        prompts.append("请基于今天的本地监测，判断未来一周成本压力会不会抬升，以及我该怎么安排采购节奏。")
+    prompts.append("把今天的行情结论整理成老板能直接看的短汇报。")
+    return prompts[:4]
+
+
+def build_brief_summary_text(brief: dict[str, Any], summary: dict[str, Any]) -> str:
+    brief_summary = brief.get("summary")
+    if isinstance(brief_summary, str) and brief_summary.strip():
+        return brief_summary.strip()
+
+    pressure_index = summary.get("pressure_index")
+    tracked_count = summary.get("tracked_count")
+    rising_count = summary.get("rising_count")
+    high_risk_count = summary.get("high_risk_count")
+    news_risk_count = summary.get("news_risk_count")
+
+    parts = []
+    if pressure_index is not None:
+        parts.append(f"当前成本压力指数 {clean_number(pressure_index, 1)}/100")
+    if tracked_count is not None:
+        parts.append(f"本地已跟踪 {tracked_count} 个品种")
+    if rising_count is not None:
+        parts.append(f"其中 {rising_count} 个品种今天上涨")
+    if high_risk_count:
+        parts.append(f"{high_risk_count} 个品种已进入高风险区")
+    else:
+        parts.append("当前没有品种进入高风险区")
+    if news_risk_count:
+        parts.append(f"另有 {news_risk_count} 条新闻扰动需要关注")
+    return "；".join(parts) + "。"
+
+
+def build_local_snapshot_payload() -> dict[str, Any]:
+    latest_payload = read_latest_payload()
+    latest_items = list(latest_payload.get("latest", []))
+    summary = latest_payload.get("summary", {})
+    brief = latest_payload.get("brief", {})
+    news_items = list(latest_payload.get("news", []))
+
+    top_risk = sorted(latest_items, key=lambda item: float(item.get("up_probability") or 0), reverse=True)[:5]
+    top_risers = sorted(
+        [item for item in latest_items if item.get("change_1d") is not None],
+        key=lambda item: float(item.get("change_1d") or 0),
+        reverse=True,
+    )[:5]
+
+    return {
+        "ok": True,
+        "generated_at": latest_payload.get("generated_at"),
+        "summary": {
+            "pressure_index": summary.get("pressure_index"),
+            "tracked_count": summary.get("tracked_count"),
+            "rising_count": summary.get("rising_count"),
+            "high_risk_count": summary.get("high_risk_count"),
+            "news_risk_count": summary.get("news_risk_count"),
+            "history_start_date": summary.get("history_start_date"),
+        },
+        "brief_summary": build_brief_summary_text(brief, summary),
+        "actions": [str(item) for item in brief.get("actions", [])[:4]],
+        "top_risk": [snapshot_item(item) for item in top_risk],
+        "top_risers": [snapshot_item(item) for item in top_risers],
+        "news_headlines": [
+            {
+                "title": str(item.get("title", "")),
+                "source": str(item.get("source", "")),
+            }
+            for item in news_items[:5]
+            if item.get("title")
+        ],
+        "focus_materials": [str(item.get("material_name", item.get("material_id", ""))) for item in top_risk[:3]],
+        "prompts": build_dynamic_prompts(top_risk, top_risers, news_items),
+    }
+
+
+def build_local_context(question: str) -> tuple[str, dict[str, Any]]:
     config = load_json(CONFIG_PATH)
-    latest_payload = load_json(LATEST_JSON)
+    latest_payload = read_latest_payload()
     latest_items = list(latest_payload.get("latest", []))
     history_map = build_history_map(list(latest_payload.get("history", [])))
     catalog = build_material_catalog(config, latest_items)
@@ -328,10 +450,129 @@ def write_sessions(payload: dict[str, Any]) -> None:
     write_json(SESSION_PATH, payload)
 
 
-def get_api_key() -> str:
-    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+def read_secret_settings() -> dict[str, str]:
+    payload = safe_load_json(SECRET_CONFIG_PATH)
+    if not isinstance(payload, dict):
+        return {}
+    result: dict[str, str] = {}
+    mapping = {
+        "openai_api_key": "api_key",
+        "openai_base_url": "base_url",
+        "openai_project": "project",
+        "commodity_agent_model": "quick_model",
+        "commodity_agent_research_model": "research_model",
+    }
+    for source_key, target_key in mapping.items():
+        value = payload.get(source_key)
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            result[target_key] = text
+    return result
+
+
+def read_windows_env_settings() -> dict[str, tuple[str, str]]:
+    if os.name != "nt" or winreg is None:
+        return {}
+
+    result: dict[str, tuple[str, str]] = {}
+    lookup_items = {
+        "OPENAI_API_KEY": "api_key",
+        "OPENAI_BASE_URL": "base_url",
+        "OPENAI_PROJECT": "project",
+        "COMMODITY_AGENT_MODEL": "quick_model",
+        "COMMODITY_AGENT_RESEARCH_MODEL": "research_model",
+    }
+    key_specs = [
+        (winreg.HKEY_CURRENT_USER, r"Environment", "windows_user_env"),
+        (winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment", "windows_machine_env"),
+    ]
+
+    for root_key, sub_key, source_name in key_specs:
+        try:
+            handle = winreg.OpenKey(root_key, sub_key)
+        except OSError:
+            continue
+
+        with handle:
+            for source_key, target_key in lookup_items.items():
+                if target_key in result:
+                    continue
+                try:
+                    value, _ = winreg.QueryValueEx(handle, source_key)
+                except OSError:
+                    continue
+                text = str(value).strip()
+                if text:
+                    result[target_key] = (text, source_name)
+    return result
+
+
+def runtime_settings() -> dict[str, Any]:
+    settings: dict[str, Any] = {
+        "api_key": "",
+        "base_url": DEFAULT_OPENAI_BASE_URL,
+        "project": "",
+        "quick_model": DEFAULT_MODEL,
+        "research_model": DEFAULT_RESEARCH_MODEL,
+        "key_source": "missing",
+        "base_url_source": "default",
+        "project_source": "default",
+        "quick_model_source": "default",
+        "research_model_source": "default",
+    }
+
+    windows_env = read_windows_env_settings()
+    for field, (value, source_name) in windows_env.items():
+        if field == "api_key":
+            settings["key_source"] = source_name
+        else:
+            settings[f"{field}_source"] = source_name
+        settings[field] = value
+
+    secret_settings = read_secret_settings()
+    for field, value in secret_settings.items():
+        if field == "api_key":
+            settings["key_source"] = "secret_file"
+        else:
+            settings[f"{field}_source"] = "secret_file"
+        settings[field] = value
+
+    env_settings = {
+        "api_key": os.environ.get("OPENAI_API_KEY", "").strip(),
+        "base_url": os.environ.get("OPENAI_BASE_URL", "").strip(),
+        "project": os.environ.get("OPENAI_PROJECT", "").strip(),
+        "quick_model": os.environ.get("COMMODITY_AGENT_MODEL", "").strip(),
+        "research_model": os.environ.get("COMMODITY_AGENT_RESEARCH_MODEL", "").strip(),
+    }
+    for field, value in env_settings.items():
+        if not value:
+            continue
+        if field == "api_key":
+            settings["key_source"] = "process_env"
+        else:
+            settings[f"{field}_source"] = "process_env"
+        settings[field] = value
+
+    settings["base_url"] = str(settings["base_url"]).rstrip("/") or DEFAULT_OPENAI_BASE_URL
+    settings["key_configured"] = bool(settings["api_key"])
+    settings["key_source_label"] = {
+        "missing": "未配置",
+        "process_env": "当前进程环境变量",
+        "secret_file": "本地 secret 配置文件",
+        "windows_user_env": "Windows 用户环境变量",
+        "windows_machine_env": "Windows 系统环境变量",
+    }.get(str(settings["key_source"]), str(settings["key_source"]))
+    return settings
+
+
+def get_api_key(settings: dict[str, Any]) -> str:
+    api_key = str(settings.get("api_key", "")).strip()
     if not api_key:
-        raise AgentError("未检测到 OPENAI_API_KEY。请先配置 OpenAI API key，再打开智能体。")
+        raise AgentError(
+            "未检测到 OpenAI key。请先配置 OPENAI_API_KEY，或在 config/commodity_agent.secret.json 中写入 openai_api_key。"
+        )
     return api_key
 
 
@@ -341,17 +582,18 @@ def call_openai(
     mode: str,
     previous_response_id: str | None,
     local_context: str,
-) -> tuple[dict[str, Any], str | None]:
-    api_key = get_api_key()
-    model = DEFAULT_RESEARCH_MODEL if mode == "research" else DEFAULT_MODEL
+) -> tuple[dict[str, Any], str | None, str]:
+    settings = runtime_settings()
+    api_key = get_api_key(settings)
+    model = settings["research_model"] if mode == "research" else settings["quick_model"]
     timeout = RESEARCH_TIMEOUT if mode == "research" else REQUEST_TIMEOUT
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "X-Client-Request-Id": str(uuid.uuid4()),
     }
-    if OPENAI_PROJECT:
-        headers["OpenAI-Project"] = OPENAI_PROJECT
+    if settings["project"]:
+        headers["OpenAI-Project"] = settings["project"]
 
     payload: dict[str, Any] = {
         "model": model,
@@ -377,7 +619,7 @@ def call_openai(
 
     started = time.time()
     response = requests.post(
-        f"{OPENAI_BASE_URL}/responses",
+        f"{settings['base_url']}/responses",
         headers=headers,
         json=payload,
         timeout=timeout,
@@ -416,7 +658,7 @@ def call_openai(
             "response_id": response_payload.get("id"),
         }
     )
-    return response_payload, request_id
+    return response_payload, request_id, str(model)
 
 
 def answer_question(question: str, mode: str, session_id: str, reset_session: bool) -> dict[str, Any]:
@@ -432,7 +674,7 @@ def answer_question(question: str, mode: str, session_id: str, reset_session: bo
 
     local_context, local_summary = build_local_context(question)
     previous_response_id = sessions.get(session_id, {}).get("previous_response_id")
-    response_payload, request_id = call_openai(
+    response_payload, request_id, used_model = call_openai(
         question=question,
         mode=mode,
         previous_response_id=previous_response_id,
@@ -458,7 +700,7 @@ def answer_question(question: str, mode: str, session_id: str, reset_session: bo
         "response_id": response_id,
         "request_id": request_id,
         "mode": mode,
-        "model": DEFAULT_RESEARCH_MODEL if mode == "research" else DEFAULT_MODEL,
+        "model": used_model,
         "local_summary": local_summary,
         "updated_at": now_iso(),
     }
@@ -469,23 +711,26 @@ def status_payload(port: int) -> dict[str, Any]:
     tracked_count = None
     if LATEST_JSON.exists():
         try:
-            latest_payload = load_json(LATEST_JSON)
+            latest_payload = read_latest_payload()
             latest_generated_at = latest_payload.get("generated_at")
             tracked_count = latest_payload.get("summary", {}).get("tracked_count")
-        except json.JSONDecodeError:
+        except (AgentError, json.JSONDecodeError):
             latest_generated_at = "invalid-json"
 
-    key_configured = bool(os.environ.get("OPENAI_API_KEY", "").strip())
+    settings = runtime_settings()
     return {
         "ok": True,
-        "key_configured": key_configured,
+        "key_configured": settings["key_configured"],
+        "key_source": settings["key_source"],
+        "key_source_label": settings["key_source_label"],
         "latest_generated_at": latest_generated_at,
         "tracked_count": tracked_count,
         "public_site_url": PUBLIC_SITE_URL,
         "local_agent_url": f"http://127.0.0.1:{port}/",
-        "quick_model": DEFAULT_MODEL,
-        "research_model": DEFAULT_RESEARCH_MODEL,
-        "openai_base_url": OPENAI_BASE_URL,
+        "quick_model": settings["quick_model"],
+        "research_model": settings["research_model"],
+        "openai_base_url": settings["base_url"],
+        "secret_config_path": str(SECRET_CONFIG_PATH),
     }
 
 
@@ -511,6 +756,12 @@ class AgentHandler(BaseHTTPRequestHandler):
             return
         if self.path == "/api/status":
             self.send_json(status_payload(self.server.server_port))
+            return
+        if self.path == "/api/local-snapshot":
+            try:
+                self.send_json(build_local_snapshot_payload())
+            except AgentError as exc:
+                self.send_json({"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             return
         self.send_error(HTTPStatus.NOT_FOUND, "Not Found")
 

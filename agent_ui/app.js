@@ -4,6 +4,7 @@
     sessionId: loadSessionId(),
     keyConfigured: false,
     busy: false,
+    snapshotIntroShown: false,
   };
 
   const prompts = document.getElementById("promptList");
@@ -35,7 +36,7 @@
   }
 
   function escapeHtml(value) {
-    return value
+    return String(value ?? "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -95,6 +96,65 @@
     });
   }
 
+  function formatNumber(value, digits = 1) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "-";
+    return number.toLocaleString("zh-CN", { maximumFractionDigits: digits });
+  }
+
+  function renderPromptButtons(promptItems) {
+    if (!Array.isArray(promptItems) || !promptItems.length) return;
+    prompts.innerHTML = promptItems
+      .map((prompt) => `<button type="button" data-prompt="${escapeHtml(prompt)}">${escapeHtml(prompt)}</button>`)
+      .join("");
+  }
+
+  function renderSignalList(items) {
+    if (!Array.isArray(items) || !items.length) {
+      return '<div class="signal-item"><div class="signal-meta">暂无可展示的本地信号。</div></div>';
+    }
+    return items
+      .map((item) => {
+        const risk = item.up_probability == null ? "-" : `${escapeHtml(String(item.up_probability))}%`;
+        return `
+          <article class="signal-item">
+            <div class="signal-top">
+              <strong>${escapeHtml(item.material_name || "-")}</strong>
+              <span class="risk-badge">${risk}</span>
+            </div>
+            <div class="signal-meta">
+              ${escapeHtml(item.price_text || "-")} · 1日 ${escapeHtml(item.change_1d_text || "-")} · 30日 ${escapeHtml(item.change_30d_text || "-")}<br />
+              ${escapeHtml(item.basis_label || "-")} · ${escapeHtml(item.source || "-")} · ${escapeHtml(item.trend || "-")}
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function renderActionList(actions) {
+    if (!Array.isArray(actions) || !actions.length) {
+      return '<div class="action-item">今日简报里还没有生成建议动作。</div>';
+    }
+    return actions.map((item) => `<div class="action-item">${escapeHtml(item)}</div>`).join("");
+  }
+
+  function renderNewsHints(items) {
+    if (!Array.isArray(items) || !items.length) {
+      return '<div class="news-hint-item"><span>今天本地监测里还没有记录新闻扰动。</span></div>';
+    }
+    return items
+      .map(
+        (item) => `
+          <article class="news-hint-item">
+            <strong>${escapeHtml(item.title || "-")}</strong>
+            <span>${escapeHtml(item.source || "新闻线索")}</span>
+          </article>
+        `
+      )
+      .join("");
+  }
+
   function updateModeUi() {
     modeToggle.querySelectorAll("button").forEach((button) => {
       button.classList.toggle("active", button.dataset.mode === state.mode);
@@ -109,6 +169,8 @@
     setText("trackedCount", payload.tracked_count == null ? "-" : String(payload.tracked_count));
     setText("quickModel", payload.quick_model || "-");
     setText("researchModel", payload.research_model || "-");
+    setText("keySource", payload.key_source_label || "-");
+    setText("baseUrlLabel", payload.openai_base_url || "-");
     setText("keyStatus", payload.key_configured ? "已配置" : "未配置");
     setText("statusBadge", payload.key_configured ? "可联网" : "待配置");
 
@@ -120,9 +182,44 @@
     } else {
       notice.classList.remove("hidden");
       notice.innerHTML = [
-        "未检测到 <code>OPENAI_API_KEY</code>。",
-        "先在当前机器设置环境变量，再双击启动本地智能体。",
+        "未检测到 OpenAI key。",
+        "可以双击 <strong>配置大宗商品智能分析助手Key.cmd</strong> 写入本地 secret 配置，或者自行设置环境变量。",
+        `默认也会尝试读取 <code>${escapeHtml(payload.secret_config_path || "config/commodity_agent.secret.json")}</code>。`,
       ].join("<br />");
+    }
+  }
+
+  async function loadLocalSnapshot() {
+    const response = await fetch("/api/local-snapshot");
+    const payload = await response.json();
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.error || "本地快照读取失败。");
+    }
+
+    const summary = payload.summary || {};
+    setText("snapshotUpdatedAt", `本地快照更新于 ${formatTime(payload.generated_at)}`);
+    setText("snapshotPressure", formatNumber(summary.pressure_index, 1));
+    setText("snapshotBriefSummary", payload.brief_summary || "今日简报尚未生成摘要。");
+    setText("snapshotHighRisk", summary.high_risk_count == null ? "-" : String(summary.high_risk_count));
+    setText("snapshotRising", summary.rising_count == null ? "-" : String(summary.rising_count));
+    setText("snapshotNewsRisk", summary.news_risk_count == null ? "-" : String(summary.news_risk_count));
+
+    document.getElementById("topRiskList").innerHTML = renderSignalList(payload.top_risk);
+    document.getElementById("topRisersList").innerHTML = renderSignalList(payload.top_risers);
+    document.getElementById("actionList").innerHTML = renderActionList(payload.actions);
+    document.getElementById("newsHeadlineList").innerHTML = renderNewsHints(payload.news_headlines);
+    renderPromptButtons(payload.prompts);
+
+    if (!state.snapshotIntroShown) {
+      const focusText = Array.isArray(payload.focus_materials) && payload.focus_materials.length
+        ? `当前重点盯盘：${payload.focus_materials.join("、")}。`
+        : "当前还没有提炼出重点盯盘品种。";
+      addMessage(
+        "assistant",
+        `<p>本地快照已加载。压力指数 ${escapeHtml(formatNumber(summary.pressure_index, 1))}，高风险 ${escapeHtml(String(summary.high_risk_count ?? "-"))} 个。</p><p>${escapeHtml(focusText)}</p>`,
+        "本地快照"
+      );
+      state.snapshotIntroShown = true;
     }
   }
 
@@ -220,4 +317,5 @@
   );
   updateModeUi();
   loadStatus().catch((error) => showError(`状态初始化失败: ${error}`));
+  loadLocalSnapshot().catch((error) => showError(`本地快照初始化失败: ${error}`));
 })();
