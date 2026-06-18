@@ -34,6 +34,9 @@
   });
   const internalQuotes = window.MTN_INTERNAL_SUPPLIER_QUOTES || { items: [] };
   const internalQuoteByWatchId = new Map((internalQuotes.items || []).map((item) => [item.watch_id || item.id, item]));
+  const NOTICE_REFRESH_INTERVAL_MS = 60 * 1000;
+  const BACKGROUND_DATA_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+  let backgroundDataCheckInFlight = false;
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -42,6 +45,13 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
+  }
+
+  function refreshWarnings() {
+    if (!data.summary || !Array.isArray(data.summary.refresh_warnings)) {
+      return [];
+    }
+    return data.summary.refresh_warnings.filter((warning) => String(warning || "").trim());
   }
 
   function formatDateTime(value) {
@@ -54,6 +64,110 @@
       hour: "2-digit",
       minute: "2-digit",
     });
+  }
+
+  const beijingFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  function beijingParts(value = new Date()) {
+    const parts = {};
+    beijingFormatter.formatToParts(value).forEach((part) => {
+      if (part.type !== "literal") {
+        parts[part.type] = part.value;
+      }
+    });
+    return {
+      year: Number(parts.year),
+      month: Number(parts.month),
+      day: Number(parts.day),
+      hour: Number(parts.hour),
+      minute: Number(parts.minute),
+      second: Number(parts.second),
+    };
+  }
+
+  function beijingSlotTime(parts, hour) {
+    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0));
+  }
+
+  function beijingClockLabel(value) {
+    const parts = beijingParts(value);
+    return `${String(parts.month).padStart(2, "0")}/${String(parts.day).padStart(2, "0")} ${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+  }
+
+  function freshnessNotice() {
+    const generatedAt = data.generated_at ? new Date(data.generated_at) : null;
+    if (!generatedAt || Number.isNaN(generatedAt.getTime())) {
+      return null;
+    }
+
+    const now = new Date();
+    const parts = beijingParts(now);
+    const currentMinutes = parts.hour * 60 + parts.minute;
+    const morningSlot = beijingSlotTime(parts, 10);
+    const afternoonSlot = beijingSlotTime(parts, 15);
+    const yesterdayAfternoon = new Date(afternoonSlot.getTime());
+    yesterdayAfternoon.setUTCDate(yesterdayAfternoon.getUTCDate() - 1);
+
+    if (currentMinutes < 10 * 60) {
+      if (generatedAt >= yesterdayAfternoon && generatedAt < morningSlot) {
+        return {
+          level: "info",
+          headerLabel: "系统正常，未到首轮刷新",
+          title: "系统正常，今天首轮刷新还没开始",
+          lines: [
+            `现在是北京时间 ${beijingClockLabel(now)}，下一次计划刷新时间约为 ${beijingClockLabel(morningSlot)}。`,
+            `当前显示的是 ${formatDateTime(data.generated_at)} 刷新的上一监测时段结果，这不是故障。`,
+            "公开页按计划会在今天 10:00 左右进入首轮刷新窗口，10:20 以后仍不变化时再按异常处理。",
+          ],
+        };
+      }
+      if (generatedAt < yesterdayAfternoon) {
+        return {
+          level: "warning",
+          headerLabel: "上一监测时段结果偏旧",
+          title: "上一监测时段结果也偏旧",
+          lines: [
+            `现在还没到今天 10:00 左右的首轮刷新时间，但上一监测时段最新时间仍是 ${formatDateTime(data.generated_at)}。`,
+            "这已经超出正常等待范围，建议稍后点击刷新，或运行“检查今日刷新状态”排查。",
+          ],
+        };
+      }
+    }
+
+    if (currentMinutes >= 10 * 60 && currentMinutes < 15 * 60 && generatedAt < morningSlot) {
+      return {
+        level: "warning",
+        headerLabel: "今日上午刷新待关注",
+        title: "今天上午这轮刷新还没到位",
+        lines: [
+          `按计划应在北京时间 10:00 左右刷新，当前最新时间仍是 ${formatDateTime(data.generated_at)}。`,
+          "如果 10:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
+        ],
+      };
+    }
+
+    if (currentMinutes >= 15 * 60 && generatedAt < afternoonSlot) {
+      return {
+        level: "warning",
+        headerLabel: "今日下午刷新待关注",
+        title: "今天下午这轮刷新还没到位",
+        lines: [
+          `按计划应在北京时间 15:00 左右刷新，当前最新时间仍是 ${formatDateTime(data.generated_at)}。`,
+          "如果 15:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
+        ],
+      };
+    }
+
+    return null;
   }
 
   function formatNumber(value) {
@@ -173,8 +287,24 @@
     return "./report.html";
   }
 
+  function hardReload() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("ts", Date.now().toString());
+    window.location.replace(url.toString());
+  }
+
+  function renderUpdatedAtLabel() {
+    const notice = freshnessNotice();
+    const updatedLabel = formatDateTime(data.generated_at);
+    if (notice && notice.headerLabel) {
+      el("updatedAt").textContent = `${notice.headerLabel} · 上一监测结果 ${updatedLabel}`;
+      return;
+    }
+    el("updatedAt").textContent = `更新 ${updatedLabel}`;
+  }
+
   function initHeader() {
-    el("updatedAt").textContent = `更新 ${formatDateTime(data.generated_at)}`;
+    renderUpdatedAtLabel();
     const pressure = data.summary.pressure_index;
     el("pressureIndex").textContent = pressure === undefined ? "--" : Math.round(pressure);
     el("pressureStatus").textContent = pressureLabel(Number(pressure || 0));
@@ -184,8 +314,97 @@
     el("newsRiskCount").textContent = data.summary.news_risk_count ?? 0;
 
     el("briefLink").href = reportPageHref();
-    el("reloadButton").addEventListener("click", () => window.location.reload());
+    el("reloadButton").addEventListener("click", hardReload);
     renderDecisionStrip(Number(pressure || 0));
+  }
+
+  function renderRefreshWarnings() {
+    const banner = el("refreshWarningBanner");
+    if (!banner) return;
+    const warnings = refreshWarnings();
+    const notice = freshnessNotice();
+    const sections = [];
+
+    if (notice) {
+      sections.push(`
+        <strong>${escapeHtml(notice.title)}</strong>
+        <ul>${notice.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+      `);
+    }
+
+    if (warnings.length) {
+      sections.push(`
+        <strong>本次刷新提示</strong>
+        <ul>${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>
+      `);
+    }
+
+    if (!sections.length) {
+      banner.hidden = true;
+      banner.classList.remove("info-mode");
+      banner.innerHTML = "";
+      return;
+    }
+
+    banner.hidden = false;
+    banner.classList.toggle("info-mode", notice && notice.level === "info" && !warnings.length);
+    banner.innerHTML = sections.join("");
+  }
+
+  function refreshLiveStatus() {
+    renderUpdatedAtLabel();
+    renderRefreshWarnings();
+  }
+
+  function backgroundDataCheck() {
+    refreshLiveStatus();
+    if (backgroundDataCheckInFlight || document.visibilityState === "hidden") {
+      return;
+    }
+
+    backgroundDataCheckInFlight = true;
+    const priorGeneratedAt = String(data.generated_at || "");
+    const priorLatestCount = Array.isArray(data.latest) ? data.latest.length : 0;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `./data.js?ts=${Date.now()}`;
+
+    const finalize = () => {
+      backgroundDataCheckInFlight = false;
+      script.remove();
+    };
+
+    script.onload = function () {
+      const latestData = window.COMMODITY_MONITOR_DATA || {};
+      const nextGeneratedAt = String(latestData.generated_at || "");
+      const nextLatestCount = Array.isArray(latestData.latest) ? latestData.latest.length : 0;
+      if ((nextGeneratedAt && nextGeneratedAt !== priorGeneratedAt) || nextLatestCount !== priorLatestCount) {
+        hardReload();
+        return;
+      }
+      finalize();
+      refreshLiveStatus();
+    };
+
+    script.onerror = function () {
+      finalize();
+      refreshLiveStatus();
+    };
+
+    document.body.appendChild(script);
+  }
+
+  function startLiveRefreshWatch() {
+    window.setInterval(refreshLiveStatus, NOTICE_REFRESH_INTERVAL_MS);
+    window.setInterval(backgroundDataCheck, BACKGROUND_DATA_CHECK_INTERVAL_MS);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") {
+        backgroundDataCheck();
+      } else {
+        refreshLiveStatus();
+      }
+    });
+    window.addEventListener("focus", backgroundDataCheck);
   }
 
   function renderDecisionStrip(pressure) {
@@ -658,6 +877,7 @@
   }
 
   initHeader();
+  renderRefreshWarnings();
   initCategories();
   initMaterialSelect();
   initHistoryFilters();
@@ -668,4 +888,5 @@
   renderBuckets();
   renderNews();
   renderManualWatch();
+  startLiveRefreshWatch();
 })();

@@ -7,9 +7,12 @@ import json
 import math
 import os
 import re
+import shutil
+import socket
 import subprocess
 import sys
 import tempfile
+import time
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import dataclass
@@ -30,6 +33,7 @@ DATA_DIR = ROOT / "data"
 DASHBOARD_DIR = ROOT / "dashboard"
 BRIEFS_DIR = ROOT / "briefs"
 OUTPUTS_DIR = ROOT / "outputs"
+RUNTIME_DIR = ROOT / "runtime"
 PRICE_CSV = DATA_DIR / "prices.csv"
 LATEST_JSON = DATA_DIR / "latest.json"
 NEWS_JSON = DATA_DIR / "news.json"
@@ -37,6 +41,7 @@ DASHBOARD_DATA = DASHBOARD_DIR / "data.js"
 MANUAL_PRICE_CSV = DATA_DIR / "manual_prices.csv"
 TIMEZONE = ZoneInfo("Asia/Shanghai")
 AKSHARE_TIMEOUT_SECONDS = int(os.environ.get("COMMODITY_MONITOR_AKSHARE_TIMEOUT_SECONDS", "240"))
+REFRESH_LOCK_DIR = RUNTIME_DIR / "locks" / "commodity-monitor-refresh.lock"
 
 
 UP_KEYWORDS = [
@@ -149,7 +154,7 @@ def load_config(path: Path = CONFIG_PATH) -> dict[str, Any]:
 
 
 def ensure_dirs() -> None:
-    for path in [DATA_DIR, DASHBOARD_DIR, BRIEFS_DIR, OUTPUTS_DIR]:
+    for path in [DATA_DIR, DASHBOARD_DIR, BRIEFS_DIR, OUTPUTS_DIR, RUNTIME_DIR]:
         path.mkdir(parents=True, exist_ok=True)
 
 
@@ -159,6 +164,55 @@ def log_status(message: str, *, stream: Any = sys.stdout) -> None:
 
 def now_cn() -> datetime:
     return datetime.now(TIMEZONE)
+
+
+def acquire_refresh_lock(timeout_seconds: int = 480, stale_seconds: int = 7200, poll_seconds: int = 2) -> Path:
+    REFRESH_LOCK_DIR.parent.mkdir(parents=True, exist_ok=True)
+    started_wait = time.monotonic()
+    warned_waiting = False
+
+    while True:
+        try:
+            REFRESH_LOCK_DIR.mkdir()
+            owner = {
+                "pid": os.getpid(),
+                "host": socket.gethostname(),
+                "started_at": now_cn().isoformat(),
+            }
+            (REFRESH_LOCK_DIR / "owner.json").write_text(json.dumps(owner, ensure_ascii=False, indent=2), encoding="utf-8")
+            return REFRESH_LOCK_DIR
+        except FileExistsError:
+            owner_started = None
+            owner_path = REFRESH_LOCK_DIR / "owner.json"
+            if owner_path.exists():
+                try:
+                    owner = json.loads(owner_path.read_text(encoding="utf-8"))
+                    owner_started_text = owner.get("started_at")
+                    if owner_started_text:
+                        owner_started = datetime.fromisoformat(str(owner_started_text))
+                except Exception:
+                    owner_started = None
+
+            if owner_started is not None:
+                age_seconds = (now_cn() - owner_started).total_seconds()
+                if age_seconds >= stale_seconds:
+                    shutil.rmtree(REFRESH_LOCK_DIR, ignore_errors=True)
+                    continue
+
+            waited_seconds = time.monotonic() - started_wait
+            if waited_seconds >= timeout_seconds:
+                raise RuntimeError(f"Another commodity refresh is still holding the lock after {timeout_seconds}s.")
+
+            if not warned_waiting:
+                log_status("Another commodity refresh is already running; waiting for the lock...")
+                warned_waiting = True
+            time.sleep(poll_seconds)
+
+
+def release_refresh_lock(lock_dir: Path | None) -> None:
+    if not lock_dir:
+        return
+    shutil.rmtree(lock_dir, ignore_errors=True)
 
 
 def clamp(value: float, low: float, high: float) -> float:
@@ -479,12 +533,14 @@ def merge_price_records(records: list[PriceRecord]) -> pd.DataFrame:
     return combined
 
 
-def fetch_news(config: dict[str, Any], max_items: int = 50) -> list[dict[str, Any]]:
+def fetch_news(config: dict[str, Any], max_items: int = 50) -> tuple[list[dict[str, Any]], list[str]]:
     session = requests.Session()
     headers = {"User-Agent": "Mozilla/5.0"}
     seen: set[str] = set()
     items: list[dict[str, Any]] = []
+    failed_queries: list[str] = []
     min_published = now_cn() - timedelta(days=14)
+    queries = [str(query).strip() for query in config.get("news_queries", []) if str(query).strip()]
     material_keywords = {
         str(keyword).lower()
         for material in config.get("materials", [])
@@ -512,7 +568,7 @@ def fetch_news(config: dict[str, Any], max_items: int = 50) -> list[dict[str, An
         "运费",
     }
     required_keywords = material_keywords | global_keywords
-    for query in config.get("news_queries", []):
+    for query in queries:
         recent_query = f"{query} when:14d"
         url = (
             "https://news.google.com/rss/search?q="
@@ -523,7 +579,8 @@ def fetch_news(config: dict[str, Any], max_items: int = 50) -> list[dict[str, An
             response = session.get(url, headers=headers, timeout=20)
             response.raise_for_status()
             root = ET.fromstring(response.content)
-        except Exception:
+        except Exception as exc:
+            failed_queries.append(f"{query}: {type(exc).__name__}: {exc}")
             continue
         for item in root.findall(".//item")[:8]:
             title = (item.findtext("title") or "").strip()
@@ -568,8 +625,44 @@ def fetch_news(config: dict[str, Any], max_items: int = 50) -> list[dict[str, An
         if len(items) >= max_items:
             break
     items.sort(key=lambda x: x.get("published", ""), reverse=True)
-    NEWS_JSON.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
-    return items
+    if items or not failed_queries:
+        NEWS_JSON.write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    warnings: list[str] = []
+    if failed_queries and len(failed_queries) == len(queries):
+        warnings.append(f"Google News RSS 全部查询失败：{failed_queries[0]}")
+    elif failed_queries:
+        warnings.append(f"Google News RSS 部分查询失败 {len(failed_queries)}/{len(queries)}，本次保留成功抓到的新闻。")
+    return items, warnings
+
+
+def load_cached_news(max_items: int = 50, max_age_days: int = 14) -> list[dict[str, Any]]:
+    if not NEWS_JSON.exists():
+        return []
+    try:
+        payload = json.loads(NEWS_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if not isinstance(payload, list):
+        return []
+
+    min_published = now_cn() - timedelta(days=max_age_days)
+    cached: list[dict[str, Any]] = []
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        published_raw = str(item.get("published") or "").strip()
+        if published_raw:
+            try:
+                published_dt = datetime.fromisoformat(published_raw)
+                if published_dt.tzinfo is None:
+                    published_dt = published_dt.replace(tzinfo=TIMEZONE)
+                if published_dt.astimezone(TIMEZONE) < min_published:
+                    continue
+            except Exception:
+                pass
+        cached.append(item)
+    return cached[:max_items]
 
 
 def title_has_stale_month(title: str, today: date) -> bool:
@@ -959,83 +1052,102 @@ def main() -> int:
     args = parser.parse_args()
 
     ensure_dirs()
-    config = load_config()
-    today = now_cn().date()
-    history_start_text = args.history_start or config["settings"].get("history_start_date")
-    if args.backfill_days is not None:
-        start = today - timedelta(days=args.backfill_days)
-    elif history_start_text:
-        start = date.fromisoformat(history_start_text)
-    else:
-        start = today - timedelta(days=int(config["settings"].get("lookback_days", 180)))
-
-    log_status(f"Refreshing commodity data: {start.isoformat()} to {today.isoformat()}")
-    records: list[PriceRecord] = []
-    refresh_warnings: list[str] = []
-
+    lock_dir = acquire_refresh_lock()
     try:
-        log_status("Fetching AKShare basis data...")
-        akshare_records = fetch_akshare_records(config, start, today)
-        log_status(f"AKShare basis records: {len(akshare_records)}")
-        records.extend(akshare_records)
-    except Exception as exc:
-        warning = f"AKShare basis fetch failed: {type(exc).__name__}: {exc}"
-        refresh_warnings.append(warning)
-        log_status(warning, stream=sys.stderr)
+        config = load_config()
+        today = now_cn().date()
+        history_start_text = args.history_start or config["settings"].get("history_start_date")
+        if args.backfill_days is not None:
+            start = today - timedelta(days=args.backfill_days)
+        elif history_start_text:
+            start = date.fromisoformat(history_start_text)
+        else:
+            start = today - timedelta(days=int(config["settings"].get("lookback_days", 180)))
 
-    try:
-        log_status("Fetching Sunsirs basis pages...")
-        sunsirs_records = fetch_sunsirs_vane_records(config, today)
-        log_status(f"Sunsirs basis records: {len(sunsirs_records)}")
-        records.extend(sunsirs_records)
-    except Exception as exc:
-        warning = f"Sunsirs basis fetch failed: {type(exc).__name__}: {exc}"
-        refresh_warnings.append(warning)
-        log_status(warning, stream=sys.stderr)
+        log_status(f"Refreshing commodity data: {start.isoformat()} to {today.isoformat()}")
+        records: list[PriceRecord] = []
+        refresh_warnings: list[str] = []
 
-    manual_records = load_manual_records(today)
-    log_status(f"Manual quote records: {len(manual_records)}")
-    records.extend(manual_records)
-
-    derived_records = build_derived_records(config, records)
-    log_status(f"Derived records: {len(derived_records)}")
-    records.extend(derived_records)
-
-    if not records:
-        log_status("No price records were fetched.", stream=sys.stderr)
-        return 2
-
-    log_status("Merging price history...")
-    prices = merge_price_records(records)
-    if args.no_news:
-        news = []
-        log_status("Skipping news fetch (--no-news).")
-    else:
         try:
-            log_status("Fetching Google News RSS...")
-            news = fetch_news(config)
-            log_status(f"News items kept: {len(news)}")
+            log_status("Fetching AKShare basis data...")
+            akshare_records = fetch_akshare_records(config, start, today)
+            log_status(f"AKShare basis records: {len(akshare_records)}")
+            records.extend(akshare_records)
         except Exception as exc:
-            warning = f"News fetch failed: {type(exc).__name__}: {exc}"
+            warning = f"AKShare basis fetch failed: {type(exc).__name__}: {exc}"
             refresh_warnings.append(warning)
             log_status(warning, stream=sys.stderr)
-            news = []
-    latest, summary = make_latest(config, prices, news)
-    history = make_history(prices, start)
-    history_coverage = make_history_coverage(config, history, start)
-    index_history = make_index_history(history, latest)
-    if refresh_warnings:
-        summary["refresh_warnings"] = refresh_warnings
-    brief = make_brief(config, latest, summary, news)
-    brief_path = write_brief_markdown(brief)
-    summary["history_start_date"] = start.isoformat()
-    write_dashboard_data(config, latest, summary, history, history_coverage, index_history, news, brief)
 
-    log_status(f"Updated: {PRICE_CSV}")
-    log_status(f"Generated dashboard data: {DASHBOARD_DATA}")
-    log_status(f"Generated brief: {brief_path}")
-    log_status(f"Procurement pressure index: {summary.get('pressure_index')}/100")
-    return 0
+        try:
+            log_status("Fetching Sunsirs basis pages...")
+            sunsirs_records = fetch_sunsirs_vane_records(config, today)
+            log_status(f"Sunsirs basis records: {len(sunsirs_records)}")
+            records.extend(sunsirs_records)
+        except Exception as exc:
+            warning = f"Sunsirs basis fetch failed: {type(exc).__name__}: {exc}"
+            refresh_warnings.append(warning)
+            log_status(warning, stream=sys.stderr)
+
+        manual_records = load_manual_records(today)
+        log_status(f"Manual quote records: {len(manual_records)}")
+        records.extend(manual_records)
+
+        derived_records = build_derived_records(config, records)
+        log_status(f"Derived records: {len(derived_records)}")
+        records.extend(derived_records)
+
+        if not records:
+            log_status("No price records were fetched.", stream=sys.stderr)
+            return 2
+
+        log_status("Merging price history...")
+        prices = merge_price_records(records)
+        cached_news = load_cached_news()
+        if args.no_news:
+            news = cached_news
+            warning = "本次跳过新闻抓取（--no-news），沿用最近一次有效新闻。"
+            refresh_warnings.append(warning)
+            log_status(warning)
+        else:
+            try:
+                log_status("Fetching Google News RSS...")
+                news, news_warnings = fetch_news(config)
+                refresh_warnings.extend(news_warnings)
+                for warning in news_warnings:
+                    log_status(warning, stream=sys.stderr)
+                if not news and cached_news:
+                    news = cached_news
+                    warning = f"本次未抓到有效新闻，沿用最近一次有效新闻 {len(news)} 条。"
+                    refresh_warnings.append(warning)
+                    log_status(warning, stream=sys.stderr)
+                log_status(f"News items kept: {len(news)}")
+            except Exception as exc:
+                warning = f"新闻抓取失败：{type(exc).__name__}: {exc}"
+                if cached_news:
+                    news = cached_news
+                    warning += f" 已沿用最近一次有效新闻 {len(news)} 条。"
+                else:
+                    news = []
+                refresh_warnings.append(warning)
+                log_status(warning, stream=sys.stderr)
+        latest, summary = make_latest(config, prices, news)
+        history = make_history(prices, start)
+        history_coverage = make_history_coverage(config, history, start)
+        index_history = make_index_history(history, latest)
+        if refresh_warnings:
+            summary["refresh_warnings"] = refresh_warnings
+        brief = make_brief(config, latest, summary, news)
+        brief_path = write_brief_markdown(brief)
+        summary["history_start_date"] = start.isoformat()
+        write_dashboard_data(config, latest, summary, history, history_coverage, index_history, news, brief)
+
+        log_status(f"Updated: {PRICE_CSV}")
+        log_status(f"Generated dashboard data: {DASHBOARD_DATA}")
+        log_status(f"Generated brief: {brief_path}")
+        log_status(f"Procurement pressure index: {summary.get('pressure_index')}/100")
+        return 0
+    finally:
+        release_refresh_lock(lock_dir)
 
 
 if __name__ == "__main__":

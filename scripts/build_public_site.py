@@ -8,6 +8,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DASHBOARD = ROOT / "dashboard"
 PUBLIC = ROOT / "public"
+LOADER_START = "<!-- runtime-loader:start -->"
+LOADER_END = "<!-- runtime-loader:end -->"
 
 
 def copy_file(source: Path, target: Path) -> None:
@@ -15,15 +17,29 @@ def copy_file(source: Path, target: Path) -> None:
     shutil.copy2(source, target)
 
 
-def runtime_loader(app_script: str, asset_version: str) -> str:
-    return f"""    <script>
-      (function () {{
-        var stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
+def runtime_loader(app_script: str, asset_version: str, *, include_internal_quotes: bool = False) -> str:
+    next_loader = f'loadScript("./{app_script}?v={asset_version}");'
+    if include_internal_quotes:
+        next_loader = (
+            'loadScript("./internal-quotes.js?ts=" + stamp, function () {\n'
+            f'            loadScript("./{app_script}?v={asset_version}");\n'
+            '          });'
+        )
 
-        function loadScript(src, onload) {{
+    return f"""    {LOADER_START}
+    <script>
+      (function () {{
+        var stamp = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);
+
+        function loadScript(src, onload, attrs) {{
           var script = document.createElement("script");
           script.src = src;
           script.async = false;
+          if (attrs) {{
+            Object.keys(attrs).forEach(function (key) {{
+              script.setAttribute(key, attrs[key]);
+            }});
+          }}
           if (onload) {{
             script.onload = onload;
           }}
@@ -31,10 +47,20 @@ def runtime_loader(app_script: str, asset_version: str) -> str:
         }}
 
         loadScript("./data.js?ts=" + stamp, function () {{
-          loadScript("./{app_script}?v={asset_version}");
+          {next_loader}
         }});
       }})();
-    </script>"""
+    </script>
+    {LOADER_END}"""
+
+
+def replace_loader(html: str, loader: str) -> str:
+    start = html.find(LOADER_START)
+    end = html.find(LOADER_END)
+    if start == -1 or end == -1 or end < start:
+        raise ValueError("runtime loader markers not found")
+    end += len(LOADER_END)
+    return html[:start] + loader + html[end:]
 
 
 def main() -> int:
@@ -54,19 +80,15 @@ def main() -> int:
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
     report_html = report_html.replace('href="./report.css"', f'href="./report.css?v={asset_version}"')
-    report_html = report_html.replace(
-        '    <script src="./data.js"></script>\n    <script src="./report.js"></script>',
-        runtime_loader("report.js", asset_version),
-    )
+    report_html = replace_loader(report_html, runtime_loader("report.js", asset_version))
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")
 
     trend_html = (DASHBOARD / "index.html").read_text(encoding="utf-8")
     trend_html = trend_html.replace('href="./report.html"', 'href="./index.html"')
     trend_html = trend_html.replace('href="./styles.css"', f'href="./styles.css?v={asset_version}"')
-    trend_html = trend_html.replace('    <script src="./internal-quotes.js" data-local-only="true"></script>\n', "")
-    trend_html = trend_html.replace(
-        '    <script src="./data.js"></script>\n    <script src="./app.js"></script>',
-        runtime_loader("app.js", asset_version),
+    trend_html = replace_loader(
+        trend_html,
+        runtime_loader("app.js", asset_version, include_internal_quotes=False),
     )
     (PUBLIC / "trend.html").write_text(trend_html, encoding="utf-8")
 

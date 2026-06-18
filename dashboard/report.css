@@ -141,6 +141,31 @@ h2 {
   margin: 14px 0;
 }
 
+.refresh-warning-banner {
+  margin: 14px 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(184, 110, 0, 0.24);
+  border-radius: 8px;
+  background: rgba(184, 110, 0, 0.08);
+  color: #7d4d00;
+  box-shadow: var(--shadow);
+}
+
+.refresh-warning-banner strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.refresh-warning-banner ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.refresh-warning-banner li {
+  line-height: 1.55;
+}
+
 .summary-grid article,
 .panel {
   background: var(--panel);

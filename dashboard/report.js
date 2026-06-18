@@ -1,6 +1,9 @@
 (function () {
   const data = window.COMMODITY_MONITOR_DATA || { latest: [], history: [], index_history: [], news: [], summary: {}, brief: {} };
   const byId = new Map(data.latest.map((item) => [item.material_id, item]));
+  const NOTICE_REFRESH_INTERVAL_MS = 60 * 1000;
+  const BACKGROUND_DATA_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+  let backgroundDataCheckInFlight = false;
 
   const coreOrder = [
     "lithium_carbonate",
@@ -30,10 +33,130 @@
     return document.getElementById(id);
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function refreshWarnings() {
+    if (!data.summary || !Array.isArray(data.summary.refresh_warnings)) {
+      return [];
+    }
+    return data.summary.refresh_warnings.filter((warning) => String(warning || "").trim());
+  }
+
   function dateText(value) {
     const d = value ? new Date(value) : new Date();
     if (Number.isNaN(d.getTime())) return value || "";
     return d.toLocaleString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
+  const beijingFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  function beijingParts(value = new Date()) {
+    const parts = {};
+    beijingFormatter.formatToParts(value).forEach((part) => {
+      if (part.type !== "literal") {
+        parts[part.type] = part.value;
+      }
+    });
+    return {
+      year: Number(parts.year),
+      month: Number(parts.month),
+      day: Number(parts.day),
+      hour: Number(parts.hour),
+      minute: Number(parts.minute),
+      second: Number(parts.second),
+    };
+  }
+
+  function beijingSlotTime(parts, hour) {
+    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0));
+  }
+
+  function beijingClockLabel(value) {
+    const parts = beijingParts(value);
+    return `${String(parts.month).padStart(2, "0")}/${String(parts.day).padStart(2, "0")} ${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+  }
+
+  function freshnessNotice() {
+    const generatedAt = data.generated_at ? new Date(data.generated_at) : null;
+    if (!generatedAt || Number.isNaN(generatedAt.getTime())) {
+      return null;
+    }
+
+    const now = new Date();
+    const parts = beijingParts(now);
+    const currentMinutes = parts.hour * 60 + parts.minute;
+    const morningSlot = beijingSlotTime(parts, 10);
+    const afternoonSlot = beijingSlotTime(parts, 15);
+    const yesterdayAfternoon = new Date(afternoonSlot.getTime());
+    yesterdayAfternoon.setUTCDate(yesterdayAfternoon.getUTCDate() - 1);
+
+    if (currentMinutes < 10 * 60) {
+      if (generatedAt >= yesterdayAfternoon && generatedAt < morningSlot) {
+        return {
+          level: "info",
+          headerLabel: "系统正常，未到首轮刷新",
+          title: "系统正常，今天首轮刷新还没开始",
+          lines: [
+            `现在是北京时间 ${beijingClockLabel(now)}，下一次计划刷新时间约为 ${beijingClockLabel(morningSlot)}。`,
+            `当前显示的是 ${dateText(data.generated_at)} 刷新的上一监测时段结果，这不是故障。`,
+            "公开页按计划会在今天 10:00 左右进入首轮刷新窗口，10:20 以后仍不变化时再按异常处理。",
+          ],
+        };
+      }
+      if (generatedAt < yesterdayAfternoon) {
+        return {
+          level: "warning",
+          headerLabel: "上一监测时段结果偏旧",
+          title: "上一监测时段结果也偏旧",
+          lines: [
+            `现在还没到今天 10:00 左右的首轮刷新时间，但上一监测时段最新时间仍是 ${dateText(data.generated_at)}。`,
+            "这已经超出正常等待范围，建议稍后点击刷新，或运行“检查今日刷新状态”排查。",
+          ],
+        };
+      }
+    }
+
+    if (currentMinutes >= 10 * 60 && currentMinutes < 15 * 60 && generatedAt < morningSlot) {
+      return {
+        level: "warning",
+        headerLabel: "今日上午刷新待关注",
+        title: "今天上午这轮刷新还没到位",
+        lines: [
+          `按计划应在北京时间 10:00 左右刷新，当前最新时间仍是 ${dateText(data.generated_at)}。`,
+          "如果 10:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
+        ],
+      };
+    }
+
+    if (currentMinutes >= 15 * 60 && generatedAt < afternoonSlot) {
+      return {
+        level: "warning",
+        headerLabel: "今日下午刷新待关注",
+        title: "今天下午这轮刷新还没到位",
+        lines: [
+          `按计划应在北京时间 15:00 左右刷新，当前最新时间仍是 ${dateText(data.generated_at)}。`,
+          "如果 15:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
+        ],
+      };
+    }
+
+    return null;
   }
 
   function num(value, digits = 0) {
@@ -90,15 +213,120 @@
     return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 
+  function hardReload() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("ts", Date.now().toString());
+    window.location.replace(url.toString());
+  }
+
+  function renderReportDate() {
+    const notice = freshnessNotice();
+    const updatedLabel = dateText(data.generated_at);
+    if (notice && notice.headerLabel) {
+      el("reportDate").textContent = `${notice.headerLabel} · 当前显示上一监测时段 ${updatedLabel} 的结果`;
+      return;
+    }
+    el("reportDate").textContent = `更新 ${updatedLabel}，今日价格与趋势已汇总`;
+  }
+
   function renderHeader() {
     const score = data.summary.pressure_index;
     el("score").textContent = score === undefined ? "--" : Math.round(score);
     el("scoreText").textContent = scoreText(Number(score || 0));
-    el("reportDate").textContent = `更新 ${dateText(data.generated_at)}，今日价格与趋势已汇总`;
+    renderReportDate();
     el("tracked").textContent = data.summary.tracked_count ?? data.latest.length;
     el("rising").textContent = data.summary.rising_count ?? 0;
     el("highRisk").textContent = data.summary.high_risk_count ?? 0;
     el("newsRisk").textContent = data.summary.news_risk_count ?? 0;
+  }
+
+  function renderRefreshWarnings() {
+    const banner = el("refreshWarningBanner");
+    if (!banner) return;
+    const warnings = refreshWarnings();
+    const notice = freshnessNotice();
+    const sections = [];
+
+    if (notice) {
+      sections.push(`
+        <strong>${escapeHtml(notice.title)}</strong>
+        <ul>${notice.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+      `);
+    }
+
+    if (warnings.length) {
+      sections.push(`
+        <strong>本次刷新提示</strong>
+        <ul>${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>
+      `);
+    }
+
+    if (!sections.length) {
+      banner.hidden = true;
+      banner.classList.remove("info-mode");
+      banner.innerHTML = "";
+      return;
+    }
+
+    banner.hidden = false;
+    banner.classList.toggle("info-mode", notice && notice.level === "info" && !warnings.length);
+    banner.innerHTML = sections.join("");
+  }
+
+  function refreshLiveStatus() {
+    renderReportDate();
+    renderRefreshWarnings();
+  }
+
+  function backgroundDataCheck() {
+    refreshLiveStatus();
+    if (backgroundDataCheckInFlight || document.visibilityState === "hidden") {
+      return;
+    }
+
+    backgroundDataCheckInFlight = true;
+    const priorGeneratedAt = String(data.generated_at || "");
+    const priorLatestCount = Array.isArray(data.latest) ? data.latest.length : 0;
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `./data.js?ts=${Date.now()}`;
+
+    const finalize = () => {
+      backgroundDataCheckInFlight = false;
+      script.remove();
+    };
+
+    script.onload = function () {
+      const latestData = window.COMMODITY_MONITOR_DATA || {};
+      const nextGeneratedAt = String(latestData.generated_at || "");
+      const nextLatestCount = Array.isArray(latestData.latest) ? latestData.latest.length : 0;
+      if ((nextGeneratedAt && nextGeneratedAt !== priorGeneratedAt) || nextLatestCount !== priorLatestCount) {
+        hardReload();
+        return;
+      }
+      finalize();
+      refreshLiveStatus();
+    };
+
+    script.onerror = function () {
+      finalize();
+      refreshLiveStatus();
+    };
+
+    document.body.appendChild(script);
+  }
+
+  function startLiveRefreshWatch() {
+    window.setInterval(refreshLiveStatus, NOTICE_REFRESH_INTERVAL_MS);
+    window.setInterval(backgroundDataCheck, BACKGROUND_DATA_CHECK_INTERVAL_MS);
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") {
+        backgroundDataCheck();
+      } else {
+        refreshLiveStatus();
+      }
+    });
+    window.addEventListener("focus", backgroundDataCheck);
   }
 
   function renderBrief() {
@@ -237,9 +465,11 @@
   }
 
   renderHeader();
+  renderRefreshWarnings();
   renderBrief();
   renderComponents();
   renderTable();
   renderIndexChart();
   renderNews();
+  startLiveRefreshWatch();
 })();

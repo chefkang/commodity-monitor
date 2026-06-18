@@ -2,18 +2,20 @@ param()
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Daily = Join-Path $Root "run_daily.ps1"
+$HealthCheck = Join-Path $Root "scripts\check_refresh_health.ps1"
 $Report = Join-Path $Root "dashboard\report.html"
 
-Start-Process -FilePath "powershell.exe" -WindowStyle Hidden -ArgumentList @(
-  "-NoProfile",
-  "-ExecutionPolicy",
-  "Bypass",
-  "-File",
-  $Daily,
-  "-BackfillDays",
-  "180"
-)
+function Get-CacheBustedFileUri {
+  param([string]$Path)
 
-Start-Sleep -Seconds 1
-Start-Process $Report
+  $resolved = (Resolve-Path -LiteralPath $Path).Path
+  $uri = [System.Uri]$resolved
+  return "$($uri.AbsoluteUri)?ts=$((Get-Date).ToString('yyyyMMddHHmmss'))"
+}
+
+& "powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $HealthCheck -Slot auto -Repair
+if ($LASTEXITCODE -ne 0) {
+  throw "Refresh health check failed with exit code $LASTEXITCODE"
+}
+
+Start-Process (Get-CacheBustedFileUri -Path $Report)

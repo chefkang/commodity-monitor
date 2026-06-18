@@ -44,6 +44,8 @@
           </div>
         </header>
 
+        <section id="refreshWarningBanner" class="refresh-warning-banner" hidden></section>
+
         <section class="decision-strip">
           <article class="decision-card primary">
             <span>今日判断</span>
@@ -214,8 +216,37 @@
       </main>
     </div>
 
-    <script src="./data.js"></script>
-    <script src="./internal-quotes.js" data-local-only="true"></script>
-    <script src="./app.js"></script>
+    <!-- runtime-loader:start -->
+    <script>
+      (function () {
+        var stamp = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);
+
+        function loadScript(src, onload, attrs) {
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = false;
+          if (attrs) {
+            Object.keys(attrs).forEach(function (key) {
+              script.setAttribute(key, attrs[key]);
+            });
+          }
+          if (onload) {
+            script.onload = onload;
+          }
+          document.body.appendChild(script);
+        }
+
+        loadScript("./data.js?ts=" + stamp, function () {
+          loadScript(
+            "./internal-quotes.js?ts=" + stamp,
+            function () {
+              loadScript("./app.js?ts=" + stamp);
+            },
+            { "data-local-only": "true" }
+          );
+        });
+      })();
+    </script>
+    <!-- runtime-loader:end -->
   </body>
 </html>
