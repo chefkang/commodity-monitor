@@ -23,15 +23,18 @@ def runtime_loader(app_script: str, asset_version: str, *, include_internal_quot
         next_loader = (
             'loadScript("./internal-quotes.js?ts=" + stamp, function () {\n'
             f'            loadScript("./{app_script}?v={asset_version}");\n'
-            '          });'
+            '          }, { "data-local-only": "true" });'
         )
 
     return f"""    {LOADER_START}
     <script>
       (function () {{
         var stamp = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);
+        var PUBLIC_DATA_URL = "https://chefkang.github.io/commodity-monitor/data.js";
+        var PUBLIC_HOST_RE = /(^|\\.)chefkang\\.github\\.io$/i;
+        var PUBLIC_LAG_TOLERANCE_MS = 3 * 60 * 1000;
 
-        function loadScript(src, onload, attrs) {{
+        function loadScript(src, onload, attrs, onerror) {{
           var script = document.createElement("script");
           script.src = src;
           script.async = false;
@@ -43,11 +46,97 @@ def runtime_loader(app_script: str, asset_version: str, *, include_internal_quot
           if (onload) {{
             script.onload = onload;
           }}
+          if (onerror) {{
+            script.onerror = onerror;
+          }}
           document.body.appendChild(script);
         }}
 
+        function parseGeneratedAtMs(payload) {{
+          var value = payload && payload.generated_at ? Date.parse(payload.generated_at) : NaN;
+          return Number.isFinite(value) ? value : null;
+        }}
+
+        function latestCount(payload) {{
+          return payload && Array.isArray(payload.latest) ? payload.latest.length : 0;
+        }}
+
+        function shouldCheckPublicData() {{
+          var protocol = String(window.location.protocol || "").toLowerCase();
+          var hostname = String(window.location.hostname || "").toLowerCase();
+          if (protocol === "file:") {{
+            return true;
+          }}
+          if (!hostname) {{
+            return true;
+          }}
+          return !PUBLIC_HOST_RE.test(hostname);
+        }}
+
+        function shouldPreferCandidate(basePayload, candidatePayload) {{
+          var baseGeneratedAt = parseGeneratedAtMs(basePayload);
+          var candidateGeneratedAt = parseGeneratedAtMs(candidatePayload);
+
+          if (candidateGeneratedAt !== null && baseGeneratedAt === null) {{
+            return true;
+          }}
+
+          if (
+            candidateGeneratedAt !== null &&
+            baseGeneratedAt !== null &&
+            candidateGeneratedAt > baseGeneratedAt + PUBLIC_LAG_TOLERANCE_MS
+          ) {{
+            return true;
+          }}
+
+          if (latestCount(candidatePayload) !== latestCount(basePayload)) {{
+            if (candidateGeneratedAt === null) {{
+              return baseGeneratedAt === null;
+            }}
+            return baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt;
+          }}
+
+          return false;
+        }}
+
+        function ensurePreferredDataSource(continueLoad) {{
+          var localPayload = window.COMMODITY_MONITOR_DATA || {{}};
+          var checkPublicData = shouldCheckPublicData();
+
+          window.COMMODITY_MONITOR_RUNTIME = {{
+            check_public_data: checkPublicData,
+            public_data_url: PUBLIC_DATA_URL,
+            public_lag_tolerance_ms: PUBLIC_LAG_TOLERANCE_MS,
+            data_source: checkPublicData ? "local" : "public",
+            data_source_label: checkPublicData ? "本地副本" : "公网实时结果",
+            data_source_reason: ""
+          }};
+
+          if (!checkPublicData) {{
+            continueLoad();
+            return;
+          }}
+
+          loadScript(PUBLIC_DATA_URL + "?ts=" + stamp, function () {{
+            var publicPayload = window.COMMODITY_MONITOR_DATA || {{}};
+            if (shouldPreferCandidate(localPayload, publicPayload)) {{
+              window.COMMODITY_MONITOR_RUNTIME.data_source = "public";
+              window.COMMODITY_MONITOR_RUNTIME.data_source_label = "公网同步结果";
+              window.COMMODITY_MONITOR_RUNTIME.data_source_reason = "当前页面自动优先使用比本地副本更新的公网结果。";
+            }} else {{
+              window.COMMODITY_MONITOR_DATA = localPayload;
+            }}
+            continueLoad();
+          }}, null, function () {{
+            window.COMMODITY_MONITOR_DATA = localPayload;
+            continueLoad();
+          }});
+        }}
+
         loadScript("./data.js?ts=" + stamp, function () {{
-          {next_loader}
+          ensurePreferredDataSource(function () {{
+            {next_loader}
+          }});
         }});
       }})();
     </script>

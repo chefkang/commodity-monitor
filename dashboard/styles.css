@@ -188,6 +188,71 @@ a {
   line-height: 1.55;
 }
 
+.refresh-status-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.refresh-status-card {
+  min-height: 112px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.refresh-status-card span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.refresh-status-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.refresh-status-card small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.refresh-status-card.info-tone {
+  border-color: rgba(31, 92, 163, 0.24);
+  background: linear-gradient(180deg, rgba(31, 92, 163, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.refresh-status-card.info-tone span,
+.refresh-status-card.info-tone small {
+  color: #285f9f;
+}
+
+.refresh-status-card.info-tone strong {
+  color: #1b4f89;
+}
+
+.refresh-status-card.warning-tone {
+  border-color: rgba(184, 110, 0, 0.24);
+  background: linear-gradient(180deg, rgba(184, 110, 0, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.refresh-status-card.warning-tone span,
+.refresh-status-card.warning-tone small {
+  color: #8a5600;
+}
+
+.refresh-status-card.warning-tone strong {
+  color: #7d4d00;
+}
+
 .topbar-main {
   display: flex;
   align-items: center;
@@ -931,7 +996,8 @@ td strong {
   .main-grid,
   .bottom-grid,
   .decision-strip,
-  .metric-grid {
+  .metric-grid,
+  .refresh-status-strip {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -971,7 +1037,8 @@ td strong {
   .decision-strip,
   .chart-summary,
   .bucket-grid,
-  .watch-grid {
+  .watch-grid,
+  .refresh-status-strip {
     grid-template-columns: 1fr;
   }
 

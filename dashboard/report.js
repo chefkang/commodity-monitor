@@ -1,6 +1,12 @@
 (function () {
   const data = window.COMMODITY_MONITOR_DATA || { latest: [], history: [], index_history: [], news: [], summary: {}, brief: {} };
   const byId = new Map(data.latest.map((item) => [item.material_id, item]));
+  const runtimeMeta = window.COMMODITY_MONITOR_RUNTIME || {};
+  const dataSourceLabel = String(runtimeMeta.data_source_label || "").trim();
+  const dataSourceReason = String(runtimeMeta.data_source_reason || "").trim();
+  const publicDataCheckEnabled = Boolean(runtimeMeta.check_public_data);
+  const publicDataUrl = String(runtimeMeta.public_data_url || "https://chefkang.github.io/commodity-monitor/data.js");
+  const publicLagToleranceMs = Number(runtimeMeta.public_lag_tolerance_ms || 3 * 60 * 1000);
   const NOTICE_REFRESH_INTERVAL_MS = 60 * 1000;
   const BACKGROUND_DATA_CHECK_INTERVAL_MS = 5 * 60 * 1000;
   let backgroundDataCheckInFlight = false;
@@ -55,6 +61,41 @@
     return d.toLocaleString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
   }
 
+  function parseGeneratedAtMs(payload) {
+    const value = payload && payload.generated_at ? Date.parse(payload.generated_at) : Number.NaN;
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function latestCount(payload) {
+    return payload && Array.isArray(payload.latest) ? payload.latest.length : 0;
+  }
+
+  function shouldPromoteCandidatePayload(basePayload, candidatePayload) {
+    const baseGeneratedAt = parseGeneratedAtMs(basePayload);
+    const candidateGeneratedAt = parseGeneratedAtMs(candidatePayload);
+
+    if (candidateGeneratedAt !== null && baseGeneratedAt === null) {
+      return true;
+    }
+
+    if (
+      candidateGeneratedAt !== null &&
+      baseGeneratedAt !== null &&
+      candidateGeneratedAt > baseGeneratedAt + publicLagToleranceMs
+    ) {
+      return true;
+    }
+
+    if (latestCount(candidatePayload) !== latestCount(basePayload)) {
+      if (candidateGeneratedAt === null) {
+        return baseGeneratedAt === null;
+      }
+      return baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt;
+    }
+
+    return false;
+  }
+
   const beijingFormatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Shanghai",
     year: "numeric",
@@ -92,6 +133,130 @@
     return `${String(parts.month).padStart(2, "0")}/${String(parts.day).padStart(2, "0")} ${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
   }
 
+  function latestTradingDateValue() {
+    const dates = data.latest
+      .map((item) => String(item && item.date ? item.date : "").trim())
+      .filter(Boolean)
+      .sort();
+    return dates.length ? dates[dates.length - 1] : "";
+  }
+
+  function latestTradingDateLabel() {
+    return latestTradingDateValue() || "等待数据";
+  }
+
+  function nextPlannedRefresh() {
+    const now = new Date();
+    const parts = beijingParts(now);
+    const currentMinutes = parts.hour * 60 + parts.minute;
+    if (currentMinutes < 10 * 60) {
+      const nextTime = beijingSlotTime(parts, 10);
+      return {
+        slot: "morning",
+        label: beijingClockLabel(nextTime),
+        time: nextTime,
+      };
+    }
+    if (currentMinutes < 15 * 60) {
+      const nextTime = beijingSlotTime(parts, 15);
+      return {
+        slot: "afternoon",
+        label: beijingClockLabel(nextTime),
+        time: nextTime,
+      };
+    }
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const tomorrowParts = beijingParts(tomorrow);
+    const nextTime = beijingSlotTime(tomorrowParts, 10);
+    return {
+      slot: "morning",
+      label: beijingClockLabel(nextTime),
+      time: nextTime,
+    };
+  }
+
+  function minutesUntil(targetTime) {
+    if (!(targetTime instanceof Date) || Number.isNaN(targetTime.getTime())) {
+      return null;
+    }
+    return Math.max(0, Math.ceil((targetTime.getTime() - Date.now()) / (60 * 1000)));
+  }
+
+  function countdownLabel(targetTime) {
+    const totalMinutes = minutesUntil(targetTime);
+    if (totalMinutes === null) {
+      return "";
+    }
+    if (totalMinutes < 60) {
+      return `约 ${totalMinutes} 分钟后`;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return minutes ? `约 ${hours} 小时 ${minutes} 分钟后` : `约 ${hours} 小时后`;
+  }
+
+  function refreshStateDetailText(notice, nextRefresh, tradingDate) {
+    if (notice && notice.level === "info") {
+      return `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；当前看到最新交易日 ${tradingDate} 属于正常等待，不是故障。`;
+    }
+    if (notice && notice.lines && notice.lines.length) {
+      const tail = notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
+      return [notice.lines[0], tail].filter(Boolean).join(" ");
+    }
+    return `当前页面已加载 ${dateText(data.generated_at)} 的最新结果。`;
+  }
+
+  function refreshGeneratedDetailText() {
+    if (dataSourceLabel) {
+      return `这是最近一次生成或同步时间；当前优先显示 ${dataSourceLabel}${dataSourceReason ? `，${dataSourceReason}` : "。"}`;
+    }
+    return "这是系统最近一次生成或同步时间，不等于价格明细里的交易日。";
+  }
+
+  function refreshTradingDateDetailText(notice, tradingDate) {
+    if (notice && notice.level === "info") {
+      return `这里显示的是交易日。清晨看到 ${tradingDate} 很正常，真正判断今天是否已刷新请看“刷新时间”。`;
+    }
+    return "价格明细里的日期代表交易日，不等于页面刷新时间。";
+  }
+
+  function refreshNextSlotDetailText(nextRefresh) {
+    const countdown = countdownLabel(nextRefresh.time);
+    const cutoff = nextRefresh.slot === "morning" ? "10:20" : "15:20";
+    return `${countdown ? `${countdown}进入下一轮计划刷新窗口；` : ""}过了 ${cutoff} 仍不变化，再按异常处理。`;
+  }
+
+  function applyRefreshCardTone(notice) {
+    const stateCard = el("refreshStateLabel") ? el("refreshStateLabel").closest(".refresh-status-card") : null;
+    const nextSlotCard = el("refreshNextSlot") ? el("refreshNextSlot").closest(".refresh-status-card") : null;
+    [stateCard, nextSlotCard].forEach((card) => {
+      if (card) {
+        card.classList.remove("info-tone", "warning-tone");
+      }
+    });
+    if (!notice) {
+      return;
+    }
+    const toneClass = notice.level === "warning" ? "warning-tone" : "info-tone";
+    [stateCard, nextSlotCard].forEach((card) => {
+      if (card) {
+        card.classList.add(toneClass);
+      }
+    });
+  }
+
+  function renderPageTitle(notice, nextRefresh) {
+    if (notice && notice.level === "info") {
+      document.title = `系统正常，等待 ${nextRefresh.label} 首刷 | 迈瑟伦原材料价格日报`;
+      return;
+    }
+    if (notice && notice.level === "warning") {
+      document.title = `${notice.title} | 迈瑟伦原材料价格日报`;
+      return;
+    }
+    document.title = "迈瑟伦原材料价格日报";
+  }
+
   function freshnessNotice() {
     const generatedAt = data.generated_at ? new Date(data.generated_at) : null;
     if (!generatedAt || Number.isNaN(generatedAt.getTime())) {
@@ -114,6 +279,7 @@
           title: "系统正常，今天首轮刷新还没开始",
           lines: [
             `现在是北京时间 ${beijingClockLabel(now)}，下一次计划刷新时间约为 ${beijingClockLabel(morningSlot)}。`,
+            `当前价格明细对应的最新交易日是 ${latestTradingDateLabel()}，清晨在 10:00 前看到它仍属正常。`,
             `当前显示的是 ${dateText(data.generated_at)} 刷新的上一监测时段结果，这不是故障。`,
             "公开页按计划会在今天 10:00 左右进入首轮刷新窗口，10:20 以后仍不变化时再按异常处理。",
           ],
@@ -126,6 +292,7 @@
           title: "上一监测时段结果也偏旧",
           lines: [
             `现在还没到今天 10:00 左右的首轮刷新时间，但上一监测时段最新时间仍是 ${dateText(data.generated_at)}。`,
+            `当前价格明细对应的最新交易日是 ${latestTradingDateLabel()}。`,
             "这已经超出正常等待范围，建议稍后点击刷新，或运行“检查今日刷新状态”排查。",
           ],
         };
@@ -139,6 +306,7 @@
         title: "今天上午这轮刷新还没到位",
         lines: [
           `按计划应在北京时间 10:00 左右刷新，当前最新时间仍是 ${dateText(data.generated_at)}。`,
+          `当前价格明细对应的最新交易日仍是 ${latestTradingDateLabel()}。`,
           "如果 10:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
         ],
       };
@@ -151,6 +319,7 @@
         title: "今天下午这轮刷新还没到位",
         lines: [
           `按计划应在北京时间 15:00 左右刷新，当前最新时间仍是 ${dateText(data.generated_at)}。`,
+          `当前价格明细对应的最新交易日仍是 ${latestTradingDateLabel()}。`,
           "如果 15:20 以后仍未变化，建议点击刷新，或运行“检查今日刷新状态”自动补查。",
         ],
       };
@@ -221,12 +390,23 @@
 
   function renderReportDate() {
     const notice = freshnessNotice();
+    const nextRefresh = nextPlannedRefresh();
     const updatedLabel = dateText(data.generated_at);
+    const tradingDate = latestTradingDateLabel();
+    renderPageTitle(notice, nextRefresh);
     if (notice && notice.headerLabel) {
-      el("reportDate").textContent = `${notice.headerLabel} · 当前显示上一监测时段 ${updatedLabel} 的结果`;
+      const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
+      if (notice.level === "info") {
+        const countdown = countdownLabel(nextRefresh.time);
+        el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 当前显示 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}`;
+        return;
+      }
+      el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 当前显示上一监测时段 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}`;
       return;
     }
-    el("reportDate").textContent = `更新 ${updatedLabel}，今日价格与趋势已汇总`;
+    el("reportDate").textContent = dataSourceLabel
+      ? `${dataSourceLabel}更新 ${updatedLabel}，最新交易日 ${tradingDate}，今日价格与趋势已汇总`
+      : `更新 ${updatedLabel}，最新交易日 ${tradingDate}，今日价格与趋势已汇总`;
   }
 
   function renderHeader() {
@@ -273,9 +453,37 @@
     banner.innerHTML = sections.join("");
   }
 
+  function renderRefreshStatusStrip() {
+    const notice = freshnessNotice();
+    const nextRefresh = nextPlannedRefresh();
+    const tradingDate = latestTradingDateLabel();
+    const stateLabel = notice ? (notice.headerLabel || notice.title) : "已覆盖当前时段";
+    const stateDetail = refreshStateDetailText(notice, nextRefresh, tradingDate);
+    const generatedDetail = refreshGeneratedDetailText();
+    const nextSlotDetail = refreshNextSlotDetailText(nextRefresh);
+
+    const setText = (id, value) => {
+      const node = el(id);
+      if (node) {
+        node.textContent = value;
+      }
+    };
+
+    setText("refreshStateLabel", stateLabel);
+    setText("refreshStateDetail", stateDetail);
+    setText("refreshGeneratedAt", dateText(data.generated_at));
+    setText("refreshGeneratedAtDetail", generatedDetail);
+    setText("refreshTradingDate", tradingDate);
+    setText("refreshTradingDateDetail", refreshTradingDateDetailText(notice, tradingDate));
+    setText("refreshNextSlot", nextRefresh.label);
+    setText("refreshNextSlotDetail", nextSlotDetail);
+    applyRefreshCardTone(notice);
+  }
+
   function refreshLiveStatus() {
     renderReportDate();
     renderRefreshWarnings();
+    renderRefreshStatusStrip();
   }
 
   function backgroundDataCheck() {
@@ -285,35 +493,67 @@
     }
 
     backgroundDataCheckInFlight = true;
-    const priorGeneratedAt = String(data.generated_at || "");
-    const priorLatestCount = Array.isArray(data.latest) ? data.latest.length : 0;
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `./data.js?ts=${Date.now()}`;
+    const baselinePayload = {
+      generated_at: data.generated_at,
+      latest: Array.isArray(data.latest) ? data.latest : [],
+    };
+
+    const restoreCurrentPayload = () => {
+      window.COMMODITY_MONITOR_DATA = data;
+    };
 
     const finalize = () => {
       backgroundDataCheckInFlight = false;
-      script.remove();
+      restoreCurrentPayload();
+      refreshLiveStatus();
     };
 
-    script.onload = function () {
-      const latestData = window.COMMODITY_MONITOR_DATA || {};
-      const nextGeneratedAt = String(latestData.generated_at || "");
-      const nextLatestCount = Array.isArray(latestData.latest) ? latestData.latest.length : 0;
-      if ((nextGeneratedAt && nextGeneratedAt !== priorGeneratedAt) || nextLatestCount !== priorLatestCount) {
+    const loadDataScript = (src, onload, onerror) => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = src;
+      script.onload = function () {
+        onload(window.COMMODITY_MONITOR_DATA || {});
+        script.remove();
+      };
+      script.onerror = function () {
+        if (onerror) {
+          onerror();
+        }
+        script.remove();
+      };
+      document.body.appendChild(script);
+    };
+
+    const shouldReloadForCandidate = (candidatePayload) => {
+      if (shouldPromoteCandidatePayload(baselinePayload, candidatePayload)) {
         hardReload();
+        return true;
+      }
+      restoreCurrentPayload();
+      return false;
+    };
+
+    const checkPublicData = () => {
+      if (!publicDataCheckEnabled) {
+        finalize();
         return;
       }
-      finalize();
-      refreshLiveStatus();
+
+      loadDataScript(`${publicDataUrl}?ts=${Date.now()}`, function (candidatePayload) {
+        if (shouldReloadForCandidate(candidatePayload)) {
+          return;
+        }
+        finalize();
+      }, finalize);
     };
 
-    script.onerror = function () {
-      finalize();
-      refreshLiveStatus();
-    };
-
-    document.body.appendChild(script);
+    loadDataScript(`./data.js?ts=${Date.now()}`, function (candidatePayload) {
+      if (shouldReloadForCandidate(candidatePayload)) {
+        return;
+      }
+      checkPublicData();
+    }, checkPublicData);
   }
 
   function startLiveRefreshWatch() {

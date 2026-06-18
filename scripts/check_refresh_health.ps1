@@ -15,6 +15,7 @@ $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $RuntimeDir = Join-Path $Root "runtime"
 $StatusPath = Join-Path $RuntimeDir "refresh_health.json"
 $LogPath = Join-Path $RuntimeDir "refresh-health.log"
+$LocalDashboardData = Join-Path $Root "dashboard\data.js"
 $LatestJson = Join-Path $Root "data\latest.json"
 $NewsJson = Join-Path $Root "data\news.json"
 $EnsureRefresh = Join-Path $Root "scripts\ensure_local_refresh.ps1"
@@ -97,6 +98,7 @@ function Get-PublicState {
       ok = $true
       generated_at = Parse-DateValue $payload.generated_at
       news_count = @($payload.news).Count
+      content = [string]$response.Content
       error = $null
     }
   } catch {
@@ -104,9 +106,42 @@ function Get-PublicState {
       ok = $false
       generated_at = $null
       news_count = $null
+      content = ""
       error = $_.Exception.Message
     }
   }
+}
+
+function Sync-LocalDashboardData {
+  param(
+    [string]$Content,
+    [string]$TargetPath
+  )
+
+  if (-not $Content -or -not $TargetPath) {
+    return $false
+  }
+
+  $existingContent = ""
+  if (Test-Path -LiteralPath $TargetPath) {
+    try {
+      $existingContent = Get-Content -LiteralPath $TargetPath -Raw -Encoding UTF8
+    } catch {
+      $existingContent = ""
+    }
+  }
+
+  if ($existingContent -eq $Content) {
+    return $false
+  }
+
+  $targetDir = Split-Path -Parent $TargetPath
+  if (-not (Test-Path -LiteralPath $targetDir)) {
+    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+  }
+
+  [System.IO.File]::WriteAllText($TargetPath, $Content, [System.Text.UTF8Encoding]::new($false))
+  return $true
 }
 
 function Get-TaskState {
@@ -220,6 +255,24 @@ function Test-PublicBehindLocal {
   return $PublicGeneratedAt.UtcDateTime -lt $LocalGeneratedAt.UtcDateTime.AddMinutes(-$ToleranceMinutes)
 }
 
+function Test-LocalBehindPublic {
+  param(
+    $LocalGeneratedAt,
+    $PublicGeneratedAt,
+    [int]$ToleranceMinutes
+  )
+
+  if (-not $PublicGeneratedAt) {
+    return $false
+  }
+
+  if (-not $LocalGeneratedAt) {
+    return $true
+  }
+
+  return $LocalGeneratedAt.UtcDateTime -lt $PublicGeneratedAt.UtcDateTime.AddMinutes(-$ToleranceMinutes)
+}
+
 function Get-PublicLagMinutes {
   param(
     $LocalGeneratedAt,
@@ -231,6 +284,20 @@ function Get-PublicLagMinutes {
   }
 
   $lagMinutes = [math]::Round(($LocalGeneratedAt.UtcDateTime - $PublicGeneratedAt.UtcDateTime).TotalMinutes, 1)
+  return [math]::Max($lagMinutes, 0)
+}
+
+function Get-LocalLagMinutes {
+  param(
+    $LocalGeneratedAt,
+    $PublicGeneratedAt
+  )
+
+  if (-not $LocalGeneratedAt -or -not $PublicGeneratedAt) {
+    return $null
+  }
+
+  $lagMinutes = [math]::Round(($PublicGeneratedAt.UtcDateTime - $LocalGeneratedAt.UtcDateTime).TotalMinutes, 1)
   return [math]::Max($lagMinutes, 0)
 }
 
@@ -255,21 +322,73 @@ function Get-ScheduleNote {
   return "当前时间 $nowText 仍在今天首轮刷新前的正常等待窗口；上一监测时段最新结果时间为 $localText，下一次计划刷新时间为 $nextText。"
 }
 
+function Get-OpenPreference {
+  param(
+    $LocalGeneratedAt,
+    $PublicState,
+    [int]$ToleranceMinutes
+  )
+
+  $publicAheadLocal = Test-LocalBehindPublic -LocalGeneratedAt $LocalGeneratedAt -PublicGeneratedAt $PublicState.generated_at -ToleranceMinutes $ToleranceMinutes
+  $publicLeadMinutes = Get-LocalLagMinutes -LocalGeneratedAt $LocalGeneratedAt -PublicGeneratedAt $PublicState.generated_at
+
+  if ($PublicState.ok -and $publicAheadLocal) {
+    $reason = if ($publicLeadMinutes -ne $null) {
+      "公网结果比本地新 $publicLeadMinutes 分钟，页面将优先加载公网实时数据。"
+    } else {
+      "当前本地没有可用刷新时间，而公网已可访问，页面将优先加载公网实时数据。"
+    }
+
+    return [ordered]@{
+      preferred_source = "public"
+      public_ahead_local = $true
+      local_lag_minutes = $publicLeadMinutes
+      reason = $reason
+    }
+  }
+
+  $reason = if (-not $PublicState.ok) {
+    "当前公网不可达，页面将优先使用本地副本数据。"
+  } else {
+    "本地副本已不落后于公网，页面将优先使用本地副本数据。"
+  }
+
+  return [ordered]@{
+    preferred_source = "local"
+    public_ahead_local = $false
+    local_lag_minutes = $publicLeadMinutes
+    reason = $reason
+  }
+}
+
 $slotContext = Get-SlotContext
 $repairActions = New-Object System.Collections.Generic.List[string]
 $local = Get-LocalState
 $public = Get-PublicState
 $repairAllowed = $Repair
 
-if ($Repair -and $SkipRepairBeforeSlot -and $slotContext.now.UtcDateTime -lt $slotContext.slot_time.UtcDateTime) {
+if (
+  $Repair -and
+  $SkipRepairBeforeSlot -and
+  (
+    $slotContext.before_first_refresh_of_day -or
+    $slotContext.now.UtcDateTime -lt $slotContext.slot_time.UtcDateTime
+  )
+) {
   $repairAllowed = $false
-  Write-Log "Repair skipped because current time is before the $($slotContext.slot) slot boundary."
+  if ($slotContext.before_first_refresh_of_day) {
+    Write-Log "Repair skipped because current time is still before today's first refresh window."
+  } else {
+    Write-Log "Repair skipped because current time is before the $($slotContext.slot) slot boundary."
+  }
 }
 
 $localFresh = Test-FreshForSlot -GeneratedAt $local.generated_at -SlotTime $slotContext.slot_time
 $publicFresh = Test-FreshForSlot -GeneratedAt $public.generated_at -SlotTime $slotContext.slot_time
 $publicBehindLocal = Test-PublicBehindLocal -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
+$publicAheadLocal = Test-LocalBehindPublic -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
 $publicLagMinutes = Get-PublicLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
+$localLagMinutes = Get-LocalLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
 $localMismatch = ($local.latest_news_count -eq 0 -and $local.cache_news_count -gt 0)
 $localNeedsRebuild = ($localMismatch -or $local.refresh_warning_count -gt 0)
 $localRepaired = $false
@@ -298,7 +417,9 @@ if ($repairAllowed -and (-not $localFresh -or $localNeedsRebuild)) {
   $public = Get-PublicState
   $publicFresh = Test-FreshForSlot -GeneratedAt $public.generated_at -SlotTime $slotContext.slot_time
   $publicBehindLocal = Test-PublicBehindLocal -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
+  $publicAheadLocal = Test-LocalBehindPublic -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
   $publicLagMinutes = Get-PublicLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
+  $localLagMinutes = Get-LocalLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
 }
 
 if ($repairAllowed -and $localFresh -and ($localRepaired -or -not $public.ok -or -not $publicFresh -or $publicBehindLocal)) {
@@ -307,7 +428,8 @@ if ($repairAllowed -and $localFresh -and ($localRepaired -or -not $public.ok -or
     "-NoProfile",
     "-ExecutionPolicy", "Bypass",
     "-File", $TriggerGithub,
-    "-Slot", $slotContext.slot
+    "-Slot", $slotContext.slot,
+    "-SlotTimeIso", $slotContext.slot_time.ToString("o")
   )
   if ($localRepaired) {
     $triggerArgs += "-ForceDispatch"
@@ -321,7 +443,16 @@ if ($repairAllowed -and $localFresh -and ($localRepaired -or -not $public.ok -or
   $public = Get-PublicState
   $publicFresh = Test-FreshForSlot -GeneratedAt $public.generated_at -SlotTime $slotContext.slot_time
   $publicBehindLocal = Test-PublicBehindLocal -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
+  $publicAheadLocal = Test-LocalBehindPublic -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at -ToleranceMinutes $PublishLagToleranceMinutes
   $publicLagMinutes = Get-PublicLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
+  $localLagMinutes = Get-LocalLagMinutes -LocalGeneratedAt $local.generated_at -PublicGeneratedAt $public.generated_at
+}
+
+if ($public.ok -and $publicAheadLocal -and $public.content) {
+  if (Sync-LocalDashboardData -Content $public.content -TargetPath $LocalDashboardData) {
+    Write-Log "Repair: synced dashboard\\data.js from the fresher public payload."
+    $repairActions.Add("Synced local dashboard data.js from the fresher public page.")
+  }
 }
 
 $taskStates = [ordered]@{}
@@ -341,6 +472,7 @@ if (-not $localFresh -or $localMismatch) {
 }
 
 $scheduleNote = Get-ScheduleNote -SlotContext $slotContext -LocalGeneratedAt $local.generated_at
+$openPreference = Get-OpenPreference -LocalGeneratedAt $local.generated_at -PublicState $public -ToleranceMinutes $PublishLagToleranceMinutes
 
 $status = [ordered]@{
   checked_at = ([DateTimeOffset](Get-Date)).ToString("o")
@@ -365,6 +497,8 @@ $status = [ordered]@{
     refresh_warnings = @($local.refresh_warnings)
     fresh_for_slot = $localFresh
     mismatch = $localMismatch
+    behind_public = $publicAheadLocal
+    lag_minutes = $localLagMinutes
   }
   public = [ordered]@{
     reachable = $public.ok
@@ -375,6 +509,7 @@ $status = [ordered]@{
     lag_minutes = $publicLagMinutes
     error = $public.error
   }
+  open_preference = $openPreference
   tasks = $taskStates
   repair_actions = @($repairActions)
 }
@@ -389,6 +524,7 @@ $summary = @(
   "本地更新时间: $($status.local.generated_at)",
   "本地新闻: latest=$($status.local.latest_news_count), cache=$($status.local.cache_news_count), warnings=$($status.local.refresh_warning_count)",
   "公网更新时间: $($status.public.generated_at); 落后本地分钟: $($status.public.lag_minutes)",
+  "数据来源: 优先使用$($status.open_preference.preferred_source)；$($status.open_preference.reason)",
   "时段说明: $scheduleNote",
   "修复动作: $((@($repairActions) -join '; '))",
   "状态文件: $StatusPath"
@@ -398,9 +534,10 @@ $summary[0] = "刷新健康检查: $verdict"
 $summary[1] = "本地更新时间: $($status.local.generated_at)"
 $summary[2] = "本地新闻: latest=$($status.local.latest_news_count), cache=$($status.local.cache_news_count), warnings=$($status.local.refresh_warning_count)"
 $summary[3] = "公网更新时间: $($status.public.generated_at); 落后本地分钟: $($status.public.lag_minutes)"
-$summary[4] = "时段说明: $scheduleNote"
-$summary[5] = "修复动作: $((@($repairActions) -join '; '))"
-$summary[6] = "状态文件: $StatusPath"
+$summary[4] = "数据来源: 优先使用$($status.open_preference.preferred_source)；$($status.open_preference.reason)"
+$summary[5] = "时段说明: $scheduleNote"
+$summary[6] = "修复动作: $((@($repairActions) -join '; '))"
+$summary[7] = "状态文件: $StatusPath"
 
 foreach ($line in $summary) {
   Write-Host $line

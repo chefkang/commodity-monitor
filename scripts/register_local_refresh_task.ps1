@@ -125,7 +125,7 @@ Register-RepoTask `
 
 $HealthScript = Join-Path $Root "scripts\check_refresh_health.ps1"
 Write-Host "Running initial health check..."
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $HealthScript -Repair
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $HealthScript -Repair -SkipRepairBeforeSlot
 if ($LASTEXITCODE -ne 0) {
   throw "Initial health check failed with exit code $LASTEXITCODE"
 }

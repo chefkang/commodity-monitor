@@ -166,6 +166,72 @@ h2 {
   line-height: 1.55;
 }
 
+.refresh-status-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.refresh-status-card {
+  min-height: 112px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.refresh-status-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.refresh-status-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.refresh-status-card small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.refresh-status-card.info-tone {
+  border-color: rgba(31, 92, 163, 0.24);
+  background: linear-gradient(180deg, rgba(31, 92, 163, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.refresh-status-card.info-tone span,
+.refresh-status-card.info-tone small {
+  color: #285f9f;
+}
+
+.refresh-status-card.info-tone strong {
+  color: #1b4f89;
+}
+
+.refresh-status-card.warning-tone {
+  border-color: rgba(184, 110, 0, 0.24);
+  background: linear-gradient(180deg, rgba(184, 110, 0, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.refresh-status-card.warning-tone span,
+.refresh-status-card.warning-tone small {
+  color: #8a5600;
+}
+
+.refresh-status-card.warning-tone strong {
+  color: #7d4d00;
+}
+
 .summary-grid article,
 .panel {
   background: var(--panel);
@@ -497,7 +563,8 @@ h2 {
 @media (max-width: 1180px) {
   .summary-grid,
   .brief-cards,
-  .component-grid {
+  .component-grid,
+  .refresh-status-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -533,7 +600,8 @@ h2 {
   .summary-grid,
   .brief-cards,
   .component-grid,
-  .material-row {
+  .material-row,
+  .refresh-status-strip {
     grid-template-columns: 1fr;
   }
 }

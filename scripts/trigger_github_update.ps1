@@ -1,6 +1,7 @@
 param(
   [ValidateSet("auto", "morning", "afternoon")]
   [string]$Slot = "auto",
+  [string]$SlotTimeIso = "",
   [int]$StaleRunMinutes = 45,
   [int]$PublishLagToleranceMinutes = 3,
   [switch]$ForceDispatch,
@@ -40,6 +41,34 @@ function Parse-DateValue {
   } catch {
     return $null
   }
+}
+
+function Resolve-SlotReferenceTime {
+  param(
+    [datetime]$Now,
+    [string]$ResolvedSlot,
+    [string]$ExplicitSlotTimeIso
+  )
+
+  if ($ExplicitSlotTimeIso) {
+    $parsed = Parse-DateValue $ExplicitSlotTimeIso
+    if (-not $parsed) {
+      throw "Failed to parse SlotTimeIso: $ExplicitSlotTimeIso"
+    }
+    return $parsed.ToLocalTime().DateTime
+  }
+
+  $candidate = if ($ResolvedSlot -eq "morning") {
+    Get-Date -Year $Now.Year -Month $Now.Month -Day $Now.Day -Hour 10 -Minute 0 -Second 0
+  } else {
+    Get-Date -Year $Now.Year -Month $Now.Month -Day $Now.Day -Hour 15 -Minute 0 -Second 0
+  }
+
+  if ($Now -lt $candidate) {
+    return $candidate.AddDays(-1)
+  }
+
+  return $candidate
 }
 
 function Get-LocalGeneratedAt {
@@ -184,11 +213,7 @@ if ($Slot -eq "auto") {
   $Slot = if ($now.Hour -lt 12) { "morning" } else { "afternoon" }
 }
 
-$slotTime = if ($Slot -eq "morning") {
-  Get-Date -Year $now.Year -Month $now.Month -Day $now.Day -Hour 10 -Minute 0 -Second 0
-} else {
-  Get-Date -Year $now.Year -Month $now.Month -Day $now.Day -Hour 15 -Minute 0 -Second 0
-}
+$slotTime = Resolve-SlotReferenceTime -Now $now -ResolvedSlot $Slot -ExplicitSlotTimeIso $SlotTimeIso
 
 $slotUtc = $slotTime.ToUniversalTime()
 Set-Location -LiteralPath $RepoRoot
