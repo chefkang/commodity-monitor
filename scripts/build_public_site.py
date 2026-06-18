@@ -15,11 +15,32 @@ def copy_file(source: Path, target: Path) -> None:
     shutil.copy2(source, target)
 
 
+def runtime_loader(app_script: str, asset_version: str) -> str:
+    return f"""    <script>
+      (function () {{
+        var stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
+
+        function loadScript(src, onload) {{
+          var script = document.createElement("script");
+          script.src = src;
+          script.async = false;
+          if (onload) {{
+            script.onload = onload;
+          }}
+          document.body.appendChild(script);
+        }}
+
+        loadScript("./data.js?ts=" + stamp, function () {{
+          loadScript("./{app_script}?v={asset_version}");
+        }});
+      }})();
+    </script>"""
+
+
 def main() -> int:
-    if PUBLIC.exists():
-        shutil.rmtree(PUBLIC)
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    (PUBLIC / "briefs").mkdir(parents=True, exist_ok=True)
+    briefs_public = PUBLIC / "briefs"
+    briefs_public.mkdir(parents=True, exist_ok=True)
 
     for filename in ["report.css", "report.js", "styles.css", "app.js", "data.js"]:
         copy_file(DASHBOARD / filename, PUBLIC / filename)
@@ -33,22 +54,28 @@ def main() -> int:
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
     report_html = report_html.replace('href="./report.css"', f'href="./report.css?v={asset_version}"')
-    report_html = report_html.replace('src="./data.js"', f'src="./data.js?v={asset_version}"')
-    report_html = report_html.replace('src="./report.js"', f'src="./report.js?v={asset_version}"')
+    report_html = report_html.replace(
+        '    <script src="./data.js"></script>\n    <script src="./report.js"></script>',
+        runtime_loader("report.js", asset_version),
+    )
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")
 
     trend_html = (DASHBOARD / "index.html").read_text(encoding="utf-8")
     trend_html = trend_html.replace('href="./report.html"', 'href="./index.html"')
     trend_html = trend_html.replace('href="./styles.css"', f'href="./styles.css?v={asset_version}"')
-    trend_html = trend_html.replace('src="./data.js"', f'src="./data.js?v={asset_version}"')
-    trend_html = trend_html.replace('src="./app.js"', f'src="./app.js?v={asset_version}"')
     trend_html = trend_html.replace('    <script src="./internal-quotes.js" data-local-only="true"></script>\n', "")
+    trend_html = trend_html.replace(
+        '    <script src="./data.js"></script>\n    <script src="./app.js"></script>',
+        runtime_loader("app.js", asset_version),
+    )
     (PUBLIC / "trend.html").write_text(trend_html, encoding="utf-8")
 
     briefs = ROOT / "briefs"
     if briefs.exists():
+        for existing in briefs_public.glob("*.md"):
+            existing.unlink(missing_ok=True)
         for brief in briefs.glob("*.md"):
-            copy_file(brief, PUBLIC / "briefs" / brief.name)
+            copy_file(brief, briefs_public / brief.name)
 
     readme = f"""# 大宗商品价格日报在线版
 

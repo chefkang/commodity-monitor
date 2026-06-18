@@ -7,6 +7,7 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $VenvPython = Join-Path $Root ".venv\Scripts\python.exe"
+$BuildPublicSite = Join-Path $Root "scripts\build_public_site.py"
 
 if (-not (Test-Path $VenvPython)) {
   & (Join-Path $Root "setup.ps1")
@@ -18,6 +19,11 @@ if ($NoNews) {
 }
 
 & $VenvPython @MonitorArgs
+if ($LASTEXITCODE -ne 0) {
+  exit $LASTEXITCODE
+}
+
+& $VenvPython $BuildPublicSite
 if ($LASTEXITCODE -ne 0) {
   exit $LASTEXITCODE
 }
