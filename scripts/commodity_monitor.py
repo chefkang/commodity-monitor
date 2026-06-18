@@ -5,9 +5,11 @@ import csv
 import email.utils
 import json
 import math
+import os
 import re
+import subprocess
 import sys
-import warnings
+import tempfile
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from dataclasses import dataclass
@@ -34,6 +36,7 @@ NEWS_JSON = DATA_DIR / "news.json"
 DASHBOARD_DATA = DASHBOARD_DIR / "data.js"
 MANUAL_PRICE_CSV = DATA_DIR / "manual_prices.csv"
 TIMEZONE = ZoneInfo("Asia/Shanghai")
+AKSHARE_TIMEOUT_SECONDS = int(os.environ.get("COMMODITY_MONITOR_AKSHARE_TIMEOUT_SECONDS", "240"))
 
 
 UP_KEYWORDS = [
@@ -150,6 +153,10 @@ def ensure_dirs() -> None:
         path.mkdir(parents=True, exist_ok=True)
 
 
+def log_status(message: str, *, stream: Any = sys.stdout) -> None:
+    print(message, file=stream, flush=True)
+
+
 def now_cn() -> datetime:
     return datetime.now(TIMEZONE)
 
@@ -192,12 +199,71 @@ def infer_mmdd(mmdd: str, today: date) -> str:
     return guessed.isoformat()
 
 
-def fetch_akshare_records(config: dict[str, Any], start: date, end: date) -> list[PriceRecord]:
-    try:
-        import akshare as ak
-    except ImportError as exc:
-        raise RuntimeError("缺少 akshare，请先运行 setup.ps1 安装依赖。") from exc
+def fetch_akshare_rows(start: date, end: date, symbols: list[str]) -> list[dict[str, Any]]:
+    helper = """
+import json
+import sys
+import warnings
+from pathlib import Path
 
+import akshare as ak
+
+output_path = Path(sys.argv[1])
+start_day = sys.argv[2]
+end_day = sys.argv[3]
+symbols = json.loads(sys.argv[4])
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    df = ak.futures_spot_price_daily(
+        start_day=start_day,
+        end_day=end_day,
+        vars_list=symbols,
+    )
+
+output_path.write_text(df.to_json(orient="records", force_ascii=False), encoding="utf-8")
+"""
+    with tempfile.TemporaryDirectory(prefix="commodity-monitor-akshare-") as tmp_dir:
+        output_path = Path(tmp_dir) / "akshare.json"
+        try:
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-c",
+                    helper,
+                    str(output_path),
+                    start.strftime("%Y%m%d"),
+                    end.strftime("%Y%m%d"),
+                    json.dumps(symbols, ensure_ascii=False),
+                ],
+                capture_output=True,
+                check=True,
+                encoding="utf-8",
+                text=True,
+                timeout=AKSHARE_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError(f"AKShare request timed out after {AKSHARE_TIMEOUT_SECONDS}s") from exc
+        except subprocess.CalledProcessError as exc:
+            detail = (exc.stderr or exc.stdout or "").strip()
+            message = detail.splitlines()[-1] if detail else f"exit code {exc.returncode}"
+            raise RuntimeError(f"AKShare request failed: {message}") from exc
+
+        if not output_path.exists():
+            detail = (completed.stderr or completed.stdout or "").strip()
+            raise RuntimeError(f"AKShare request finished without output: {detail or 'no details'}")
+
+        raw = output_path.read_text(encoding="utf-8").strip()
+    if not raw:
+        return []
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as exc:
+        snippet = raw[:300]
+        raise RuntimeError(f"AKShare returned invalid JSON: {snippet}") from exc
+
+
+def fetch_akshare_records(config: dict[str, Any], start: date, end: date) -> list[PriceRecord]:
     materials = {
         item["symbol"]: item
         for item in config["materials"]
@@ -207,19 +273,12 @@ def fetch_akshare_records(config: dict[str, Any], start: date, end: date) -> lis
         return []
 
     symbols = list(materials.keys())
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        df = ak.futures_spot_price_daily(
-            start_day=start.strftime("%Y%m%d"),
-            end_day=end.strftime("%Y%m%d"),
-            vars_list=symbols,
-        )
-
     records: list[PriceRecord] = []
-    if df.empty:
+    rows = fetch_akshare_rows(start, end, symbols)
+    if not rows:
         return records
 
-    for _, row in df.iterrows():
+    for row in rows:
         symbol = str(row.get("symbol", "")).strip()
         material = materials.get(symbol)
         if not material:
@@ -285,6 +344,10 @@ def fetch_sunsirs_vane_records(config: dict[str, Any], today: date) -> list[Pric
             soup = BeautifulSoup(html, "lxml")
             lines = [line.strip() for line in soup.get_text("\n").splitlines() if line.strip()]
         except Exception as exc:
+            log_status(
+                f"Sunsirs fetch failed for {material['id']}: {type(exc).__name__}: {exc}",
+                stream=sys.stderr,
+            )
             records.append(
                 PriceRecord(
                     date=today.isoformat(),
@@ -796,9 +859,13 @@ def write_brief_markdown(brief: dict[str, Any]) -> Path:
         f"- 高风险品种: {brief['summary'].get('high_risk_count', 0)} 个",
         f"- 今日上涨品种: {brief['summary'].get('rising_count', 0)} 个",
         f"- 跟踪品种: {brief['summary'].get('tracked_count', 0)} 个",
-        "",
-        "## 高风险品种",
     ]
+    refresh_warnings = brief["summary"].get("refresh_warnings", [])
+    if refresh_warnings:
+        lines.extend(["", "## 刷新告警"])
+        for warning in refresh_warnings:
+            lines.append(f"- {warning}")
+    lines.extend(["", "## 高风险品种"])
     if brief["high_risk"]:
         for item in brief["high_risk"]:
             lines.append(
@@ -902,32 +969,72 @@ def main() -> int:
     else:
         start = today - timedelta(days=int(config["settings"].get("lookback_days", 180)))
 
-    print(f"刷新行情: {start.isoformat()} 至 {today.isoformat()}")
+    log_status(f"Refreshing commodity data: {start.isoformat()} to {today.isoformat()}")
     records: list[PriceRecord] = []
-    records.extend(fetch_akshare_records(config, start, today))
-    records.extend(fetch_sunsirs_vane_records(config, today))
-    records.extend(load_manual_records(today))
-    records.extend(build_derived_records(config, records))
+    refresh_warnings: list[str] = []
+
+    try:
+        log_status("Fetching AKShare basis data...")
+        akshare_records = fetch_akshare_records(config, start, today)
+        log_status(f"AKShare basis records: {len(akshare_records)}")
+        records.extend(akshare_records)
+    except Exception as exc:
+        warning = f"AKShare basis fetch failed: {type(exc).__name__}: {exc}"
+        refresh_warnings.append(warning)
+        log_status(warning, stream=sys.stderr)
+
+    try:
+        log_status("Fetching Sunsirs basis pages...")
+        sunsirs_records = fetch_sunsirs_vane_records(config, today)
+        log_status(f"Sunsirs basis records: {len(sunsirs_records)}")
+        records.extend(sunsirs_records)
+    except Exception as exc:
+        warning = f"Sunsirs basis fetch failed: {type(exc).__name__}: {exc}"
+        refresh_warnings.append(warning)
+        log_status(warning, stream=sys.stderr)
+
+    manual_records = load_manual_records(today)
+    log_status(f"Manual quote records: {len(manual_records)}")
+    records.extend(manual_records)
+
+    derived_records = build_derived_records(config, records)
+    log_status(f"Derived records: {len(derived_records)}")
+    records.extend(derived_records)
 
     if not records:
-        print("没有获取到价格记录。", file=sys.stderr)
+        log_status("No price records were fetched.", stream=sys.stderr)
         return 2
 
+    log_status("Merging price history...")
     prices = merge_price_records(records)
-    news = [] if args.no_news else fetch_news(config)
+    if args.no_news:
+        news = []
+        log_status("Skipping news fetch (--no-news).")
+    else:
+        try:
+            log_status("Fetching Google News RSS...")
+            news = fetch_news(config)
+            log_status(f"News items kept: {len(news)}")
+        except Exception as exc:
+            warning = f"News fetch failed: {type(exc).__name__}: {exc}"
+            refresh_warnings.append(warning)
+            log_status(warning, stream=sys.stderr)
+            news = []
     latest, summary = make_latest(config, prices, news)
     history = make_history(prices, start)
     history_coverage = make_history_coverage(config, history, start)
     index_history = make_index_history(history, latest)
+    if refresh_warnings:
+        summary["refresh_warnings"] = refresh_warnings
     brief = make_brief(config, latest, summary, news)
     brief_path = write_brief_markdown(brief)
     summary["history_start_date"] = start.isoformat()
     write_dashboard_data(config, latest, summary, history, history_coverage, index_history, news, brief)
 
-    print(f"已更新: {PRICE_CSV}")
-    print(f"已生成看板数据: {DASHBOARD_DATA}")
-    print(f"已生成简报: {brief_path}")
-    print(f"采购成本压力指数: {summary.get('pressure_index')}/100")
+    log_status(f"Updated: {PRICE_CSV}")
+    log_status(f"Generated dashboard data: {DASHBOARD_DATA}")
+    log_status(f"Generated brief: {brief_path}")
+    log_status(f"Procurement pressure index: {summary.get('pressure_index')}/100")
     return 0
 
 

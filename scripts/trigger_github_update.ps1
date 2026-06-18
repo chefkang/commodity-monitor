@@ -1,6 +1,7 @@
 param(
   [ValidateSet("auto", "morning", "afternoon")]
-  [string]$Slot = "auto"
+  [string]$Slot = "auto",
+  [int]$StaleRunMinutes = 45
 )
 
 $ErrorActionPreference = "Stop"
@@ -40,7 +41,7 @@ $slotTime = if ($Slot -eq "morning") {
 $slotUtc = $slotTime.ToUniversalTime()
 Set-Location -LiteralPath $RepoRoot
 
-$runsJson = & $Gh run list --workflow $WorkflowName --limit 20 --json databaseId,status,conclusion,createdAt,event,url
+$runsJson = & $Gh run list --workflow $WorkflowName --limit 20 --json databaseId,status,conclusion,createdAt,updatedAt,event,url
 if ($LASTEXITCODE -ne 0) {
   Write-Log "ERROR: failed to query workflow runs."
   throw "Failed to query workflow runs."
@@ -65,8 +66,41 @@ if ($success) {
 
 $active = $slotRuns | Where-Object { $_.status -ne "completed" } | Select-Object -First 1
 if ($active) {
-  Write-Log "$Slot slot already has an active run: $($active.databaseId) $($active.url)"
-  exit 0
+  $createdAt = [DateTimeOffset]::Parse([string]$active.createdAt)
+  $ageMinutes = [math]::Round(($now.ToUniversalTime() - $createdAt.UtcDateTime).TotalMinutes, 1)
+  if ($ageMinutes -lt $StaleRunMinutes) {
+    Write-Log "$Slot slot already has an active run: $($active.databaseId) $($active.url) age=${ageMinutes}m"
+    exit 0
+  }
+
+  Write-Log "$Slot slot has a stale active run older than ${StaleRunMinutes}m: $($active.databaseId) $($active.url). Requesting cancellation."
+  & $Gh run cancel $($active.databaseId)
+  if ($LASTEXITCODE -ne 0) {
+    Write-Log "ERROR: failed to cancel stale run $($active.databaseId)."
+    throw "Failed to cancel stale run $($active.databaseId)."
+  }
+
+  $cancelled = $false
+  for ($attempt = 1; $attempt -le 6; $attempt++) {
+    Start-Sleep -Seconds 10
+    $stateJson = & $Gh run view $($active.databaseId) --json status,conclusion
+    if ($LASTEXITCODE -ne 0) {
+      Write-Log "WARN: failed to re-check stale run $($active.databaseId) after cancel request."
+      continue
+    }
+    $state = $stateJson | ConvertFrom-Json
+    if ($state.status -eq "completed") {
+      $cancelled = $true
+      break
+    }
+  }
+
+  if (-not $cancelled) {
+    Write-Log "WARN: stale run $($active.databaseId) is still active after cancel request; skip retrigger for now."
+    exit 0
+  }
+
+  Write-Log "Stale run $($active.databaseId) finished after cancellation; continuing with retrigger."
 }
 
 Write-Log "$Slot slot has no successful or active run since $($slotTime.ToString('yyyy-MM-dd HH:mm:ss')); triggering $WorkflowFile."
