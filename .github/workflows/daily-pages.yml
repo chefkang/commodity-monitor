@@ -23,7 +23,7 @@ jobs:
       should_run: ${{ steps.guard.outputs.should_run }}
       skip_reason: ${{ steps.guard.outputs.skip_reason }}
     steps:
-      - name: Check duplicate scheduled run
+      - name: Check overlapping scheduled run
         id: guard
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -73,6 +73,7 @@ jobs:
           with urllib.request.urlopen(req, timeout=30) as resp:
               payload = json.load(resp)
 
+          blocking_run = None
           for run in payload.get("workflow_runs", []):
               if int(run["id"]) == run_id:
                   continue
@@ -82,13 +83,16 @@ jobs:
               if created < slot_utc:
                   continue
               status = run.get("status")
-              conclusion = run.get("conclusion")
-              if status != "completed" or conclusion == "success":
-                  set_output("should_run", "false")
-                  reason = f"同一档已有运行记录：{run['id']} {run['html_url']}"
-                  set_output("skip_reason", reason)
-                  print(reason)
-                  raise SystemExit(0)
+              if status != "completed":
+                  blocking_run = run
+                  break
+
+          if blocking_run:
+              set_output("should_run", "false")
+              reason = f"同一档已有运行中的记录：{blocking_run['id']} {blocking_run['html_url']}"
+              set_output("skip_reason", reason)
+              print(reason)
+              raise SystemExit(0)
 
           set_output("should_run", "true")
           set_output("skip_reason", "")
