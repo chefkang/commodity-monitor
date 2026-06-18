@@ -18,11 +18,11 @@ def copy_file(source: Path, target: Path) -> None:
 
 
 def runtime_loader(app_script: str, asset_version: str, *, include_internal_quotes: bool = False) -> str:
-    next_loader = f'loadScript("./{app_script}?v={asset_version}");'
+    next_loader = f'loadScript("./{app_script}?v={asset_version}&ts=" + stamp);'
     if include_internal_quotes:
         next_loader = (
             'loadScript("./internal-quotes.js?ts=" + stamp, function () {\n'
-            f'            loadScript("./{app_script}?v={asset_version}");\n'
+            f'            loadScript("./{app_script}?v={asset_version}&ts=" + stamp);\n'
             '          }, { "data-local-only": "true" });'
         )
 
