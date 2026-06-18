@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>迈瑟伦原材料智能分析助手</title>
+    <link rel="icon" href="/assets/maxcellent-favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="side-panel">
+        <div class="brand-block">
+          <img src="/assets/maxcellent-logo-on-theme.png" alt="MAXCELLENT 迈瑟伦" />
+          <div>
+            <p class="eyebrow">Local AI Agent</p>
+            <h1>原材料智能分析助手</h1>
+            <p class="subline">读取本地公开监测结果，再联网补充当天行情与扰动。</p>
+          </div>
+        </div>
+
+        <section class="status-card">
+          <div class="status-head">
+            <span>运行状态</span>
+            <strong id="statusBadge">检测中</strong>
+          </div>
+          <dl class="status-grid">
+            <div>
+              <dt>本地刷新</dt>
+              <dd id="latestGeneratedAt">-</dd>
+            </div>
+            <div>
+              <dt>跟踪品种</dt>
+              <dd id="trackedCount">-</dd>
+            </div>
+            <div>
+              <dt>快速模型</dt>
+              <dd id="quickModel">-</dd>
+            </div>
+            <div>
+              <dt>研究模型</dt>
+              <dd id="researchModel">-</dd>
+            </div>
+          </dl>
+          <div id="setupNotice" class="setup-notice hidden"></div>
+        </section>
+
+        <section class="guide-card">
+          <p class="eyebrow">能力边界</p>
+          <ul>
+            <li>只读取本地公开监测产物，不读取内部采购和库存目录。</li>
+            <li>会区分真实公开行情、公开基准价、上游代理指标。</li>
+            <li>需要最新外部信息时，自动联网检索并附可点击来源。</li>
+          </ul>
+        </section>
+
+        <section class="prompt-card">
+          <p class="eyebrow">常用追问</p>
+          <div class="prompt-list" id="promptList">
+            <button type="button" data-prompt="今天哪些原材料最值得盯盘，为什么？">今天哪些原材料最值得盯盘，为什么？</button>
+            <button type="button" data-prompt="铜、铝、ABS 的短线风险和采购动作分别是什么？">铜、铝、ABS 的短线风险和采购动作分别是什么？</button>
+            <button type="button" data-prompt="请结合今天的本地监测和联网新闻，判断未来一周成本压力会不会抬升。">未来一周成本压力会不会抬升？</button>
+            <button type="button" data-prompt="把今天的行情结论整理成老板能直接看的短汇报。">整理成老板能直接看的短汇报。</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="workspace">
+        <header class="hero-card">
+          <div>
+            <p class="eyebrow">Procurement Copilot</p>
+            <h2>把本地监测、历史走势和当天外部情报放进同一轮分析</h2>
+            <p class="hero-copy">
+              适合回答“今天为什么涨”“哪些材料只是代理指标”“现在该锁价还是观察”“把今天结论整理成经营语言”这类问题。
+            </p>
+          </div>
+          <div class="hero-actions">
+            <div class="mode-toggle" id="modeToggle">
+              <button type="button" class="active" data-mode="quick">快速判断</button>
+              <button type="button" data-mode="research">联网研究</button>
+            </div>
+            <button type="button" class="ghost-button" id="resetButton">新会话</button>
+          </div>
+        </header>
+
+        <section class="meta-strip">
+          <div class="meta-pill">
+            <span>公开站点</span>
+            <a href="https://chefkang.github.io/commodity-monitor/" target="_blank" rel="noreferrer">查看线上日报</a>
+          </div>
+          <div class="meta-pill">
+            <span>当前模式</span>
+            <strong id="activeModeLabel">快速判断</strong>
+          </div>
+          <div class="meta-pill">
+            <span>Key 状态</span>
+            <strong id="keyStatus">检测中</strong>
+          </div>
+        </section>
+
+        <section class="chat-card">
+          <div class="chat-head">
+            <div>
+              <p class="eyebrow">对话区</p>
+              <h3>原材料行情分析</h3>
+            </div>
+            <p class="chat-note">同一个会话里的追问会沿用上一轮上下文。</p>
+          </div>
+
+          <div id="errorBanner" class="error-banner hidden"></div>
+          <div id="chatFeed" class="chat-feed"></div>
+
+          <form id="composer" class="composer">
+            <label class="composer-label" for="questionInput">输入问题</label>
+            <textarea
+              id="questionInput"
+              name="question"
+              rows="5"
+              placeholder="例如：今天铜、铝、ABS 哪些是真的公开价格，哪些只是代理指标？我现在该怎么安排采购节奏？"
+            ></textarea>
+            <div class="composer-actions">
+              <span class="composer-tip">快速判断更适合日常盯盘；联网研究适合做更完整的原因追踪和对外部风险归因。</span>
+              <button type="submit" id="submitButton">开始分析</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

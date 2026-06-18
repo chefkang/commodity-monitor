@@ -16,6 +16,17 @@ GitHub Actions 每天北京时间 10:00 和 15:00 自动刷新数据、发布网
 - `打开大宗商品价格看板.cmd`：打开趋势看板。
 - `刷新数据并打开看板.cmd`：刷新数据并打开看板。
 - `run_daily.ps1`：本地自动刷新脚本。
+- `打开大宗商品智能分析助手.cmd`：打开本地-only 大模型联网分析助手。
+
+## 本地智能分析助手
+
+新增了一个本地-only 的大模型联网智能体入口：
+
+- 页面入口：`打开大宗商品智能分析助手.cmd`
+- 后端脚本：`scripts/commodity_agent_server.py`
+- 使用说明：`docs/AI_AGENT_LOCAL.md`
+
+这个助手会优先读取本地公开监测结果 `data/latest.json` 和最近简报，再按需要通过 OpenAI Responses API 的 `web_search` 联网补充当天外部信息。它不会把 API key 暴露到 GitHub Pages，也不会读取 `.private/`、`data/internal/`、`runtime/internal/`。
 
 ## 数据文件
 
