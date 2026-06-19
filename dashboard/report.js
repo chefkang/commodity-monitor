@@ -133,7 +133,11 @@
     return `${String(parts.month).padStart(2, "0")}/${String(parts.day).padStart(2, "0")} ${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
   }
 
-  function latestTradingDateValue() {
+  function declaredLatestTradingDateValue() {
+    return String(data.latest_trade_date || "").trim();
+  }
+
+  function latestItemDateValue() {
     const dates = data.latest
       .map((item) => String(item && item.date ? item.date : "").trim())
       .filter(Boolean)
@@ -141,8 +145,26 @@
     return dates.length ? dates[dates.length - 1] : "";
   }
 
+  function latestTradingDateValue() {
+    return declaredLatestTradingDateValue() || latestItemDateValue();
+  }
+
+  function todayBeijingDateValue(value = new Date()) {
+    const parts = beijingParts(value);
+    return `${String(parts.year).padStart(4, "0")}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`;
+  }
+
   function latestTradingDateLabel() {
     return latestTradingDateValue() || "等待数据";
+  }
+
+  function latestTradingDateMismatchNote() {
+    const declaredDate = declaredLatestTradingDateValue();
+    const itemDate = latestItemDateValue();
+    if (declaredDate && itemDate && declaredDate !== itemDate) {
+      return `系统最新交易日按刷新状态显示为 ${declaredDate}；单项价格明细里的日期当前仍多为 ${itemDate}，这是明细口径，不等于页面未刷新。`;
+    }
+    return "";
   }
 
   function nextPlannedRefresh() {
@@ -197,7 +219,10 @@
 
   function refreshStateDetailText(notice, nextRefresh, tradingDate) {
     if (notice && notice.level === "info") {
-      return `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；当前看到最新交易日 ${tradingDate} 属于正常等待，不是故障。`;
+      if (notice.mode === "early-refreshed") {
+        return `现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`;
+      }
+      return `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`;
     }
     if (notice && notice.lines && notice.lines.length) {
       const tail = notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
@@ -214,10 +239,18 @@
   }
 
   function refreshTradingDateDetailText(notice, tradingDate) {
+    const mismatchNote = latestTradingDateMismatchNote();
     if (notice && notice.level === "info") {
-      return `这里显示的是交易日。清晨看到 ${tradingDate} 很正常，真正判断今天是否已刷新请看“刷新时间”。`;
+      if (notice.mode === "early-refreshed") {
+        return mismatchNote
+          ? `这里显示的交易日已经提前切到 ${tradingDate}，说明今天首轮监测已经到位。${mismatchNote}`
+          : `这里显示的交易日已经提前切到 ${tradingDate}，说明今天首轮监测已经到位。`;
+      }
+      return mismatchNote
+        ? `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。${mismatchNote}`
+        : `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。`;
     }
-    return "价格明细里的日期代表交易日，不等于页面刷新时间。";
+    return mismatchNote || "价格明细里的日期代表交易日，不等于页面刷新时间。";
   }
 
   function refreshNextSlotDetailText(nextRefresh) {
@@ -247,7 +280,11 @@
 
   function renderPageTitle(notice, nextRefresh) {
     if (notice && notice.level === "info") {
-      document.title = `系统正常，等待 ${nextRefresh.label} 首刷 | 迈瑟伦原材料价格日报`;
+      if (notice.mode === "early-refreshed") {
+        document.title = "今日首轮已提前刷新 | 迈瑟伦原材料价格日报";
+        return;
+      }
+      document.title = `系统正常，10:20 前属正常等待 | 迈瑟伦原材料价格日报`;
       return;
     }
     if (notice && notice.level === "warning") {
@@ -270,13 +307,28 @@
     const afternoonSlot = beijingSlotTime(parts, 15);
     const yesterdayAfternoon = new Date(afternoonSlot.getTime());
     yesterdayAfternoon.setUTCDate(yesterdayAfternoon.getUTCDate() - 1);
+    const todayTradeDate = todayBeijingDateValue(now);
+    const latestTradeDate = latestTradingDateValue();
 
     if (currentMinutes < 10 * 60) {
+      if (latestTradeDate && latestTradeDate === todayTradeDate && generatedAt >= yesterdayAfternoon) {
+        return {
+          level: "info",
+          mode: "early-refreshed",
+          headerLabel: "今日首轮已提前刷新",
+          title: "今天首轮数据已经提前更新",
+          lines: [
+            `现在是北京时间 ${beijingClockLabel(now)}，虽然还没到 10:00 首轮刷新窗口，但今天的数据已经在 ${dateText(data.generated_at)} 提前落地。`,
+            `当前最新交易日已经更新为 ${latestTradingDateLabel()}，说明今天上午这轮监测已经到位。`,
+            `下一次计划刷新仍是 ${nextPlannedRefresh().label} 左右；当前页面显示的是今天首轮结果。`,
+          ],
+        };
+      }
       if (generatedAt >= yesterdayAfternoon && generatedAt < morningSlot) {
         return {
           level: "info",
-          headerLabel: "系统正常，未到首轮刷新",
-          title: "系统正常，今天首轮刷新还没开始",
+          headerLabel: "系统正常，10:20前属正常等待",
+          title: "系统正常，今天 10:20 前仍属正常等待",
           lines: [
             `现在是北京时间 ${beijingClockLabel(now)}，下一次计划刷新时间约为 ${beijingClockLabel(morningSlot)}。`,
             `当前价格明细对应的最新交易日是 ${latestTradingDateLabel()}，清晨在 10:00 前看到它仍属正常。`,
@@ -397,8 +449,12 @@
     if (notice && notice.headerLabel) {
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
+        if (notice.mode === "early-refreshed") {
+          el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}`;
+          return;
+        }
         const countdown = countdownLabel(nextRefresh.time);
-        el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 当前显示 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}`;
+        el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}`;
         return;
       }
       el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 当前显示上一监测时段 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}`;
