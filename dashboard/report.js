@@ -158,6 +158,62 @@
     return latestTradingDateValue() || "等待数据";
   }
 
+  function tradeDateDistribution() {
+    if (Array.isArray(data.trade_date_distribution) && data.trade_date_distribution.length) {
+      return data.trade_date_distribution
+        .map((entry) => ({
+          date: String(entry && entry.date ? entry.date : "").trim(),
+          count: Number(entry && entry.count ? entry.count : 0),
+        }))
+        .filter((entry) => entry.date && Number.isFinite(entry.count) && entry.count > 0)
+        .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+    }
+
+    const counts = new Map();
+    data.latest.forEach((item) => {
+      const tradeDate = String(item && item.date ? item.date : "").trim();
+      if (!tradeDate) {
+        return;
+      }
+      counts.set(tradeDate, (counts.get(tradeDate) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .map(([tradeDate, count]) => ({ date: tradeDate, count }))
+      .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+  }
+
+  function tradeDateCoverageSummary() {
+    const distribution = tradeDateDistribution();
+    if (!distribution.length) {
+      return null;
+    }
+    const latestTradeDate = latestTradingDateValue();
+    const latestEntry = distribution.find((entry) => entry.date === latestTradeDate) || null;
+    const totalCount = distribution.reduce((sum, entry) => sum + entry.count, 0);
+    const dominantEntry = distribution[0] || null;
+    return {
+      distribution,
+      totalCount,
+      latestTradeDate,
+      latestTradeDateCount: latestEntry ? latestEntry.count : 0,
+      dominantTradeDate: dominantEntry ? dominantEntry.date : "",
+      dominantTradeDateCount: dominantEntry ? dominantEntry.count : 0,
+      mixedTradeDates: distribution.length > 1,
+      laggingCount: Math.max(totalCount - (latestEntry ? latestEntry.count : 0), 0),
+    };
+  }
+
+  function tradeDateCoverageNote() {
+    const coverage = tradeDateCoverageSummary();
+    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+      return "";
+    }
+    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+      return `当前 ${coverage.totalCount} 个跟踪品类里，只有 ${coverage.latestTradeDateCount} 个已经切到 ${coverage.latestTradeDate}，仍有 ${coverage.laggingCount} 个停留在 ${coverage.dominantTradeDate}；这说明今天脚本已经执行，但多数上游价格源尚未全面换日。`;
+    }
+    return `当前 ${coverage.totalCount} 个跟踪品类里，最新交易日 ${coverage.latestTradeDate} 仅覆盖了 ${coverage.latestTradeDateCount} 个，其余 ${coverage.laggingCount} 个仍停留在更早交易日；这说明今天脚本已经执行，但不同上游价格源的换日节奏并不一致。`;
+  }
+
   function latestTradingDateMismatchNote() {
     const declaredDate = declaredLatestTradingDateValue();
     const itemDate = latestItemDateValue();
@@ -218,15 +274,23 @@
   }
 
   function refreshStateDetailText(notice, nextRefresh, tradingDate) {
+    const coverageNote = tradeDateCoverageNote();
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
-        return `现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`;
+        return [`现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`, coverageNote]
+          .filter(Boolean)
+          .join(" ");
       }
-      return `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`;
+      return [`现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`, coverageNote]
+        .filter(Boolean)
+        .join(" ");
     }
     if (notice && notice.lines && notice.lines.length) {
       const tail = notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
-      return [notice.lines[0], tail].filter(Boolean).join(" ");
+      return [notice.lines[0], tail, coverageNote].filter(Boolean).join(" ");
+    }
+    if (coverageNote) {
+      return `当前页面已加载 ${dateText(data.generated_at)} 的最新结果。${coverageNote}`;
     }
     return `当前页面已加载 ${dateText(data.generated_at)} 的最新结果。`;
   }
@@ -240,17 +304,20 @@
 
   function refreshTradingDateDetailText(notice, tradingDate) {
     const mismatchNote = latestTradingDateMismatchNote();
+    const coverageNote = tradeDateCoverageNote();
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
-        return mismatchNote
+        const baseText = mismatchNote
           ? `这里显示的交易日已经提前切到 ${tradingDate}，说明今天首轮监测已经到位。${mismatchNote}`
           : `这里显示的交易日已经提前切到 ${tradingDate}，说明今天首轮监测已经到位。`;
+        return [baseText, coverageNote].filter(Boolean).join("");
       }
-      return mismatchNote
+      const baseText = mismatchNote
         ? `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。${mismatchNote}`
         : `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。`;
+      return [baseText, coverageNote].filter(Boolean).join("");
     }
-    return mismatchNote || "价格明细里的日期代表交易日，不等于页面刷新时间。";
+    return coverageNote || mismatchNote || "价格明细里的日期代表交易日，不等于页面刷新时间。";
   }
 
   function refreshNextSlotDetailText(nextRefresh) {
@@ -259,7 +326,7 @@
     return `${countdown ? `${countdown}进入下一轮计划刷新窗口；` : ""}过了 ${cutoff} 仍不变化，再按异常处理。`;
   }
 
-  function applyRefreshCardTone(notice) {
+  function applyRefreshCardTone(notice, coverage) {
     const stateCard = el("refreshStateLabel") ? el("refreshStateLabel").closest(".refresh-status-card") : null;
     const nextSlotCard = el("refreshNextSlot") ? el("refreshNextSlot").closest(".refresh-status-card") : null;
     [stateCard, nextSlotCard].forEach((card) => {
@@ -268,6 +335,13 @@
       }
     });
     if (!notice) {
+      if (coverage && coverage.mixedTradeDates && coverage.laggingCount > 0) {
+        [stateCard, nextSlotCard].forEach((card) => {
+          if (card) {
+            card.classList.add("info-tone");
+          }
+        });
+      }
       return;
     }
     const toneClass = notice.level === "warning" ? "warning-tone" : "info-tone";
@@ -278,7 +352,7 @@
     });
   }
 
-  function renderPageTitle(notice, nextRefresh) {
+  function renderPageTitle(notice, nextRefresh, coverage) {
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
         document.title = "今日首轮已提前刷新 | 迈瑟伦原材料价格日报";
@@ -289,6 +363,10 @@
     }
     if (notice && notice.level === "warning") {
       document.title = `${notice.title} | 迈瑟伦原材料价格日报`;
+      return;
+    }
+    if (coverage && coverage.mixedTradeDates && coverage.laggingCount > 0) {
+      document.title = "今天已刷新，但行情日期混合 | 迈瑟伦原材料价格日报";
       return;
     }
     document.title = "迈瑟伦原材料价格日报";
@@ -445,7 +523,7 @@
     const nextRefresh = nextPlannedRefresh();
     const updatedLabel = dateText(data.generated_at);
     const tradingDate = latestTradingDateLabel();
-    renderPageTitle(notice, nextRefresh);
+    renderPageTitle(notice, nextRefresh, tradeDateCoverageSummary());
     if (notice && notice.headerLabel) {
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
@@ -513,7 +591,12 @@
     const notice = freshnessNotice();
     const nextRefresh = nextPlannedRefresh();
     const tradingDate = latestTradingDateLabel();
-    const stateLabel = notice ? (notice.headerLabel || notice.title) : "已覆盖当前时段";
+    const coverage = tradeDateCoverageSummary();
+    const stateLabel = notice
+      ? (notice.headerLabel || notice.title)
+      : coverage && coverage.mixedTradeDates && coverage.laggingCount > 0
+        ? "今天已刷新，但行情日期混合"
+        : "已覆盖当前时段";
     const stateDetail = refreshStateDetailText(notice, nextRefresh, tradingDate);
     const generatedDetail = refreshGeneratedDetailText();
     const nextSlotDetail = refreshNextSlotDetailText(nextRefresh);
@@ -533,7 +616,7 @@
     setText("refreshTradingDateDetail", refreshTradingDateDetailText(notice, tradingDate));
     setText("refreshNextSlot", nextRefresh.label);
     setText("refreshNextSlotDetail", nextSlotDetail);
-    applyRefreshCardTone(notice);
+    applyRefreshCardTone(notice, coverage);
   }
 
   function refreshLiveStatus() {

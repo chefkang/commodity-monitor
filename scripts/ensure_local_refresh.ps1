@@ -40,6 +40,36 @@ function Read-JsonFile {
   }
 }
 
+function Get-LatestTradeDate {
+  param($Payload)
+
+  if (-not $Payload) {
+    return $null
+  }
+
+  $declaredLatestTradeDate = ""
+  if ($Payload.PSObject.Properties.Name -contains "latest_trade_date") {
+    $declaredLatestTradeDate = [string]$Payload.latest_trade_date
+  }
+  if (-not [string]::IsNullOrWhiteSpace($declaredLatestTradeDate)) {
+    return $declaredLatestTradeDate.Trim()
+  }
+
+  $dates = @()
+  foreach ($item in @($Payload.latest)) {
+    $dateText = [string]$item.date
+    if (-not [string]::IsNullOrWhiteSpace($dateText)) {
+      $dates += $dateText.Trim()
+    }
+  }
+
+  if (-not $dates) {
+    return $null
+  }
+
+  return ($dates | Sort-Object -Descending | Select-Object -First 1)
+}
+
 function Get-LocalState {
   $latest = Read-JsonFile -Path $LatestJson
   $news = Read-JsonFile -Path $NewsJson
@@ -58,13 +88,14 @@ function Get-LocalState {
 
   return [pscustomobject]@{
     generated_at = $generatedAt
+    latest_trade_date = Get-LatestTradeDate -Payload $latest
     latest_news_count = $latestNewsCount
     cache_news_count = $cacheNewsCount
     mismatch = ($latestNewsCount -eq 0 -and $cacheNewsCount -gt 0)
   }
 }
 
-function Test-LocalPayloadHealthy {
+function Test-MorningTradeDateReady {
   param(
     $State,
     [datetime]$SlotTime
@@ -74,7 +105,41 @@ function Test-LocalPayloadHealthy {
     return $false
   }
 
-  return ($State.generated_at -ge $SlotTime -and -not $State.mismatch)
+  $latestTradeDate = [string]$State.latest_trade_date
+  if ([string]::IsNullOrWhiteSpace($latestTradeDate)) {
+    return $false
+  }
+
+  return (
+    $latestTradeDate -eq $SlotTime.ToString("yyyy-MM-dd") -and
+    $State.generated_at.Date -eq $SlotTime.Date
+  )
+}
+
+function Test-LocalPayloadHealthy {
+  param(
+    $State,
+    [datetime]$SlotTime,
+    [string]$Slot
+  )
+
+  if (-not $State -or -not $State.generated_at) {
+    return $false
+  }
+
+  if ($State.mismatch) {
+    return $false
+  }
+
+  if ($State.generated_at -ge $SlotTime) {
+    return $true
+  }
+
+  if ($Slot -eq "morning" -and (Test-MorningTradeDateReady -State $State -SlotTime $SlotTime)) {
+    return $true
+  }
+
+  return $false
 }
 
 $mutex = New-Object System.Threading.Mutex($false, $MutexName)
@@ -99,7 +164,7 @@ try {
   }
 
   $state = Get-LocalState
-  if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime) {
+  if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot) {
     Write-Log "$Slot slot already refreshed locally at $($state.generated_at.ToString('yyyy-MM-dd HH:mm:ss'))."
     exit 0
   }
@@ -131,10 +196,17 @@ try {
     }
 
     $state = Get-LocalState
-    if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime) {
+    if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot) {
       Write-Log "$Slot slot local refresh completed at $($state.generated_at.ToString('yyyy-MM-dd HH:mm:ss'))."
       exit 0
     }
+  }
+
+  $finalNow = Get-Date
+  if ($Slot -eq "morning" -and $finalNow -lt $slotTime) {
+    $tradeDateText = if ($state -and $state.latest_trade_date) { [string]$state.latest_trade_date } else { "unknown" }
+    Write-Log "$Slot slot ran before the official window. Latest trade date is still $tradeDateText, so the next retry window will continue waiting for today's data."
+    exit 0
   }
 
   if ($state -and $state.generated_at) {

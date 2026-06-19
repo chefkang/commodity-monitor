@@ -14,7 +14,7 @@ import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -824,6 +824,7 @@ def make_latest(config: dict[str, Any], prices: pd.DataFrame, news: list[dict[st
         "tracked_count": len(latest_rows),
         "news_risk_count": news_risk,
     }
+    summary.update(build_trade_date_summary(latest_rows))
     latest_rows.sort(key=lambda item: (item["risk_level"] != "高", -item["up_probability"], item["material_name"]))
     return latest_rows, summary
 
@@ -1007,6 +1008,36 @@ def fmt_pct(value: Any) -> str:
     return f"{sign}{number:.2f}%"
 
 
+def build_trade_date_summary(latest_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    dates = [str(item.get("date", "")).strip() for item in latest_rows if str(item.get("date", "")).strip()]
+    if not dates:
+        return {
+            "latest_trade_date": None,
+            "latest_trade_date_count": 0,
+            "dominant_trade_date": None,
+            "dominant_trade_date_count": 0,
+            "mixed_trade_dates": False,
+            "trade_date_distribution": [],
+        }
+
+    counts = Counter(dates)
+    latest_trade_date = max(counts)
+    latest_trade_date_count = counts.get(latest_trade_date, 0)
+    dominant_trade_date, dominant_trade_date_count = max(counts.items(), key=lambda item: (item[1], item[0]))
+    distribution = [
+        {"date": trade_date, "count": count}
+        for trade_date, count in sorted(counts.items(), key=lambda item: (item[1], item[0]), reverse=True)
+    ]
+    return {
+        "latest_trade_date": latest_trade_date,
+        "latest_trade_date_count": latest_trade_date_count,
+        "dominant_trade_date": dominant_trade_date,
+        "dominant_trade_date_count": dominant_trade_date_count,
+        "mixed_trade_dates": len(counts) > 1,
+        "trade_date_distribution": distribution,
+    }
+
+
 def write_dashboard_data(
     config: dict[str, Any],
     latest: list[dict[str, Any]],
@@ -1020,6 +1051,12 @@ def write_dashboard_data(
     payload = {
         "generated_at": now_cn().isoformat(),
         "currency": config["settings"].get("base_currency", "CNY"),
+        "latest_trade_date": summary.get("latest_trade_date"),
+        "latest_trade_date_count": summary.get("latest_trade_date_count", 0),
+        "dominant_trade_date": summary.get("dominant_trade_date"),
+        "dominant_trade_date_count": summary.get("dominant_trade_date_count", 0),
+        "mixed_trade_dates": bool(summary.get("mixed_trade_dates")),
+        "trade_date_distribution": summary.get("trade_date_distribution", []),
         "summary": summary,
         "latest": latest,
         "history": history,
