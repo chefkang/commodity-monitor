@@ -99,6 +99,8 @@
       "provider": "akshare_basis",
       "symbol": "CU",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/524-%E9%93%9C.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "铜",
         "电解铜",
@@ -118,6 +120,8 @@
       "provider": "akshare_basis",
       "symbol": "AL",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/482-%E9%93%9D.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "铝",
         "氧化铝",
@@ -137,6 +141,8 @@
       "provider": "akshare_basis",
       "symbol": "SN",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/492-%E9%94%A1.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "锡",
         "锡锭",
@@ -155,6 +161,8 @@
       "provider": "akshare_basis",
       "symbol": "LC",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/733-%E7%A2%B3%E9%85%B8%E9%94%82.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "碳酸锂",
         "锂盐",
@@ -191,6 +199,8 @@
       "provider": "akshare_basis",
       "symbol": "PP",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/718-PP.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "PP",
         "聚丙烯",
@@ -207,6 +217,8 @@
       "provider": "akshare_basis",
       "symbol": "V",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/107-PVC.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "PVC",
         "聚氯乙烯",
@@ -239,6 +251,8 @@
       "provider": "akshare_basis",
       "symbol": "L",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/435-LLDPE.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "LLDPE",
         "线性低密度聚乙烯",
@@ -323,6 +337,8 @@
       "provider": "akshare_basis",
       "symbol": "SI",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/238-%E9%87%91%E5%B1%9E%E7%A1%85.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "工业硅",
         "金属硅",
@@ -339,6 +355,8 @@
       "provider": "akshare_basis",
       "symbol": "RU",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/586-%E5%A4%A9%E7%84%B6%E6%A9%A1%E8%83%B6.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "天然橡胶",
         "橡胶",
@@ -388,6 +406,8 @@
       "provider": "akshare_basis",
       "symbol": "SP",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/958-%E6%9C%A8%E6%B5%86.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "纸浆",
         "木浆",
@@ -423,6 +443,8 @@
       "provider": "akshare_basis",
       "symbol": "EB",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/168-%E8%8B%AF%E4%B9%99%E7%83%AF",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "苯乙烯",
         "styrene",
@@ -560,6 +582,8 @@
       "provider": "akshare_basis",
       "symbol": "NI",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/432-%E9%95%8D",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "镍",
         "镀镍",
@@ -576,6 +600,8 @@
       "provider": "akshare_basis",
       "symbol": "ZN",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/431-%E9%94%8C.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "锌",
         "镀锌",
@@ -592,6 +618,8 @@
       "provider": "akshare_basis",
       "symbol": "HC",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/195-%E7%83%AD%E8%BD%A7%E6%9D%BF%E5%8D%B7",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "热轧卷板",
         "钢材",
@@ -609,6 +637,8 @@
       "provider": "akshare_basis",
       "symbol": "I",
       "source_name": "AKShare/生意社现货与期货",
+      "sunsirs_url": "https://m1.100ppi.com/vane/961-%E9%93%81%E7%9F%BF%E7%9F%B3.html",
+      "sunsirs_source_name": "生意社基准价",
       "keywords": [
         "铁矿石",
         "钢厂",

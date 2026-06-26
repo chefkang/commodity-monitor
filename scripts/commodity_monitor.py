@@ -388,11 +388,14 @@ def fetch_sunsirs_vane_records(config: dict[str, Any], today: date) -> list[Pric
     records: list[PriceRecord] = []
     session = requests.Session()
     for material in config["materials"]:
-        if material.get("provider") != "sunsirs_vane":
-            continue
-        url = material.get("url")
+        url = material.get("url") if material.get("provider") == "sunsirs_vane" else material.get("sunsirs_url")
         if not url:
             continue
+        source_name = (
+            material.get("source_name", "生意社基准价")
+            if material.get("provider") == "sunsirs_vane"
+            else material.get("sunsirs_source_name", "生意社基准价")
+        )
         try:
             html = get_with_100ppi_check(session, url)
             soup = BeautifulSoup(html, "lxml")
@@ -410,7 +413,7 @@ def fetch_sunsirs_vane_records(config: dict[str, Any], today: date) -> list[Pric
                     category=material["category"],
                     price=math.nan,
                     unit=material.get("unit", "元/吨"),
-                    source=material.get("source_name", "生意社"),
+                    source=source_name,
                     provider="sunsirs_vane",
                     notes=f"抓取失败: {type(exc).__name__}: {exc}",
                 )
@@ -440,7 +443,7 @@ def fetch_sunsirs_vane_records(config: dict[str, Any], today: date) -> list[Pric
                         category=material["category"],
                         price=price,
                         unit=material.get("unit", "元/吨"),
-                        source=material.get("source_name", "生意社基准价"),
+                        source=source_name,
                         provider="sunsirs_vane",
                         source_date=infer_mmdd(raw_date, today),
                         daily_change_pct=clean_float(raw_change),
@@ -945,6 +948,7 @@ def make_brief(config: dict[str, Any], latest: list[dict[str, Any]], summary: di
 def write_brief_markdown(brief: dict[str, Any]) -> Path:
     day = brief["date"]
     path = BRIEFS_DIR / f"{day}.md"
+    trade_date_note = format_trade_date_coverage_note(brief["summary"])
     lines = [
         f"# 大宗商品价格监测简报 {day}",
         "",
@@ -954,6 +958,8 @@ def write_brief_markdown(brief: dict[str, Any]) -> Path:
         f"- 今日上涨品种: {brief['summary'].get('rising_count', 0)} 个",
         f"- 跟踪品种: {brief['summary'].get('tracked_count', 0)} 个",
     ]
+    if trade_date_note:
+        lines.append(f"- 行情日期覆盖: {trade_date_note}")
     refresh_warnings = brief["summary"].get("refresh_warnings", [])
     if refresh_warnings:
         lines.extend(["", "## 刷新告警"])
@@ -998,6 +1004,24 @@ def write_brief_markdown(brief: dict[str, Any]) -> Path:
     )
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
+
+
+def format_trade_date_coverage_note(summary: dict[str, Any]) -> str:
+    total_count = int(summary.get("tracked_count") or 0)
+    latest_trade_date = summary.get("latest_trade_date")
+    latest_count = int(summary.get("latest_trade_date_count") or 0)
+    dominant_trade_date = summary.get("dominant_trade_date")
+    dominant_count = int(summary.get("dominant_trade_date_count") or 0)
+    if not latest_trade_date or not total_count:
+        return ""
+    if summary.get("mixed_trade_dates") and latest_count < total_count:
+        if dominant_trade_date and dominant_trade_date != latest_trade_date:
+            return (
+                f"{latest_count}/{total_count} 个品类已到 {latest_trade_date}，"
+                f"{dominant_count} 个主行情品类仍停留在 {dominant_trade_date}"
+            )
+        return f"{latest_count}/{total_count} 个品类已到 {latest_trade_date}，其余仍为更早交易日"
+    return f"{latest_trade_date} 已覆盖 {latest_count}/{total_count} 个品类"
 
 
 def fmt_pct(value: Any) -> str:

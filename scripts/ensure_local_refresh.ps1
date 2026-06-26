@@ -70,9 +70,58 @@ function Get-LatestTradeDate {
   return ($dates | Sort-Object -Descending | Select-Object -First 1)
 }
 
+function Get-TradeDateCoverage {
+  param($Payload)
+
+  $dates = @()
+  if (-not $Payload) {
+    return [pscustomobject]@{
+      latest_trade_date = $null
+      latest_trade_date_count = 0
+      dominant_trade_date = $null
+      dominant_trade_date_count = 0
+      latest_item_count = 0
+      mixed_trade_dates = $false
+    }
+  }
+
+  foreach ($item in @($Payload.latest)) {
+    $dateText = [string]$item.date
+    if (-not [string]::IsNullOrWhiteSpace($dateText)) {
+      $dates += $dateText.Trim()
+    }
+  }
+
+  if (-not $dates) {
+    return [pscustomobject]@{
+      latest_trade_date = $null
+      latest_trade_date_count = 0
+      dominant_trade_date = $null
+      dominant_trade_date_count = 0
+      latest_item_count = 0
+      mixed_trade_dates = $false
+    }
+  }
+
+  $latestTradeDate = Get-LatestTradeDate -Payload $Payload
+  $groups = @($dates | Group-Object | Sort-Object @{ Expression = "Count"; Descending = $true }, @{ Expression = "Name"; Descending = $true })
+  $dominantTradeDate = if ($groups) { [string]$groups[0].Name } else { $latestTradeDate }
+  $dominantTradeDateCount = if ($groups) { [int]$groups[0].Count } else { 0 }
+
+  return [pscustomobject]@{
+    latest_trade_date = $latestTradeDate
+    latest_trade_date_count = @($dates | Where-Object { $_ -eq $latestTradeDate }).Count
+    dominant_trade_date = $dominantTradeDate
+    dominant_trade_date_count = $dominantTradeDateCount
+    latest_item_count = $dates.Count
+    mixed_trade_dates = ($groups.Count -gt 1)
+  }
+}
+
 function Get-LocalState {
   $latest = Read-JsonFile -Path $LatestJson
   $news = Read-JsonFile -Path $NewsJson
+  $coverage = Get-TradeDateCoverage -Payload $latest
 
   $generatedAt = $null
   if ($latest -and $latest.generated_at) {
@@ -88,7 +137,12 @@ function Get-LocalState {
 
   return [pscustomobject]@{
     generated_at = $generatedAt
-    latest_trade_date = Get-LatestTradeDate -Payload $latest
+    latest_trade_date = $coverage.latest_trade_date
+    latest_trade_date_count = $coverage.latest_trade_date_count
+    dominant_trade_date = $coverage.dominant_trade_date
+    dominant_trade_date_count = $coverage.dominant_trade_date_count
+    latest_item_count = $coverage.latest_item_count
+    mixed_trade_dates = $coverage.mixed_trade_dates
     latest_news_count = $latestNewsCount
     cache_news_count = $cacheNewsCount
     mismatch = ($latestNewsCount -eq 0 -and $cacheNewsCount -gt 0)
@@ -120,7 +174,8 @@ function Test-LocalPayloadHealthy {
   param(
     $State,
     [datetime]$SlotTime,
-    [string]$Slot
+    [string]$Slot,
+    [datetime]$Now = (Get-Date)
   )
 
   if (-not $State -or -not $State.generated_at) {
@@ -132,10 +187,18 @@ function Test-LocalPayloadHealthy {
   }
 
   if ($State.generated_at -ge $SlotTime) {
+    if (
+      $State.mixed_trade_dates -and
+      $State.latest_item_count -gt 0 -and
+      $State.latest_trade_date_count -lt $State.latest_item_count -and
+      ((New-TimeSpan -Start $State.generated_at -End $Now).TotalMinutes -ge 45)
+    ) {
+      return $false
+    }
     return $true
   }
 
-  if ($Slot -eq "morning" -and (Test-MorningTradeDateReady -State $State -SlotTime $SlotTime)) {
+  if ($Slot -eq "morning" -and $Now -lt $SlotTime -and (Test-MorningTradeDateReady -State $State -SlotTime $SlotTime)) {
     return $true
   }
 
@@ -164,7 +227,7 @@ try {
   }
 
   $state = Get-LocalState
-  if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot) {
+  if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot -Now $now) {
     Write-Log "$Slot slot already refreshed locally at $($state.generated_at.ToString('yyyy-MM-dd HH:mm:ss'))."
     exit 0
   }
@@ -196,7 +259,7 @@ try {
     }
 
     $state = Get-LocalState
-    if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot) {
+    if (Test-LocalPayloadHealthy -State $state -SlotTime $slotTime -Slot $Slot -Now (Get-Date)) {
       Write-Log "$Slot slot local refresh completed at $($state.generated_at.ToString('yyyy-MM-dd HH:mm:ss'))."
       exit 0
     }

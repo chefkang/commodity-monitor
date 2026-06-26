@@ -225,6 +225,26 @@
     return `当前 ${coverage.totalCount} 个跟踪品类里，最新交易日 ${coverage.latestTradeDate} 仅覆盖了 ${coverage.latestTradeDateCount} 个，其余 ${coverage.laggingCount} 个仍停留在更早交易日；这说明今天脚本已经执行，但不同上游价格源的换日节奏并不一致。`;
   }
 
+  function mixedCoverageStateLabel(coverage) {
+    if (!coverage || !coverage.mixedTradeDates || !coverage.laggingCount) {
+      return "";
+    }
+    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+      return "部分更新，主行情仍是上一交易日";
+    }
+    return "今天已刷新，但行情日期混合";
+  }
+
+  function coverageHeaderSuffix(coverage) {
+    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+      return "";
+    }
+    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+      return ` · ${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项仍为 ${coverage.dominantTradeDate}`;
+    }
+    return ` · ${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项日期较早`;
+  }
+
   function latestTradingDateMismatchNote() {
     const declaredDate = declaredLatestTradingDateValue();
     const itemDate = latestItemDateValue();
@@ -377,7 +397,7 @@
       return;
     }
     if (coverage && coverage.mixedTradeDates && coverage.laggingCount > 0) {
-      document.title = "今天已刷新，但行情日期混合 | 迈瑟伦原材料价格监测";
+      document.title = `${mixedCoverageStateLabel(coverage)} | 迈瑟伦原材料价格监测`;
       return;
     }
     document.title = "迈瑟伦原材料价格监测";
@@ -597,24 +617,26 @@
     const nextRefresh = nextPlannedRefresh();
     const updatedLabel = formatDateTime(data.generated_at);
     const tradingDate = latestTradingDateLabel();
-    renderPageTitle(notice, nextRefresh, tradeDateCoverageSummary());
+    const coverage = tradeDateCoverageSummary();
+    const coverageSuffix = coverageHeaderSuffix(coverage);
+    renderPageTitle(notice, nextRefresh, coverage);
     if (notice && notice.headerLabel) {
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
         if (notice.mode === "early-refreshed") {
-          el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}`;
+          el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
           return;
         }
         const countdown = countdownLabel(nextRefresh.time);
-        el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}`;
+        el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}${coverageSuffix}`;
         return;
       }
-      el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 上一监测结果 ${updatedLabel} · 最新交易日 ${tradingDate}`;
+      el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 上一监测结果 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`;
       return;
     }
     el("updatedAt").textContent = dataSourceLabel
-      ? `${dataSourceLabel}更新 ${updatedLabel} · 最新交易日 ${tradingDate}`
-      : `更新 ${updatedLabel} · 最新交易日 ${tradingDate}`;
+      ? `${dataSourceLabel}更新 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`
+      : `更新 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`;
   }
 
   function initHeader() {
@@ -673,7 +695,7 @@
     const stateLabel = notice
       ? (notice.headerLabel || notice.title)
       : coverage && coverage.mixedTradeDates && coverage.laggingCount > 0
-        ? "今天已刷新，但行情日期混合"
+        ? mixedCoverageStateLabel(coverage)
         : "已覆盖当前时段";
     const stateDetail = refreshStateDetailText(notice, nextRefresh, tradingDate);
     const generatedDetail = refreshGeneratedDetailText();

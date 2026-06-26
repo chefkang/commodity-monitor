@@ -451,6 +451,18 @@ function Test-FreshForSlot {
     return $true
   }
 
+  $nowForSlot = $null
+  if ($Schedule -and $Schedule.PSObject.Properties.Name -contains "now") {
+    try {
+      $nowForSlot = [DateTimeOffset]::Parse([string]$Schedule.now)
+    } catch {
+      $nowForSlot = $null
+    }
+  }
+  if ($nowForSlot -and $nowForSlot.ToLocalTime().DateTime -ge $SlotTime.ToLocalTime().DateTime) {
+    return $false
+  }
+
   return Test-EarlyMorningTradeDateFresh `
     -GeneratedAt $GeneratedAt `
     -LatestTradeDate $LatestTradeDate `
