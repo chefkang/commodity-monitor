@@ -882,6 +882,7 @@
     el("materialSelect").innerHTML = options.join("");
     el("materialSelect").addEventListener("change", (event) => {
       state.selectedMaterial = event.target.value;
+      syncExportSelectionToCurrentMaterial();
       renderChart();
       renderHistoryTable();
     });
@@ -921,6 +922,305 @@
         renderHistoryTable();
       });
     }
+  }
+
+  function initHistoryExpand() {
+    const panel = el("historyPanel");
+    const button = el("historyExpandButton");
+    const closeButton = el("historyCloseExpandButton");
+    if (!panel || !button || !closeButton) return;
+    const setExpanded = (expanded) => {
+      panel.classList.toggle("is-expanded", expanded);
+      document.body.classList.toggle("history-expanded", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+      button.textContent = expanded ? "已全屏查看" : "全屏查看";
+      button.disabled = expanded;
+      if (expanded) panel.querySelector(".history-table-wrap")?.focus({ preventScroll: true });
+    };
+    button.addEventListener("click", () => setExpanded(!panel.classList.contains("is-expanded")));
+    closeButton.addEventListener("click", () => setExpanded(false));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && panel.classList.contains("is-expanded")) setExpanded(false);
+    });
+  }
+
+  function exportMaterialIds() {
+    return Array.from(document.querySelectorAll('#historyExportMaterialList input[type="checkbox"]:checked')).map((input) => input.value);
+  }
+
+  function setExportMaterialIds(ids, customized = false) {
+    const selected = new Set(ids);
+    document.querySelectorAll('#historyExportMaterialList input[type="checkbox"]').forEach((input) => {
+      input.checked = selected.has(input.value);
+    });
+    const list = el("historyExportMaterialList");
+    if (list) list.dataset.customized = customized ? "true" : "false";
+  }
+
+  function initHistoryExport() {
+    const list = el("historyExportMaterialList");
+    const exportButton = el("historyExportButton");
+    if (!list || !exportButton) return;
+
+    const materials = sortMaterialsByCategory(data.latest);
+    list.innerHTML = materials
+      .map((item) => `<label><input type="checkbox" value="${escapeHtml(item.material_id)}" />${escapeHtml(item.material_name)}<span class="neutral">${escapeHtml(item.unit || "")}</span></label>`)
+      .join("");
+    const initialIds = state.selectedMaterial === "index" ? materials.map((item) => item.material_id) : [state.selectedMaterial];
+    setExportMaterialIds(initialIds);
+
+    list.addEventListener("change", () => {
+      list.dataset.customized = "true";
+    });
+    el("historyExportSelectAllButton").addEventListener("click", () => setExportMaterialIds(materials.map((item) => item.material_id), true));
+    el("historyExportClearButton").addEventListener("click", () => setExportMaterialIds([], true));
+    exportButton.addEventListener("click", exportHistoryWorkbook);
+  }
+
+  function syncExportSelectionToCurrentMaterial() {
+    const list = el("historyExportMaterialList");
+    if (!list || list.dataset.customized === "true") return;
+    const ids = state.selectedMaterial === "index" ? data.latest.map((item) => item.material_id) : [state.selectedMaterial];
+    setExportMaterialIds(ids);
+  }
+
+  function xmlEscape(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+  }
+
+  function columnName(index) {
+    let result = "";
+    let value = index + 1;
+    while (value > 0) {
+      const remainder = (value - 1) % 26;
+      result = String.fromCharCode(65 + remainder) + result;
+      value = Math.floor((value - 1) / 26);
+    }
+    return result;
+  }
+
+  function crc32(bytes) {
+    let crc = 0xffffffff;
+    for (const byte of bytes) {
+      crc ^= byte;
+      for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function concatBytes(parts) {
+    const output = new Uint8Array(parts.reduce((total, part) => total + part.length, 0));
+    let offset = 0;
+    for (const part of parts) {
+      output.set(part, offset);
+      offset += part.length;
+    }
+    return output;
+  }
+
+  function createZip(files) {
+    const encoder = new TextEncoder();
+    const localParts = [];
+    const centralParts = [];
+    let localOffset = 0;
+    const now = new Date();
+    const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | Math.floor(now.getSeconds() / 2);
+    const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+
+    for (const file of files) {
+      const nameBytes = encoder.encode(file.name);
+      const body = typeof file.content === "string" ? encoder.encode(file.content) : file.content;
+      const crc = crc32(body);
+      const localHeader = new Uint8Array(30);
+      const localView = new DataView(localHeader.buffer);
+      localView.setUint32(0, 0x04034b50, true);
+      localView.setUint16(4, 20, true);
+      localView.setUint16(6, 0x0800, true);
+      localView.setUint16(8, 0, true);
+      localView.setUint16(10, dosTime, true);
+      localView.setUint16(12, dosDate, true);
+      localView.setUint32(14, crc, true);
+      localView.setUint32(18, body.length, true);
+      localView.setUint32(22, body.length, true);
+      localView.setUint16(26, nameBytes.length, true);
+      localView.setUint16(28, 0, true);
+      localParts.push(localHeader, nameBytes, body);
+
+      const centralHeader = new Uint8Array(46);
+      const centralView = new DataView(centralHeader.buffer);
+      centralView.setUint32(0, 0x02014b50, true);
+      centralView.setUint16(4, 20, true);
+      centralView.setUint16(6, 20, true);
+      centralView.setUint16(8, 0x0800, true);
+      centralView.setUint16(10, 0, true);
+      centralView.setUint16(12, dosTime, true);
+      centralView.setUint16(14, dosDate, true);
+      centralView.setUint32(16, crc, true);
+      centralView.setUint32(20, body.length, true);
+      centralView.setUint32(24, body.length, true);
+      centralView.setUint16(28, nameBytes.length, true);
+      centralView.setUint16(30, 0, true);
+      centralView.setUint16(32, 0, true);
+      centralView.setUint16(34, 0, true);
+      centralView.setUint16(36, 0, true);
+      centralView.setUint32(38, 0, true);
+      centralView.setUint32(42, localOffset, true);
+      centralParts.push(centralHeader, nameBytes);
+      localOffset += localHeader.length + nameBytes.length + body.length;
+    }
+
+    const central = concatBytes(centralParts);
+    const end = new Uint8Array(22);
+    const endView = new DataView(end.buffer);
+    endView.setUint32(0, 0x06054b50, true);
+    endView.setUint16(8, files.length, true);
+    endView.setUint16(10, files.length, true);
+    endView.setUint32(12, central.length, true);
+    endView.setUint32(16, localOffset, true);
+    return concatBytes([...localParts, central, end]);
+  }
+
+  function sheetXml(rows, styles = {}, options = {}) {
+    const body = rows
+      .map((row, rowIndex) => {
+        const cells = row
+          .map((cell, cellIndex) => {
+            const ref = `${columnName(cellIndex)}${rowIndex + 1}`;
+            const style = styles[`${rowIndex}:${cellIndex}`] !== undefined ? ` s="${styles[`${rowIndex}:${cellIndex}`]}"` : "";
+            if (typeof cell === "number" && Number.isFinite(cell)) return `<c r="${ref}"${style}><v>${cell}</v></c>`;
+            return `<c r="${ref}" t="inlineStr"${style}><is><t xml:space="preserve">${xmlEscape(cell)}</t></is></c>`;
+          })
+          .join("");
+        return `<row r="${rowIndex + 1}">${cells}</row>`;
+      })
+      .join("");
+    const headerRow = options.headerRow || 1;
+    const columnCount = options.columnCount || Math.max(...rows.map((row) => row.length));
+    const filter = options.filter === false ? "" : `<autoFilter ref="A${headerRow}:${columnName(columnCount - 1)}${rows.length}"/>`;
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="${headerRow}" topLeftCell="A${headerRow + 1}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetData>${body}</sheetData>${filter}</worksheet>`;
+  }
+
+  function uniqueSheetName(name, usedNames) {
+    const base = String(name || "品种").replace(/[\\/?*\[\]:]/g, "_").slice(0, 31) || "品种";
+    let candidate = base;
+    let suffix = 2;
+    while (usedNames.has(candidate)) {
+      const postfix = `_${suffix}`;
+      candidate = `${base.slice(0, 31 - postfix.length)}${postfix}`;
+      suffix += 1;
+    }
+    usedNames.add(candidate);
+    return candidate;
+  }
+
+  function buildXlsx(sheets) {
+    const contentTypes = sheets.map((_, index) => `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("");
+    const workbookSheets = sheets.map((sheet, index) => `<sheet name="${xmlEscape(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("");
+    const relationships = sheets.map((_, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`).join("");
+    const files = [
+      { name: "[Content_Types].xml", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${contentTypes}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>` },
+      { name: "_rels/.rels", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: "xl/workbook.xml", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${workbookSheets}</sheets></workbook>` },
+      { name: "xl/_rels/workbook.xml.rels", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+      { name: "xl/styles.xml", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="#\,##0.00"/><numFmt numFmtId="165" formatCode="0.00%"/></numFmts><fonts count="2"><font><sz val="10"/><name val="Arial"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="10"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F4E78"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs></styleSheet>' },
+      ...sheets.map((sheet, index) => ({ name: `xl/worksheets/sheet${index + 1}.xml`, content: sheetXml(sheet.rows, sheet.styles, sheet.options) })),
+    ];
+    return createZip(files);
+  }
+
+  function exportHistoryWorkbook() {
+    const materialIds = exportMaterialIds();
+    if (!materialIds.length) {
+      window.alert("请至少勾选一个需要导出的品种。");
+      return;
+    }
+    const selected = new Set(materialIds);
+    const rowsByMaterial = new Map();
+    (data.history || [])
+      .filter((row) => selected.has(row.material_id))
+      .filter((row) => rowsWithinHistoryRange([row]).length)
+      .sort((a, b) => a.material_id.localeCompare(b.material_id) || a.date.localeCompare(b.date))
+      .forEach((row) => {
+        if (!rowsByMaterial.has(row.material_id)) rowsByMaterial.set(row.material_id, []);
+        rowsByMaterial.get(row.material_id).push(row);
+      });
+    const usedSheetNames = new Set();
+    const materialSheets = [];
+    rowsByMaterial.forEach((rows, materialId) => {
+      const latest = latestById.get(materialId) || {};
+      const materialName = rows[0].material_name || latest.material_name || materialId;
+      const prices = rows.map((row) => Number(row.price)).filter(Number.isFinite);
+      const firstPrice = Number(rows[0].price);
+      const lastPrice = Number(rows.at(-1).price);
+      const periodChange = Number.isFinite(firstPrice) && firstPrice !== 0 && Number.isFinite(lastPrice) ? lastPrice / firstPrice - 1 : "";
+      const detailRows = [
+        [`${materialName}历史价格`, "", "", "", "", "", "", "", "", ""],
+        ["筛选区间", `${state.historyStart || defaultHistoryStart} 至 ${state.historyEnd || data.latest_trade_date || "当前"}`, "", "", "", "", "", "", "", ""],
+        ["最高价", prices.length ? Math.max(...prices) : "", "最低价", prices.length ? Math.min(...prices) : "", "区间变动率", periodChange, "", "", ""],
+        ["", "", "", "", "", "", "", "", "", ""],
+        ["日期", "品种", "成本分类", "价格", "单位", "较上一记录", "价格口径", "数据来源", "来源日期", "备注"],
+      ];
+      rows.forEach((row, index) => {
+        const previous = index ? Number(rows[index - 1].price) : NaN;
+        const price = Number(row.price);
+        const change = Number.isFinite(previous) && previous !== 0 && Number.isFinite(price) ? price / previous - 1 : "";
+        const basis = basisInfo({ ...latest, ...row });
+        detailRows.push([row.date, materialName, latest.category || "", price, row.unit || latest.unit || "", change, basis.label || "", row.source || basis.source || "", row.source_date || row.date || "", row.notes || ""]);
+      });
+      const styles = {};
+      detailRows[4].forEach((_, index) => { styles[`4:${index}`] = 1; });
+      styles["2:1"] = 2;
+      styles["2:3"] = 2;
+      styles["2:6"] = 3;
+      detailRows.slice(5).forEach((_, rowIndex) => {
+        styles[`${rowIndex + 5}:3`] = 2;
+        styles[`${rowIndex + 5}:5`] = 3;
+      });
+      materialSheets.push({
+        name: uniqueSheetName(materialName, usedSheetNames),
+        rows: detailRows,
+        styles,
+        options: { headerRow: 5, columnCount: 10 },
+      });
+    });
+    if (!materialSheets.length) {
+      window.alert("当前日期范围内没有可导出的公开历史记录。");
+      return;
+    }
+    const materialNames = materialIds.map((id) => (latestById.get(id) || {}).material_name || id).join("、");
+    const start = state.historyStart || defaultHistoryStart;
+    const end = state.historyEnd || data.latest_trade_date || new Date().toISOString().slice(0, 10);
+    const noteRows = [
+      ["项目", "说明"],
+      ["导出时间", new Date().toLocaleString("zh-CN")],
+      ["筛选日期", `${start} 至 ${end}`],
+      ["导出品种", materialNames],
+      ["导出子表数", materialSheets.length],
+      ["明细记录数", Array.from(rowsByMaterial.values()).reduce((total, rows) => total + rows.length, 0)],
+      ["子表结构", "每个品种单独一个工作表，顶部展示最高价、最低价和区间变动率。"],
+      ["数据范围", `仅导出当前网页已加载的公开历史记录；当前可验证历史起点为 ${defaultHistoryStart}。`],
+      ["价格口径", "明细中明确区分真实行情、上游价格代理指标与成本压力模型；代理指标不等于供应商报价。"],
+      ["数据安全", "本导出不读取或输出内部库存、BOM、采购价、供应商报价及其他内部数据。"],
+    ];
+    const noteStyles = {};
+    noteRows[0].forEach((_, index) => { noteStyles[`0:${index}`] = 1; });
+    const sheets = [...materialSheets, { name: uniqueSheetName("导出说明", usedSheetNames), rows: noteRows, styles: noteStyles, options: { filter: false, columnCount: 2 } }];
+    const bytes = buildXlsx(sheets);
+    const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const compactDate = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+    link.href = url;
+    link.download = `原材料历史价格_${start}_${end}_${compactDate}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   function filteredLatest() {
@@ -1286,6 +1586,8 @@
   initCategories();
   initMaterialSelect();
   initHistoryFilters();
+  initHistoryExpand();
+  initHistoryExport();
   renderMaterials();
   renderRiskList();
   renderChart();

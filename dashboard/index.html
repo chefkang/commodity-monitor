@@ -134,7 +134,7 @@
             <div class="chart-wrap">
               <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="价格趋势图"></svg>
             </div>
-            <div class="history-panel">
+            <div class="history-panel" id="historyPanel">
               <div class="history-head">
                 <div>
                   <p class="eyebrow">历史查询</p>
@@ -144,9 +144,20 @@
                   <label>开始 <input id="historyStartInput" type="date" /></label>
                   <label>结束 <input id="historyEndInput" type="date" /></label>
                   <button id="historyResetButton" type="button">2024起</button>
+                  <button id="historyExpandButton" type="button" aria-expanded="false">全屏查看</button>
+                  <button id="historyExportButton" class="history-export-button" type="button">导出 Excel</button>
                   <span id="historyMeta">请选择品种</span>
                 </div>
               </div>
+              <details class="history-export-options" id="historyExportOptions">
+                <summary>多品种导出设置（默认同步当前趋势品种；未选具体品种时全选）</summary>
+                <p>勾选多个品种后，会合并导出到同一份 Excel 明细表；仅包含当前日期范围内的公开行情记录。</p>
+                <div class="history-export-actions">
+                  <button id="historyExportSelectAllButton" type="button">全选品种</button>
+                  <button id="historyExportClearButton" type="button">清除选择</button>
+                </div>
+                <div id="historyExportMaterialList" class="history-export-material-list" aria-label="选择需要导出的品种"></div>
+              </details>
               <div class="history-table-wrap">
                 <table class="history-table">
                   <thead>
@@ -160,6 +171,7 @@
                   <tbody id="historyTable"></tbody>
                 </table>
               </div>
+              <button id="historyCloseExpandButton" class="history-close-expand" type="button" aria-label="退出历史记录全屏查看">退出展开 ×</button>
             </div>
           </section>
 
