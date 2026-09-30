@@ -494,6 +494,10 @@ select:hover {
 .history-panel.is-expanded {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 0;
+  box-sizing: border-box;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -514,6 +518,7 @@ select:hover {
 
 .history-panel.is-expanded .history-table-wrap {
   flex: 1 1 auto;
+  min-height: 0;
   max-height: none;
 }
 

@@ -929,13 +929,27 @@
     const button = el("historyExpandButton");
     const closeButton = el("historyCloseExpandButton");
     if (!panel || !button || !closeButton) return;
+    let panelAnchor = null;
     const setExpanded = (expanded) => {
+      if (expanded && !panelAnchor) {
+        panelAnchor = document.createComment("history-panel-anchor");
+        panel.parentNode?.insertBefore(panelAnchor, panel);
+        // A fixed child stays relative to a transformed ancestor in some browsers.
+        // Move the viewer to the document root so it always fills the viewport.
+        document.body.appendChild(panel);
+      }
       panel.classList.toggle("is-expanded", expanded);
       document.body.classList.toggle("history-expanded", expanded);
       button.setAttribute("aria-expanded", String(expanded));
       button.textContent = expanded ? "已全屏查看" : "全屏查看";
       button.disabled = expanded;
-      if (expanded) panel.querySelector(".history-table-wrap")?.focus({ preventScroll: true });
+      if (expanded) {
+        closeButton.focus({ preventScroll: true });
+      } else if (panelAnchor?.parentNode) {
+        panelAnchor.parentNode.replaceChild(panel, panelAnchor);
+        panelAnchor = null;
+        button.focus({ preventScroll: true });
+      }
     };
     button.addEventListener("click", () => setExpanded(!panel.classList.contains("is-expanded")));
     closeButton.addEventListener("click", () => setExpanded(false));
