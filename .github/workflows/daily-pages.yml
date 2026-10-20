@@ -143,7 +143,8 @@ jobs:
 
   notify:
     needs: [check, build, deploy]
-    if: ${{ always() && needs.check.outputs.should_run != 'false' }}
+    # Project status emails are disabled; scheduled refresh and deployment continue.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     env:
       SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
