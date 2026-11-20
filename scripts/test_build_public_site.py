@@ -61,10 +61,17 @@ const fs = require('node:fs');
 const input = JSON.parse(fs.readFileSync(0, 'utf8'));
 const mode = input.mode;
 let nextTimer = 0;
+let clock = 0;
 const timers = new Map();
 const requested = [];
+const removed = [];
 let publicScript = null;
 let appStarts = 0;
+const schedule = (callback, delay = 0) => {
+  const id = ++nextTimer;
+  timers.set(id, { callback, due: clock + Number(delay) });
+  return id;
+};
 const localPayload = {
   generated_at: '2026-11-20T10:00:00+08:00',
   latest: [{ material_id: 'synthetic-public-material' }]
@@ -80,20 +87,33 @@ const context = {
   window: windowObject,
   URL,
   console,
-  setTimeout(callback) { const id = ++nextTimer; timers.set(id, callback); return id; },
+  setTimeout: schedule,
   clearTimeout(id) { timers.delete(id); },
   document: {
     createElement(tag) {
       if (tag !== 'script') throw new Error('Unexpected element: ' + tag);
-      return { setAttribute() {}, remove() { this.removed = true; } };
+      return {
+        setAttribute() {},
+        remove() { this.removed = true; removed.push(String(this.src || '')); }
+      };
     },
     body: {
       appendChild(script) {
         const src = String(script.src || '');
         requested.push(src);
         if (src.startsWith('./data.js')) {
-          windowObject.COMMODITY_MONITOR_DATA = localPayload;
-          if (script.onload) script.onload();
+          const completeLocalData = () => {
+            windowObject.COMMODITY_MONITOR_DATA = localPayload;
+            if (script.onload) script.onload();
+          };
+          if (mode === 'required_data_delayed') {
+            // Required data is slow, not failed: it completes after the optional
+            // upstream's 4.5-second cutoff.  A short global deadline must not
+            // remove it and strand the application in its loading state.
+            schedule(completeLocalData, 9000);
+          } else {
+            completeLocalData();
+          }
         } else if (src.startsWith('https://')) {
           publicScript = script;
           if (mode === 'public_error') {
@@ -102,7 +122,8 @@ const context = {
             windowObject.COMMODITY_MONITOR_DATA = publicPayload;
             if (script.onload) script.onload();
           }
-          // public_timeout intentionally emits no callback; the loader must recover.
+          // public_timeout and required_data_delayed intentionally emit no public
+          // callback; the optional upstream's own deadline must recover.
         } else if (/^\.\/app\.js(?:\?|$)/.test(src)) {
           appStarts += 1;
           if (script.onload) script.onload();
@@ -117,9 +138,10 @@ vm.runInNewContext(input.script, context, { timeout: 1000 });
 let timerSteps = 0;
 while (timers.size) {
   if (++timerSteps > 50) throw new Error('Loader did not settle');
-  const [id, callback] = timers.entries().next().value;
+  const [id, timer] = [...timers.entries()].sort((a, b) => a[1].due - b[1].due)[0];
   timers.delete(id);
-  callback();
+  clock = timer.due;
+  timer.callback();
 }
 // Browser/network callbacks may arrive late after an error or timeout.  They must
 // not dispatch a second application instance or discard the established fallback.
@@ -128,7 +150,9 @@ if (publicScript && mode !== 'public_success' && publicScript.onload) {
 }
 process.stdout.write(JSON.stringify({
   requested,
+  removed,
   appStarts,
+  settledAt: clock,
   source: windowObject.COMMODITY_MONITOR_RUNTIME?.data_source,
   generatedAt: windowObject.COMMODITY_MONITOR_DATA?.generated_at
 }));
@@ -258,27 +282,30 @@ class PublicSiteBuildTests(unittest.TestCase):
             self.source_bytes[self.briefs / "2026-11-20-procurement-notes.md"],
         )
 
-    @unittest.skipUnless(shutil.which("node"), "Node is unavailable; public loader VM check skipped")
-    def test_optional_upstream_error_or_timeout_still_starts_one_app(self):
+    def simulate_loader(self, mode):
         self.build()
         resources = HtmlResources()
         resources.feed((self.public / "trend.html").read_text(encoding="utf-8"))
         self.assertEqual(len(resources.inline_scripts), 1)
         node = shutil.which("node")
         assert node is not None
+        completed = subprocess.run(
+            [node, "-e", NODE_LOADER_RUNNER],
+            input=json.dumps({"mode": mode, "script": resources.inline_scripts[0]}),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        return json.loads(completed.stdout)
+
+    @unittest.skipUnless(shutil.which("node"), "Node is unavailable; public loader VM check skipped")
+    def test_optional_upstream_error_or_timeout_still_starts_one_app(self):
         for mode in ("public_error", "public_timeout", "public_success"):
             with self.subTest(network_state=mode):
-                completed = subprocess.run(
-                    [node, "-e", NODE_LOADER_RUNNER],
-                    input=json.dumps({"mode": mode, "script": resources.inline_scripts[0]}),
-                    capture_output=True,
-                    text=True,
-                    encoding="utf-8",
-                    timeout=10,
-                    check=False,
-                )
-                self.assertEqual(completed.returncode, 0, completed.stderr)
-                result = json.loads(completed.stdout)
+                result = self.simulate_loader(mode)
                 self.assertEqual(result["appStarts"], 1, result)
                 self.assertEqual(sum(url.startswith("https://") for url in result["requested"]), 1)
                 self.assertFalse(any("internal-quotes" in url for url in result["requested"]))
@@ -286,6 +313,21 @@ class PublicSiteBuildTests(unittest.TestCase):
                 self.assertEqual(result["source"], expected_source)
                 expected_time = "10:10:00" if mode == "public_success" else "10:00:00"
                 self.assertIn(expected_time, result["generatedAt"])
+
+    @unittest.skipUnless(shutil.which("node"), "Node is unavailable; public loader VM check skipped")
+    def test_required_data_can_finish_after_the_optional_timeout(self):
+        result = self.simulate_loader("required_data_delayed")
+        self.assertGreaterEqual(result["settledAt"], 9000)
+        self.assertEqual(result["appStarts"], 1, result)
+        self.assertFalse(
+            any(
+                url.startswith("./data.js") or url.startswith("./app.js")
+                for url in result["removed"]
+            ),
+            result,
+        )
+        self.assertEqual(result["source"], "local")
+        self.assertIn("10:00:00", result["generatedAt"])
 
 
 if __name__ == "__main__":

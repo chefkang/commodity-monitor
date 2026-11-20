@@ -56,7 +56,9 @@ def runtime_loader(app_script: str, asset_version: str, *, include_internal_quot
               if (onerror) onerror();
             }}
           }};
-          var timer = setTimeout(function () {{ complete(false); }}, 4500);
+          var timer = onerror
+            ? setTimeout(function () {{ complete(false); }}, 4500)
+            : null;
           script.onload = function () {{ complete(true); }};
           script.onerror = function () {{ complete(false); }};
           document.body.appendChild(script);
