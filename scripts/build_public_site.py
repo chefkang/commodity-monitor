@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -43,12 +44,21 @@ def runtime_loader(app_script: str, asset_version: str, *, include_internal_quot
               script.setAttribute(key, attrs[key]);
             }});
           }}
-          if (onload) {{
-            script.onload = onload;
-          }}
-          if (onerror) {{
-            script.onerror = onerror;
-          }}
+          var finished = false;
+          var complete = function (ok) {{
+            if (finished) return;
+            finished = true;
+            clearTimeout(timer);
+            if (ok) {{
+              if (onload) onload();
+            }} else {{
+              script.remove();
+              if (onerror) onerror();
+            }}
+          }};
+          var timer = setTimeout(function () {{ complete(false); }}, 4500);
+          script.onload = function () {{ complete(true); }};
+          script.onerror = function () {{ complete(false); }};
           document.body.appendChild(script);
         }}
 
@@ -152,6 +162,18 @@ def replace_loader(html: str, loader: str) -> str:
     return html[:start] + loader + html[end:]
 
 
+def version_stylesheet(html: str, filename: str, asset_version: str) -> str:
+    return re.sub(
+        rf"""href=(["'])\./{re.escape(filename)}(?:\?[^"']*)?\1""",
+        lambda match: f"href={match[1]}./{filename}?v={asset_version}{match[1]}",
+        html,
+    )
+
+
+def is_public_brief(path: Path) -> bool:
+    return re.fullmatch(r"\d{4}-\d{2}-\d{2}\.md", path.name) is not None
+
+
 def main() -> int:
     PUBLIC.mkdir(parents=True, exist_ok=True)
     briefs_public = PUBLIC / "briefs"
@@ -168,13 +190,13 @@ def main() -> int:
 
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
-    report_html = report_html.replace('href="./report.css"', f'href="./report.css?v={asset_version}"')
+    report_html = version_stylesheet(report_html, "report.css", asset_version)
     report_html = replace_loader(report_html, runtime_loader("report.js", asset_version))
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")
 
     trend_html = (DASHBOARD / "index.html").read_text(encoding="utf-8")
     trend_html = trend_html.replace('href="./report.html"', 'href="./index.html"')
-    trend_html = trend_html.replace('href="./styles.css"', f'href="./styles.css?v={asset_version}"')
+    trend_html = version_stylesheet(trend_html, "styles.css", asset_version)
     trend_html = replace_loader(
         trend_html,
         runtime_loader("app.js", asset_version, include_internal_quotes=False),
@@ -184,9 +206,11 @@ def main() -> int:
     briefs = ROOT / "briefs"
     if briefs.exists():
         for existing in briefs_public.glob("*.md"):
-            existing.unlink(missing_ok=True)
+            if not is_public_brief(existing):
+                existing.unlink(missing_ok=True)
         for brief in briefs.glob("*.md"):
-            copy_file(brief, briefs_public / brief.name)
+            if is_public_brief(brief):
+                copy_file(brief, briefs_public / brief.name)
 
     readme = f"""# 大宗商品价格日报在线版
 

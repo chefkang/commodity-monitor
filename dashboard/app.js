@@ -10,7 +10,8 @@
     manual_watch_items: [],
   };
 
-  const defaultHistoryStart = (data.summary && data.summary.history_start_date) || "2024-01-01";
+  const defaultHistoryStart =
+    (data.summary && data.summary.history_start_date) || "2024-01-01";
 
   const state = {
     category: "全部",
@@ -18,28 +19,52 @@
     rangeDays: 90,
     historyStart: defaultHistoryStart,
     historyEnd: "",
+    search: "",
+    riskFilter: "all",
+    sort: "risk",
+    detailMaterial: null,
   };
 
   const el = (id) => document.getElementById(id);
-  const latestById = new Map(data.latest.map((item) => [item.material_id, item]));
-  const coverageById = new Map((data.history_coverage || []).map((item) => [item.material_id, item]));
-  const costBucketByName = new Map((data.cost_buckets || []).map((bucket) => [bucket.name, bucket]));
+  const latestById = new Map(
+    data.latest.map((item) => [item.material_id, item]),
+  );
+  const coverageById = new Map(
+    (data.history_coverage || []).map((item) => [item.material_id, item]),
+  );
+  const costBucketByName = new Map(
+    (data.cost_buckets || []).map((bucket) => [bucket.name, bucket]),
+  );
   const materialSortOrder = new Map();
   const runtimeMeta = window.COMMODITY_MONITOR_RUNTIME || {};
   const dataSourceLabel = String(runtimeMeta.data_source_label || "").trim();
   const dataSourceReason = String(runtimeMeta.data_source_reason || "").trim();
   const publicDataCheckEnabled = Boolean(runtimeMeta.check_public_data);
-  const publicDataUrl = String(runtimeMeta.public_data_url || "https://chefkang.github.io/commodity-monitor/data.js");
-  const publicLagToleranceMs = Number(runtimeMeta.public_lag_tolerance_ms || 3 * 60 * 1000);
+  const publicDataUrl = String(
+    runtimeMeta.public_data_url ||
+      "https://chefkang.github.io/commodity-monitor/data.js",
+  );
+  const publicLagToleranceMs = Number(
+    runtimeMeta.public_lag_tolerance_ms || 3 * 60 * 1000,
+  );
   (data.cost_buckets || []).forEach((bucket, bucketIndex) => {
     (bucket.materials || []).forEach((materialId, materialIndex) => {
       if (!materialSortOrder.has(materialId)) {
-        materialSortOrder.set(materialId, { bucketIndex, materialIndex, bucketName: bucket.name });
+        materialSortOrder.set(materialId, {
+          bucketIndex,
+          materialIndex,
+          bucketName: bucket.name,
+        });
       }
     });
   });
   const internalQuotes = window.MTN_INTERNAL_SUPPLIER_QUOTES || { items: [] };
-  const internalQuoteByWatchId = new Map((internalQuotes.items || []).map((item) => [item.watch_id || item.id, item]));
+  const internalQuoteByWatchId = new Map(
+    (internalQuotes.items || []).map((item) => [
+      item.watch_id || item.id,
+      item,
+    ]),
+  );
   const NOTICE_REFRESH_INTERVAL_MS = 60 * 1000;
   const BACKGROUND_DATA_CHECK_INTERVAL_MS = 5 * 60 * 1000;
   let backgroundDataCheckInFlight = false;
@@ -57,7 +82,9 @@
     if (!data.summary || !Array.isArray(data.summary.refresh_warnings)) {
       return [];
     }
-    return data.summary.refresh_warnings.filter((warning) => String(warning || "").trim());
+    return data.summary.refresh_warnings.filter((warning) =>
+      String(warning || "").trim(),
+    );
   }
 
   function formatDateTime(value) {
@@ -73,7 +100,10 @@
   }
 
   function parseGeneratedAtMs(payload) {
-    const value = payload && payload.generated_at ? Date.parse(payload.generated_at) : Number.NaN;
+    const value =
+      payload && payload.generated_at
+        ? Date.parse(payload.generated_at)
+        : Number.NaN;
     return Number.isFinite(value) ? value : null;
   }
 
@@ -101,7 +131,9 @@
       if (candidateGeneratedAt === null) {
         return baseGeneratedAt === null;
       }
-      return baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt;
+      return (
+        baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt
+      );
     }
 
     return false;
@@ -136,7 +168,9 @@
   }
 
   function beijingSlotTime(parts, hour) {
-    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0));
+    return new Date(
+      Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0),
+    );
   }
 
   function beijingClockLabel(value) {
@@ -170,14 +204,23 @@
   }
 
   function tradeDateDistribution() {
-    if (Array.isArray(data.trade_date_distribution) && data.trade_date_distribution.length) {
+    if (
+      Array.isArray(data.trade_date_distribution) &&
+      data.trade_date_distribution.length
+    ) {
       return data.trade_date_distribution
         .map((entry) => ({
           date: String(entry && entry.date ? entry.date : "").trim(),
           count: Number(entry && entry.count ? entry.count : 0),
         }))
-        .filter((entry) => entry.date && Number.isFinite(entry.count) && entry.count > 0)
-        .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+        .filter(
+          (entry) =>
+            entry.date && Number.isFinite(entry.count) && entry.count > 0,
+        )
+        .sort(
+          (left, right) =>
+            right.count - left.count || right.date.localeCompare(left.date),
+        );
     }
 
     const counts = new Map();
@@ -190,7 +233,10 @@
     });
     return Array.from(counts.entries())
       .map(([tradeDate, count]) => ({ date: tradeDate, count }))
-      .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+      .sort(
+        (left, right) =>
+          right.count - left.count || right.date.localeCompare(left.date),
+      );
   }
 
   function tradeDateCoverageSummary() {
@@ -199,8 +245,12 @@
       return null;
     }
     const latestTradeDate = latestTradingDateValue();
-    const latestEntry = distribution.find((entry) => entry.date === latestTradeDate) || null;
-    const totalCount = distribution.reduce((sum, entry) => sum + entry.count, 0);
+    const latestEntry =
+      distribution.find((entry) => entry.date === latestTradeDate) || null;
+    const totalCount = distribution.reduce(
+      (sum, entry) => sum + entry.count,
+      0,
+    );
     const dominantEntry = distribution[0] || null;
     return {
       distribution,
@@ -210,16 +260,27 @@
       dominantTradeDate: dominantEntry ? dominantEntry.date : "",
       dominantTradeDateCount: dominantEntry ? dominantEntry.count : 0,
       mixedTradeDates: distribution.length > 1,
-      laggingCount: Math.max(totalCount - (latestEntry ? latestEntry.count : 0), 0),
+      laggingCount: Math.max(
+        totalCount - (latestEntry ? latestEntry.count : 0),
+        0,
+      ),
     };
   }
 
   function tradeDateCoverageNote() {
     const coverage = tradeDateCoverageSummary();
-    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+    if (
+      !coverage ||
+      !coverage.mixedTradeDates ||
+      !coverage.latestTradeDate ||
+      !coverage.laggingCount
+    ) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
       return `当前 ${coverage.totalCount} 个跟踪品类里，只有 ${coverage.latestTradeDateCount} 个已经切到 ${coverage.latestTradeDate}，仍有 ${coverage.laggingCount} 个停留在 ${coverage.dominantTradeDate}；这说明今天脚本已经执行，但多数上游价格源尚未全面换日。`;
     }
     return `当前 ${coverage.totalCount} 个跟踪品类里，最新交易日 ${coverage.latestTradeDate} 仅覆盖了 ${coverage.latestTradeDateCount} 个，其余 ${coverage.laggingCount} 个仍停留在更早交易日；这说明今天脚本已经执行，但不同上游价格源的换日节奏并不一致。`;
@@ -229,17 +290,28 @@
     if (!coverage || !coverage.mixedTradeDates || !coverage.laggingCount) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
       return "部分更新，主行情仍是上一交易日";
     }
     return "今天已刷新，但行情日期混合";
   }
 
   function coverageHeaderSuffix(coverage) {
-    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+    if (
+      !coverage ||
+      !coverage.mixedTradeDates ||
+      !coverage.latestTradeDate ||
+      !coverage.laggingCount
+    ) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
       return ` · ${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项仍为 ${coverage.dominantTradeDate}`;
     }
     return ` · ${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项日期较早`;
@@ -288,7 +360,10 @@
     if (!(targetTime instanceof Date) || Number.isNaN(targetTime.getTime())) {
       return null;
     }
-    return Math.max(0, Math.ceil((targetTime.getTime() - Date.now()) / (60 * 1000)));
+    return Math.max(
+      0,
+      Math.ceil((targetTime.getTime() - Date.now()) / (60 * 1000)),
+    );
   }
 
   function countdownLabel(targetTime) {
@@ -301,23 +376,32 @@
     }
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return minutes ? `约 ${hours} 小时 ${minutes} 分钟后` : `约 ${hours} 小时后`;
+    return minutes
+      ? `约 ${hours} 小时 ${minutes} 分钟后`
+      : `约 ${hours} 小时后`;
   }
 
   function refreshStateDetailText(notice, nextRefresh, tradingDate) {
     const coverageNote = tradeDateCoverageNote();
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
-        return [`现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`, coverageNote]
+        return [
+          `现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`,
+          coverageNote,
+        ]
           .filter(Boolean)
           .join(" ");
       }
-      return [`现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`, coverageNote]
+      return [
+        `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`,
+        coverageNote,
+      ]
         .filter(Boolean)
         .join(" ");
     }
     if (notice && notice.lines && notice.lines.length) {
-      const tail = notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
+      const tail =
+        notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
       return [notice.lines[0], tail, coverageNote].filter(Boolean).join(" ");
     }
     if (coverageNote) {
@@ -348,7 +432,11 @@
         : `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。`;
       return [baseText, coverageNote].filter(Boolean).join("");
     }
-    return coverageNote || mismatchNote || "价格明细里的日期代表交易日，不等于页面刷新时间。";
+    return (
+      coverageNote ||
+      mismatchNote ||
+      "价格明细里的日期代表交易日，不等于页面刷新时间。"
+    );
   }
 
   function refreshNextSlotDetailText(nextRefresh) {
@@ -358,8 +446,12 @@
   }
 
   function applyRefreshCardTone(notice, coverage) {
-    const stateCard = el("refreshStateLabel") ? el("refreshStateLabel").closest(".refresh-status-card") : null;
-    const nextSlotCard = el("refreshNextSlot") ? el("refreshNextSlot").closest(".refresh-status-card") : null;
+    const stateCard = el("refreshStateLabel")
+      ? el("refreshStateLabel").closest(".refresh-status-card")
+      : null;
+    const nextSlotCard = el("refreshNextSlot")
+      ? el("refreshNextSlot").closest(".refresh-status-card")
+      : null;
     [stateCard, nextSlotCard].forEach((card) => {
       if (card) {
         card.classList.remove("info-tone", "warning-tone");
@@ -420,7 +512,11 @@
     const latestTradeDate = latestTradingDateValue();
 
     if (currentMinutes < 10 * 60) {
-      if (latestTradeDate && latestTradeDate === todayTradeDate && generatedAt >= yesterdayAfternoon) {
+      if (
+        latestTradeDate &&
+        latestTradeDate === todayTradeDate &&
+        generatedAt >= yesterdayAfternoon
+      ) {
         return {
           level: "info",
           mode: "early-refreshed",
@@ -460,7 +556,11 @@
       }
     }
 
-    if (currentMinutes >= 10 * 60 && currentMinutes < 15 * 60 && generatedAt < morningSlot) {
+    if (
+      currentMinutes >= 10 * 60 &&
+      currentMinutes < 15 * 60 &&
+      generatedAt < morningSlot
+    ) {
       return {
         level: "warning",
         headerLabel: "今日上午刷新待关注",
@@ -490,7 +590,8 @@
   }
 
   function formatNumber(value) {
-    if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
+    if (value === null || value === undefined || Number.isNaN(Number(value)))
+      return "-";
     return Number(value).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
   }
 
@@ -505,14 +606,15 @@
   }
 
   function plainPct(value) {
-    if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
+    if (value === null || value === undefined || Number.isNaN(Number(value)))
+      return "-";
     const number = Number(value);
     const sign = number > 0 ? "+" : "";
     return `${sign}${number.toFixed(2)}%`;
   }
 
   function rangeLabel() {
-    return state.rangeDays === "all" ? "2024起" : `${state.rangeDays}天`;
+    return state.rangeDays === "all" ? "全部历史" : `${state.rangeDays}天`;
   }
 
   function priceLine(item) {
@@ -563,19 +665,40 @@
   }
 
   function sortMaterialsByCategory(rows) {
-    const activeBucket = state.category !== "全部" ? costBucketByName.get(state.category) : null;
-    const activeOrder = new Map((activeBucket ? activeBucket.materials : []).map((materialId, index) => [materialId, index]));
+    const activeBucket =
+      state.category !== "全部" ? costBucketByName.get(state.category) : null;
+    const activeOrder = new Map(
+      (activeBucket ? activeBucket.materials : []).map((materialId, index) => [
+        materialId,
+        index,
+      ]),
+    );
     return rows.slice().sort((a, b) => {
       if (activeBucket) {
-        const left = activeOrder.has(a.material_id) ? activeOrder.get(a.material_id) : 9999;
-        const right = activeOrder.has(b.material_id) ? activeOrder.get(b.material_id) : 9999;
+        const left = activeOrder.has(a.material_id)
+          ? activeOrder.get(a.material_id)
+          : 9999;
+        const right = activeOrder.has(b.material_id)
+          ? activeOrder.get(b.material_id)
+          : 9999;
         if (left !== right) return left - right;
       }
-      const leftOrder = materialSortOrder.get(a.material_id) || { bucketIndex: 9999, materialIndex: 9999 };
-      const rightOrder = materialSortOrder.get(b.material_id) || { bucketIndex: 9999, materialIndex: 9999 };
-      if (leftOrder.bucketIndex !== rightOrder.bucketIndex) return leftOrder.bucketIndex - rightOrder.bucketIndex;
-      if (leftOrder.materialIndex !== rightOrder.materialIndex) return leftOrder.materialIndex - rightOrder.materialIndex;
-      return (a.material_name || "").localeCompare(b.material_name || "", "zh-CN");
+      const leftOrder = materialSortOrder.get(a.material_id) || {
+        bucketIndex: 9999,
+        materialIndex: 9999,
+      };
+      const rightOrder = materialSortOrder.get(b.material_id) || {
+        bucketIndex: 9999,
+        materialIndex: 9999,
+      };
+      if (leftOrder.bucketIndex !== rightOrder.bucketIndex)
+        return leftOrder.bucketIndex - rightOrder.bucketIndex;
+      if (leftOrder.materialIndex !== rightOrder.materialIndex)
+        return leftOrder.materialIndex - rightOrder.materialIndex;
+      return (a.material_name || "").localeCompare(
+        b.material_name || "",
+        "zh-CN",
+      );
     });
   }
 
@@ -624,14 +747,17 @@
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
         if (notice.mode === "early-refreshed") {
-          el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
+          el("updatedAt").textContent =
+            `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
           return;
         }
         const countdown = countdownLabel(nextRefresh.time);
-        el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}${coverageSuffix}`;
+        el("updatedAt").textContent =
+          `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}${coverageSuffix}`;
         return;
       }
-      el("updatedAt").textContent = `${notice.headerLabel}${sourcePrefix} · 上一监测结果 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`;
+      el("updatedAt").textContent =
+        `${notice.headerLabel}${sourcePrefix} · 上一监测结果 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`;
       return;
     }
     el("updatedAt").textContent = dataSourceLabel
@@ -642,9 +768,11 @@
   function initHeader() {
     renderUpdatedAtLabel();
     const pressure = data.summary.pressure_index;
-    el("pressureIndex").textContent = pressure === undefined ? "--" : Math.round(pressure);
+    el("pressureIndex").textContent =
+      pressure === undefined ? "--" : Math.round(pressure);
     el("pressureStatus").textContent = pressureLabel(Number(pressure || 0));
-    el("trackedCount").textContent = data.summary.tracked_count ?? data.latest.length;
+    el("trackedCount").textContent =
+      data.summary.tracked_count ?? data.latest.length;
     el("highRiskCount").textContent = data.summary.high_risk_count ?? 0;
     el("risingCount").textContent = data.summary.rising_count ?? 0;
     el("newsRiskCount").textContent = data.summary.news_risk_count ?? 0;
@@ -683,7 +811,10 @@
     }
 
     banner.hidden = false;
-    banner.classList.toggle("info-mode", notice && notice.level === "info" && !warnings.length);
+    banner.classList.toggle(
+      "info-mode",
+      notice && notice.level === "info" && !warnings.length,
+    );
     banner.innerHTML = sections.join("");
   }
 
@@ -693,11 +824,15 @@
     const tradingDate = latestTradingDateLabel();
     const coverage = tradeDateCoverageSummary();
     const stateLabel = notice
-      ? (notice.headerLabel || notice.title)
+      ? notice.headerLabel || notice.title
       : coverage && coverage.mixedTradeDates && coverage.laggingCount > 0
         ? mixedCoverageStateLabel(coverage)
         : "已覆盖当前时段";
-    const stateDetail = refreshStateDetailText(notice, nextRefresh, tradingDate);
+    const stateDetail = refreshStateDetailText(
+      notice,
+      nextRefresh,
+      tradingDate,
+    );
     const generatedDetail = refreshGeneratedDetailText();
     const nextSlotDetail = refreshNextSlotDetailText(nextRefresh);
 
@@ -713,10 +848,20 @@
     setText("refreshGeneratedAt", formatDateTime(data.generated_at));
     setText("refreshGeneratedAtDetail", generatedDetail);
     setText("refreshTradingDate", tradingDate);
-    setText("refreshTradingDateDetail", refreshTradingDateDetailText(notice, tradingDate));
+    setText(
+      "refreshTradingDateDetail",
+      refreshTradingDateDetailText(notice, tradingDate),
+    );
     setText("refreshNextSlot", nextRefresh.label);
     setText("refreshNextSlotDetail", nextSlotDetail);
     applyRefreshCardTone(notice, coverage);
+    const compact = el("freshnessSummary");
+    if (compact) {
+      const coverageText = coverage
+        ? `最新日覆盖 ${coverage.latestTradeDateCount}/${coverage.totalCount}${coverage.laggingCount ? ` · ${coverage.laggingCount}项日期较早` : ""}`
+        : "暂无日期覆盖信息";
+      compact.innerHTML = `<span class="freshness-state">${escapeHtml(stateLabel)}</span><span>刷新 ${escapeHtml(formatDateTime(data.generated_at))}</span><span>最新交易日 ${escapeHtml(tradingDate)}</span><span>${escapeHtml(coverageText)}</span>`;
+    }
   }
 
   function refreshLiveStatus() {
@@ -779,20 +924,28 @@
         return;
       }
 
-      loadDataScript(`${publicDataUrl}?ts=${Date.now()}`, function (candidatePayload) {
+      loadDataScript(
+        `${publicDataUrl}?ts=${Date.now()}`,
+        function (candidatePayload) {
+          if (shouldReloadForCandidate(candidatePayload)) {
+            return;
+          }
+          finalize();
+        },
+        finalize,
+      );
+    };
+
+    loadDataScript(
+      `./data.js?ts=${Date.now()}`,
+      function (candidatePayload) {
         if (shouldReloadForCandidate(candidatePayload)) {
           return;
         }
-        finalize();
-      }, finalize);
-    };
-
-    loadDataScript(`./data.js?ts=${Date.now()}`, function (candidatePayload) {
-      if (shouldReloadForCandidate(candidatePayload)) {
-        return;
-      }
-      checkPublicData();
-    }, checkPublicData);
+        checkPublicData();
+      },
+      checkPublicData,
+    );
   }
 
   function startLiveRefreshWatch() {
@@ -809,39 +962,57 @@
   }
 
   function renderDecisionStrip(pressure) {
-    const topRisk = data.latest.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0));
+    const topRisk = data.latest
+      .slice()
+      .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0));
     const risers = data.latest
       .filter((item) => item.change_1d !== null && item.change_1d !== undefined)
       .sort((a, b) => (b.change_1d || 0) - (a.change_1d || 0));
-    const focus = topRisk.slice(0, 3).map((item) => `${shortName(item)} ${item.up_probability ?? "-"}%`).join("、");
-    const risingFocus = risers.slice(0, 3).map((item) => `${shortName(item)} ${plainPct(item.change_1d)}`).join("、");
+    const focus = topRisk
+      .slice(0, 3)
+      .map((item) => `${shortName(item)} ${item.up_probability ?? "-"}%`)
+      .join("、");
+    const risingFocus = risers
+      .slice(0, 3)
+      .map((item) => `${shortName(item)} ${plainPct(item.change_1d)}`)
+      .join("、");
     const highRiskCount = Number(data.summary.high_risk_count || 0);
     const newsRiskCount = Number(data.summary.news_risk_count || 0);
     const risingCount = Number(data.summary.rising_count || 0);
-    const trackedCount = Number(data.summary.tracked_count || data.latest.length || 0);
+    const trackedCount = Number(
+      data.summary.tracked_count || data.latest.length || 0,
+    );
 
     let title = "成本压力处于观察区";
-    let body = "暂不需要被单一价格牵着走，先按产品大类看传导链条，重点盯短线上行品种和供应链新闻。";
+    let body =
+      "暂不需要被单一价格牵着走，先按产品大类看传导链条，重点盯短线上行品种和供应链新闻。";
     let actionTitle = "滚动补库";
     if (pressure >= 65) {
       title = "成本压力偏高";
-      body = "高风险品种已经进入预警区，建议当天复核主力供应商报价、锁价条款和安全库存。";
+      body =
+        "高风险品种已经进入预警区，建议当天复核主力供应商报价、锁价条款和安全库存。";
       actionTitle = "锁价复核";
     } else if (pressure >= 55) {
       title = "成本压力中偏高";
-      body = "价格压力开始抬头，优先复核电池包、PCBA、线束夹等高占比物料的报价有效期。";
+      body =
+        "价格压力开始抬头，优先复核电池包、PCBA、线束夹等高占比物料的报价有效期。";
       actionTitle = "补库评估";
     } else if (risingCount > trackedCount / 2) {
       title = "短线上涨品种较多";
-      body = "整体指数仍可控，但今日上涨覆盖面偏广，建议关注是否从上游原料传导到供应商报价。";
+      body =
+        "整体指数仍可控，但今日上涨覆盖面偏广，建议关注是否从上游原料传导到供应商报价。";
       actionTitle = "询价确认";
     } else if (newsRiskCount > 0) {
       title = "新闻扰动需跟踪";
-      body = "价格端暂未明显失控，但产业新闻已有扰动信号，适合提前问价而不是临时追单。";
+      body =
+        "价格端暂未明显失控，但产业新闻已有扰动信号，适合提前问价而不是临时追单。";
       actionTitle = "供应链复核";
     }
 
-    const firstAction = data.brief && data.brief.actions && data.brief.actions[0] ? data.brief.actions[0] : "维持日度监控，重点观察短线上行品种。";
+    const firstAction =
+      data.brief && data.brief.actions && data.brief.actions[0]
+        ? data.brief.actions[0]
+        : "维持日度监控，重点观察短线上行品种。";
     const setText = (id, value) => {
       const node = el(id);
       if (node) node.textContent = value;
@@ -849,51 +1020,77 @@
     const summaryPrefix = dataSourceReason ? `${dataSourceReason} ` : "";
     setText(
       "marketSummary",
-      `${summaryPrefix}更新 ${formatDateTime(data.generated_at)}，最新交易日 ${latestTradingDateLabel()}，覆盖 ${trackedCount || data.latest.length} 个价格与指标；真实行情、上游代理指标和供应商补录会在明细中分开标注。`
+      `${summaryPrefix}更新 ${formatDateTime(data.generated_at)}，最新交易日 ${latestTradingDateLabel()}，覆盖 ${trackedCount || data.latest.length} 个价格与指标；真实行情、上游代理指标和供应商补录会在明细中分开标注。`,
     );
     setText("decisionTitle", title);
     setText("decisionBody", body);
     setText("decisionFocus", focus || "暂无重点");
-    setText("decisionFocusMeta", risingFocus ? `今日涨幅靠前：${risingFocus}` : "暂无有效涨幅数据。");
+    setText(
+      "decisionFocusMeta",
+      risingFocus ? `今日涨幅靠前：${risingFocus}` : "暂无有效涨幅数据。",
+    );
     setText("decisionActionTitle", actionTitle);
     setText("decisionActionBody", firstAction);
   }
 
   function initCategories() {
-    const categories = ["全部", ...(data.cost_buckets || []).map((bucket) => bucket.name)];
+    const categories = [
+      "全部",
+      ...(data.cost_buckets || []).map((bucket) => bucket.name),
+    ];
     el("categoryNav").innerHTML = categories
-      .map((category) => `<button data-category="${category}" class="${category === state.category ? "active" : ""}">${category}</button>`)
+      .map(
+        (category) =>
+          `<button type="button" data-category="${escapeHtml(category)}" aria-pressed="${category === state.category}" class="${category === state.category ? "active" : ""}">${escapeHtml(category)}</button>`,
+      )
       .join("");
-    el("categoryNav").querySelectorAll("button").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.category = button.dataset.category;
-        initCategories();
-        renderMaterials();
-        renderRiskList();
+    el("categoryNav")
+      .querySelectorAll("button")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          state.category = button.dataset.category;
+          initCategories();
+          updateMaterialOptions();
+          const available = categoryLatest();
+          if (
+            state.category !== "全部" &&
+            (state.selectedMaterial === "index" ||
+              !available.some(
+                (item) => item.material_id === state.selectedMaterial,
+              ))
+          ) {
+            selectMaterial(
+              available.length ? available[0].material_id : "index",
+            );
+          }
+          refreshMaterialViews();
+        });
       });
-    });
   }
 
   function initMaterialSelect() {
-    const options = [
-      '<option value="index">成本压力指数</option>',
-      ...sortMaterialsByCategory(data.latest).map((item) => `<option value="${item.material_id}">${item.material_name}</option>`),
-    ];
-    el("materialSelect").innerHTML = options.join("");
+    updateMaterialOptions();
     el("materialSelect").addEventListener("change", (event) => {
-      state.selectedMaterial = event.target.value;
-      syncExportSelectionToCurrentMaterial();
-      renderChart();
-      renderHistoryTable();
+      selectMaterial(event.target.value);
     });
-    el("rangeControl").querySelectorAll("button").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.rangeDays = button.dataset.days === "all" ? "all" : Number(button.dataset.days);
-        el("rangeControl").querySelectorAll("button").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        renderChart();
+    el("rangeControl")
+      .querySelectorAll("button")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          state.rangeDays =
+            button.dataset.days === "all" ? "all" : Number(button.dataset.days);
+          el("rangeControl")
+            .querySelectorAll("button")
+            .forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          el("rangeControl")
+            .querySelectorAll("button")
+            .forEach((item) =>
+              item.setAttribute("aria-pressed", String(item === button)),
+            );
+          renderChart();
+        });
       });
-    });
   }
 
   function initHistoryFilters() {
@@ -951,22 +1148,31 @@
         button.focus({ preventScroll: true });
       }
     };
-    button.addEventListener("click", () => setExpanded(!panel.classList.contains("is-expanded")));
+    button.addEventListener("click", () =>
+      setExpanded(!panel.classList.contains("is-expanded")),
+    );
     closeButton.addEventListener("click", () => setExpanded(false));
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && panel.classList.contains("is-expanded")) setExpanded(false);
+      if (event.key === "Escape" && panel.classList.contains("is-expanded"))
+        setExpanded(false);
     });
   }
 
   function exportMaterialIds() {
-    return Array.from(document.querySelectorAll('#historyExportMaterialList input[type="checkbox"]:checked')).map((input) => input.value);
+    return Array.from(
+      document.querySelectorAll(
+        '#historyExportMaterialList input[type="checkbox"]:checked',
+      ),
+    ).map((input) => input.value);
   }
 
   function setExportMaterialIds(ids, customized = false) {
     const selected = new Set(ids);
-    document.querySelectorAll('#historyExportMaterialList input[type="checkbox"]').forEach((input) => {
-      input.checked = selected.has(input.value);
-    });
+    document
+      .querySelectorAll('#historyExportMaterialList input[type="checkbox"]')
+      .forEach((input) => {
+        input.checked = selected.has(input.value);
+      });
     const list = el("historyExportMaterialList");
     if (list) list.dataset.customized = customized ? "true" : "false";
   }
@@ -978,23 +1184,39 @@
 
     const materials = sortMaterialsByCategory(data.latest);
     list.innerHTML = materials
-      .map((item) => `<label><input type="checkbox" value="${escapeHtml(item.material_id)}" />${escapeHtml(item.material_name)}<span class="neutral">${escapeHtml(item.unit || "")}</span></label>`)
+      .map(
+        (item) =>
+          `<label><input type="checkbox" value="${escapeHtml(item.material_id)}" />${escapeHtml(item.material_name)}<span class="neutral">${escapeHtml(item.unit || "")}</span></label>`,
+      )
       .join("");
-    const initialIds = state.selectedMaterial === "index" ? materials.map((item) => item.material_id) : [state.selectedMaterial];
+    const initialIds =
+      state.selectedMaterial === "index"
+        ? materials.map((item) => item.material_id)
+        : [state.selectedMaterial];
     setExportMaterialIds(initialIds);
 
     list.addEventListener("change", () => {
       list.dataset.customized = "true";
     });
-    el("historyExportSelectAllButton").addEventListener("click", () => setExportMaterialIds(materials.map((item) => item.material_id), true));
-    el("historyExportClearButton").addEventListener("click", () => setExportMaterialIds([], true));
+    el("historyExportSelectAllButton").addEventListener("click", () =>
+      setExportMaterialIds(
+        materials.map((item) => item.material_id),
+        true,
+      ),
+    );
+    el("historyExportClearButton").addEventListener("click", () =>
+      setExportMaterialIds([], true),
+    );
     exportButton.addEventListener("click", exportHistoryWorkbook);
   }
 
   function syncExportSelectionToCurrentMaterial() {
     const list = el("historyExportMaterialList");
     if (!list || list.dataset.customized === "true") return;
-    const ids = state.selectedMaterial === "index" ? data.latest.map((item) => item.material_id) : [state.selectedMaterial];
+    const ids =
+      state.selectedMaterial === "index"
+        ? data.latest.map((item) => item.material_id)
+        : [state.selectedMaterial];
     setExportMaterialIds(ids);
   }
 
@@ -1022,13 +1244,16 @@
     let crc = 0xffffffff;
     for (const byte of bytes) {
       crc ^= byte;
-      for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+      for (let bit = 0; bit < 8; bit += 1)
+        crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
     }
     return (crc ^ 0xffffffff) >>> 0;
   }
 
   function concatBytes(parts) {
-    const output = new Uint8Array(parts.reduce((total, part) => total + part.length, 0));
+    const output = new Uint8Array(
+      parts.reduce((total, part) => total + part.length, 0),
+    );
     let offset = 0;
     for (const part of parts) {
       output.set(part, offset);
@@ -1043,12 +1268,21 @@
     const centralParts = [];
     let localOffset = 0;
     const now = new Date();
-    const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | Math.floor(now.getSeconds() / 2);
-    const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+    const dosTime =
+      (now.getHours() << 11) |
+      (now.getMinutes() << 5) |
+      Math.floor(now.getSeconds() / 2);
+    const dosDate =
+      ((now.getFullYear() - 1980) << 9) |
+      ((now.getMonth() + 1) << 5) |
+      now.getDate();
 
     for (const file of files) {
       const nameBytes = encoder.encode(file.name);
-      const body = typeof file.content === "string" ? encoder.encode(file.content) : file.content;
+      const body =
+        typeof file.content === "string"
+          ? encoder.encode(file.content)
+          : file.content;
       const crc = crc32(body);
       const localHeader = new Uint8Array(30);
       const localView = new DataView(localHeader.buffer);
@@ -1105,8 +1339,12 @@
         const cells = row
           .map((cell, cellIndex) => {
             const ref = `${columnName(cellIndex)}${rowIndex + 1}`;
-            const style = styles[`${rowIndex}:${cellIndex}`] !== undefined ? ` s="${styles[`${rowIndex}:${cellIndex}`]}"` : "";
-            if (typeof cell === "number" && Number.isFinite(cell)) return `<c r="${ref}"${style}><v>${cell}</v></c>`;
+            const style =
+              styles[`${rowIndex}:${cellIndex}`] !== undefined
+                ? ` s="${styles[`${rowIndex}:${cellIndex}`]}"`
+                : "";
+            if (typeof cell === "number" && Number.isFinite(cell))
+              return `<c r="${ref}"${style}><v>${cell}</v></c>`;
             return `<c r="${ref}" t="inlineStr"${style}><is><t xml:space="preserve">${xmlEscape(cell)}</t></is></c>`;
           })
           .join("");
@@ -1114,13 +1352,20 @@
       })
       .join("");
     const headerRow = options.headerRow || 1;
-    const columnCount = options.columnCount || Math.max(...rows.map((row) => row.length));
-    const filter = options.filter === false ? "" : `<autoFilter ref="A${headerRow}:${columnName(columnCount - 1)}${rows.length}"/>`;
+    const columnCount =
+      options.columnCount || Math.max(...rows.map((row) => row.length));
+    const filter =
+      options.filter === false
+        ? ""
+        : `<autoFilter ref="A${headerRow}:${columnName(columnCount - 1)}${rows.length}"/>`;
     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="${headerRow}" topLeftCell="A${headerRow + 1}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetData>${body}</sheetData>${filter}</worksheet>`;
   }
 
   function uniqueSheetName(name, usedNames) {
-    const base = String(name || "品种").replace(/[\\/?*\[\]:]/g, "_").slice(0, 31) || "品种";
+    const base =
+      String(name || "品种")
+        .replace(/[\\/?*\[\]:]/g, "_")
+        .slice(0, 31) || "品种";
     let candidate = base;
     let suffix = 2;
     while (usedNames.has(candidate)) {
@@ -1133,16 +1378,51 @@
   }
 
   function buildXlsx(sheets) {
-    const contentTypes = sheets.map((_, index) => `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("");
-    const workbookSheets = sheets.map((sheet, index) => `<sheet name="${xmlEscape(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("");
-    const relationships = sheets.map((_, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`).join("");
+    const contentTypes = sheets
+      .map(
+        (_, index) =>
+          `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`,
+      )
+      .join("");
+    const workbookSheets = sheets
+      .map(
+        (sheet, index) =>
+          `<sheet name="${xmlEscape(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`,
+      )
+      .join("");
+    const relationships = sheets
+      .map(
+        (_, index) =>
+          `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`,
+      )
+      .join("");
     const files = [
-      { name: "[Content_Types].xml", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${contentTypes}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>` },
-      { name: "_rels/.rels", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
-      { name: "xl/workbook.xml", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${workbookSheets}</sheets></workbook>` },
-      { name: "xl/_rels/workbook.xml.rels", content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
-      { name: "xl/styles.xml", content: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="#\,##0.00"/><numFmt numFmtId="165" formatCode="0.00%"/></numFmts><fonts count="2"><font><sz val="10"/><name val="Arial"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="10"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F4E78"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs></styleSheet>' },
-      ...sheets.map((sheet, index) => ({ name: `xl/worksheets/sheet${index + 1}.xml`, content: sheetXml(sheet.rows, sheet.styles, sheet.options) })),
+      {
+        name: "[Content_Types].xml",
+        content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${contentTypes}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+      },
+      {
+        name: "_rels/.rels",
+        content:
+          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+      },
+      {
+        name: "xl/workbook.xml",
+        content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${workbookSheets}</sheets></workbook>`,
+      },
+      {
+        name: "xl/_rels/workbook.xml.rels",
+        content: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
+      },
+      {
+        name: "xl/styles.xml",
+        content:
+          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="#\,##0.00"/><numFmt numFmtId="165" formatCode="0.00%"/></numFmts><fonts count="2"><font><sz val="10"/><name val="Arial"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="10"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1F4E78"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs></styleSheet>',
+      },
+      ...sheets.map((sheet, index) => ({
+        name: `xl/worksheets/sheet${index + 1}.xml`,
+        content: sheetXml(sheet.rows, sheet.styles, sheet.options),
+      })),
     ];
     return createZip(files);
   }
@@ -1158,36 +1438,97 @@
     (data.history || [])
       .filter((row) => selected.has(row.material_id))
       .filter((row) => rowsWithinHistoryRange([row]).length)
-      .sort((a, b) => a.material_id.localeCompare(b.material_id) || a.date.localeCompare(b.date))
+      .sort(
+        (a, b) =>
+          a.material_id.localeCompare(b.material_id) ||
+          a.date.localeCompare(b.date),
+      )
       .forEach((row) => {
-        if (!rowsByMaterial.has(row.material_id)) rowsByMaterial.set(row.material_id, []);
+        if (!rowsByMaterial.has(row.material_id))
+          rowsByMaterial.set(row.material_id, []);
         rowsByMaterial.get(row.material_id).push(row);
       });
     const usedSheetNames = new Set();
     const materialSheets = [];
     rowsByMaterial.forEach((rows, materialId) => {
       const latest = latestById.get(materialId) || {};
-      const materialName = rows[0].material_name || latest.material_name || materialId;
-      const prices = rows.map((row) => Number(row.price)).filter(Number.isFinite);
+      const materialName =
+        rows[0].material_name || latest.material_name || materialId;
+      const prices = rows
+        .map((row) => Number(row.price))
+        .filter(Number.isFinite);
       const firstPrice = Number(rows[0].price);
       const lastPrice = Number(rows.at(-1).price);
-      const periodChange = Number.isFinite(firstPrice) && firstPrice !== 0 && Number.isFinite(lastPrice) ? lastPrice / firstPrice - 1 : "";
+      const periodChange =
+        Number.isFinite(firstPrice) &&
+        firstPrice !== 0 &&
+        Number.isFinite(lastPrice)
+          ? lastPrice / firstPrice - 1
+          : "";
       const detailRows = [
         [`${materialName}历史价格`, "", "", "", "", "", "", "", "", ""],
-        ["筛选区间", `${state.historyStart || defaultHistoryStart} 至 ${state.historyEnd || data.latest_trade_date || "当前"}`, "", "", "", "", "", "", "", ""],
-        ["最高价", prices.length ? Math.max(...prices) : "", "最低价", prices.length ? Math.min(...prices) : "", "区间变动率", periodChange, "", "", ""],
+        [
+          "筛选区间",
+          `${state.historyStart || defaultHistoryStart} 至 ${state.historyEnd || data.latest_trade_date || "当前"}`,
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+        ],
+        [
+          "最高价",
+          prices.length ? Math.max(...prices) : "",
+          "最低价",
+          prices.length ? Math.min(...prices) : "",
+          "区间变动率",
+          periodChange,
+          "",
+          "",
+          "",
+        ],
         ["", "", "", "", "", "", "", "", "", ""],
-        ["日期", "品种", "成本分类", "价格", "单位", "较上一记录", "价格口径", "数据来源", "来源日期", "备注"],
+        [
+          "日期",
+          "品种",
+          "成本分类",
+          "价格",
+          "单位",
+          "较上一记录",
+          "价格口径",
+          "数据来源",
+          "来源日期",
+          "备注",
+        ],
       ];
       rows.forEach((row, index) => {
         const previous = index ? Number(rows[index - 1].price) : NaN;
         const price = Number(row.price);
-        const change = Number.isFinite(previous) && previous !== 0 && Number.isFinite(price) ? price / previous - 1 : "";
+        const change =
+          Number.isFinite(previous) && previous !== 0 && Number.isFinite(price)
+            ? price / previous - 1
+            : "";
         const basis = basisInfo({ ...latest, ...row });
-        detailRows.push([row.date, materialName, latest.category || "", price, row.unit || latest.unit || "", change, basis.label || "", row.source || basis.source || "", row.source_date || row.date || "", row.notes || ""]);
+        detailRows.push([
+          row.date,
+          materialName,
+          latest.category || "",
+          price,
+          row.unit || latest.unit || "",
+          change,
+          basis.label || "",
+          row.source || basis.source || "",
+          row.source_date || row.date || "",
+          row.notes || "",
+        ]);
       });
       const styles = {};
-      detailRows[4].forEach((_, index) => { styles[`4:${index}`] = 1; });
+      detailRows[4].forEach((_, index) => {
+        styles[`4:${index}`] = 1;
+      });
       styles["2:1"] = 2;
       styles["2:3"] = 2;
       styles["2:6"] = 3;
@@ -1206,29 +1547,67 @@
       window.alert("当前日期范围内没有可导出的公开历史记录。");
       return;
     }
-    const materialNames = materialIds.map((id) => (latestById.get(id) || {}).material_name || id).join("、");
+    const materialNames = materialIds
+      .map((id) => (latestById.get(id) || {}).material_name || id)
+      .join("、");
     const start = state.historyStart || defaultHistoryStart;
-    const end = state.historyEnd || data.latest_trade_date || new Date().toISOString().slice(0, 10);
+    const end =
+      state.historyEnd ||
+      data.latest_trade_date ||
+      new Date().toISOString().slice(0, 10);
     const noteRows = [
       ["项目", "说明"],
       ["导出时间", new Date().toLocaleString("zh-CN")],
       ["筛选日期", `${start} 至 ${end}`],
       ["导出品种", materialNames],
       ["导出子表数", materialSheets.length],
-      ["明细记录数", Array.from(rowsByMaterial.values()).reduce((total, rows) => total + rows.length, 0)],
-      ["子表结构", "每个品种单独一个工作表，顶部展示最高价、最低价和区间变动率。"],
-      ["数据范围", `仅导出当前网页已加载的公开历史记录；当前可验证历史起点为 ${defaultHistoryStart}。`],
-      ["价格口径", "明细中明确区分真实行情、上游价格代理指标与成本压力模型；代理指标不等于供应商报价。"],
-      ["数据安全", "本导出不读取或输出内部库存、BOM、采购价、供应商报价及其他内部数据。"],
+      [
+        "明细记录数",
+        Array.from(rowsByMaterial.values()).reduce(
+          (total, rows) => total + rows.length,
+          0,
+        ),
+      ],
+      [
+        "子表结构",
+        "每个品种单独一个工作表，顶部展示最高价、最低价和区间变动率。",
+      ],
+      [
+        "数据范围",
+        `仅导出当前网页已加载的公开历史记录；当前可验证历史起点为 ${defaultHistoryStart}。`,
+      ],
+      [
+        "价格口径",
+        "明细中明确区分真实行情、上游价格代理指标与成本压力模型；代理指标不等于供应商报价。",
+      ],
+      [
+        "数据安全",
+        "本导出不读取或输出内部库存、BOM、采购价、供应商报价及其他内部数据。",
+      ],
     ];
     const noteStyles = {};
-    noteRows[0].forEach((_, index) => { noteStyles[`0:${index}`] = 1; });
-    const sheets = [...materialSheets, { name: uniqueSheetName("导出说明", usedSheetNames), rows: noteRows, styles: noteStyles, options: { filter: false, columnCount: 2 } }];
+    noteRows[0].forEach((_, index) => {
+      noteStyles[`0:${index}`] = 1;
+    });
+    const sheets = [
+      ...materialSheets,
+      {
+        name: uniqueSheetName("导出说明", usedSheetNames),
+        rows: noteRows,
+        styles: noteStyles,
+        options: { filter: false, columnCount: 2 },
+      },
+    ];
     const bytes = buildXlsx(sheets);
-    const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const blob = new Blob([bytes], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    const compactDate = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+    const compactDate = new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replaceAll("-", "");
     link.href = url;
     link.download = `原材料历史价格_${start}_${end}_${compactDate}.xlsx`;
     document.body.appendChild(link);
@@ -1237,7 +1616,7 @@
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function filteredLatest() {
+  function categoryLatest() {
     let rows = data.latest.slice();
     if (state.category !== "全部") {
       const bucket = costBucketByName.get(state.category);
@@ -1247,26 +1626,374 @@
     return sortMaterialsByCategory(rows);
   }
 
+  function filteredLatest() {
+    const query = state.search.trim().toLocaleLowerCase();
+    const rows = categoryLatest().filter((item) => {
+      if (
+        query &&
+        ![
+          item.material_name,
+          item.category,
+          item.source,
+          item.material_id,
+        ].some((value) =>
+          String(value || "")
+            .toLocaleLowerCase()
+            .includes(query),
+        )
+      )
+        return false;
+      if (state.riskFilter === "high" && item.risk_level !== "高") return false;
+      if (state.riskFilter === "rising" && !(Number(item.change_1d) > 0))
+        return false;
+      if (state.riskFilter === "real" && basisInfo(item).cls !== "real")
+        return false;
+      if (state.riskFilter === "proxy" && basisInfo(item).cls !== "proxy")
+        return false;
+      if (state.riskFilter === "news" && !(item.matched_news || []).length)
+        return false;
+      return true;
+    });
+    const finiteValue = (value) =>
+      value === null || value === undefined || !Number.isFinite(Number(value))
+        ? -Infinity
+        : Number(value);
+    return rows.sort((a, b) => {
+      if (state.sort === "name")
+        return String(a.material_name || "").localeCompare(
+          String(b.material_name || ""),
+          "zh-CN",
+        );
+      const key = state.sort === "change30" ? "change_30d" : "up_probability";
+      return (
+        finiteValue(b[key]) - finiteValue(a[key]) ||
+        String(a.material_name || "").localeCompare(
+          String(b.material_name || ""),
+          "zh-CN",
+        )
+      );
+    });
+  }
+
+  function updateMaterialOptions() {
+    const select = el("materialSelect");
+    if (!select) return;
+    select.innerHTML = [
+      '<option value="index">综合成本指数</option>',
+      ...categoryLatest().map(
+        (item) =>
+          `<option value="${escapeHtml(item.material_id)}">${escapeHtml(item.material_name)}</option>`,
+      ),
+    ].join("");
+    select.value = state.selectedMaterial;
+    if (!select.value) select.value = "index";
+  }
+
+  function selectMaterial(materialId) {
+    if (materialId !== "index" && !latestById.has(materialId)) return;
+    state.selectedMaterial = materialId;
+    const select = el("materialSelect");
+    if (select) {
+      if (![...select.options].some((option) => option.value === materialId)) {
+        state.category = "全部";
+        initCategories();
+        updateMaterialOptions();
+      }
+      select.value = materialId;
+    }
+    syncExportSelectionToCurrentMaterial();
+    renderChart();
+    renderHistoryTable();
+    refreshMaterialViews();
+  }
+
+  function refreshMaterialViews() {
+    renderMaterials();
+    renderRiskList();
+    const priority = filteredLatest()
+      .slice()
+      .sort(
+        (a, b) => Number(b.up_probability || 0) - Number(a.up_probability || 0),
+      )[0];
+    if (el("decisionFocus"))
+      el("decisionFocus").textContent =
+        filteredLatest()
+          .slice()
+          .sort(
+            (a, b) =>
+              Number(b.up_probability || 0) - Number(a.up_probability || 0),
+          )
+          .slice(0, 3)
+          .map((item) => `${shortName(item)} ${item.up_probability ?? "—"}%`)
+          .join("、") || "暂无匹配原料";
+    const action = el("decisionActionBody");
+    if (action)
+      action.textContent = priority
+        ? `${shortName(priority)} · 涨价概率 ${priority.up_probability ?? "—"}%（模型估算）。${priority.risk_level === "高" ? "优先核对未锁价订单、报价有效期与交期。" : "维持跟踪，核验供应商调价与原料变化的传导依据。"}`
+        : "当前筛选没有匹配原料，请调整条件后查看跟进建议。";
+    if (el("procurementButton")) {
+      el("procurementButton").disabled = !priority;
+      el("procurementButton").textContent = priority
+        ? `查看${shortName(priority)}的采购建议`
+        : "暂无匹配原料";
+    }
+    document
+      .querySelectorAll("[data-quick-filter]")
+      .forEach((button) =>
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.quickFilter === state.riskFilter),
+        ),
+      );
+  }
+
+  function resetMaterialFilters() {
+    state.category = "全部";
+    state.search = "";
+    state.riskFilter = "all";
+    state.sort = "risk";
+    if (el("materialSearch")) el("materialSearch").value = "";
+    if (el("riskFilter")) el("riskFilter").value = "all";
+    if (el("sortSelect")) el("sortSelect").value = "risk";
+    initCategories();
+    updateMaterialOptions();
+    refreshMaterialViews();
+  }
+
+  function scrollToSection(id) {
+    const node =
+      el(id) || (id === "historySection" ? el("historyPanel") : null);
+    if (!node) return;
+    node.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+    node.classList.remove("section-highlight");
+    void node.offsetWidth;
+    node.classList.add("section-highlight");
+    window.setTimeout(() => node.classList.remove("section-highlight"), 1600);
+  }
+
+  function initMaterialInteractions() {
+    if (el("materialSearch"))
+      el("materialSearch").addEventListener("input", (event) => {
+        state.search = event.target.value;
+        refreshMaterialViews();
+      });
+    if (el("riskFilter"))
+      el("riskFilter").addEventListener("change", (event) => {
+        state.riskFilter = event.target.value;
+        refreshMaterialViews();
+      });
+    if (el("sortSelect"))
+      el("sortSelect").addEventListener("change", (event) => {
+        state.sort = event.target.value;
+        refreshMaterialViews();
+      });
+    if (el("filterReset"))
+      el("filterReset").addEventListener("click", resetMaterialFilters);
+    document.addEventListener("click", (event) => {
+      const material = event.target.closest("[data-material-detail]");
+      if (material) {
+        openMaterialDetail(material.dataset.materialDetail, material);
+        return;
+      }
+      if (event.target.closest("[data-filter-reset]")) {
+        resetMaterialFilters();
+        return;
+      }
+      const quick = event.target.closest("[data-quick-filter]");
+      if (quick) {
+        const filter = quick.dataset.quickFilter;
+        if (filter === "news") {
+          scrollToSection("newsSection");
+          return;
+        }
+        state.category = "全部";
+        initCategories();
+        updateMaterialOptions();
+        state.riskFilter = filter;
+        state.search = "";
+        if (el("materialSearch")) el("materialSearch").value = "";
+        if (el("riskFilter")) el("riskFilter").value = filter;
+        refreshMaterialViews();
+        scrollToSection("tableSection");
+      }
+    });
+    if (el("procurementButton"))
+      el("procurementButton").addEventListener("click", (event) => {
+        const rows = filteredLatest()
+          .slice()
+          .sort(
+            (a, b) =>
+              Number(b.up_probability || 0) - Number(a.up_probability || 0),
+          );
+        if (rows[0])
+          openMaterialDetail(rows[0].material_id, event.currentTarget);
+      });
+    const dialog = el("detailDialog");
+    if (dialog) {
+      let lastTrigger = null;
+      dialog.addEventListener("close", () => {
+        if (lastTrigger && document.contains(lastTrigger))
+          lastTrigger.focus({ preventScroll: true });
+      });
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          const rect = dialog.getBoundingClientRect();
+          if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          )
+            dialog.close();
+        }
+      });
+      dialog.addEventListener("detailopen", (event) => {
+        lastTrigger = event.detail;
+      });
+      if (el("drawerClose"))
+        el("drawerClose").addEventListener("click", () => dialog.close());
+      const openSection = (sectionId) => {
+        const materialId = state.detailMaterial;
+        dialog.close();
+        selectMaterial(materialId);
+        scrollToSection(sectionId);
+        const target =
+          sectionId === "chartSection"
+            ? el("materialSelect")
+            : el("historyStartInput");
+        if (target)
+          window.setTimeout(() => target.focus({ preventScroll: true }), 50);
+      };
+      if (el("drawerTrendButton"))
+        el("drawerTrendButton").addEventListener("click", () =>
+          openSection("chartSection"),
+        );
+      if (el("drawerHistoryButton"))
+        el("drawerHistoryButton").addEventListener("click", () =>
+          openSection("historySection"),
+        );
+    }
+  }
+
+  function safeNewsLink(value) {
+    try {
+      const url = new URL(value);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function openMaterialDetail(materialId, trigger) {
+    const item = latestById.get(materialId);
+    const dialog = el("detailDialog");
+    if (!item || !dialog || !el("detailBody")) return;
+    state.detailMaterial = materialId;
+    if (el("detailTitle")) el("detailTitle").textContent = item.material_name;
+    const basis = basisInfo(item);
+    const coverage = coverageById.get(materialId);
+    const buckets = (data.cost_buckets || []).filter((bucket) =>
+      (bucket.materials || []).includes(materialId),
+    );
+    const notes =
+      item.notes && item.notes !== "NaN"
+        ? String(item.notes)
+        : "暂无额外口径备注。";
+    const matchedNews = item.matched_news || [];
+    const actions =
+      item.risk_level === "高"
+        ? [
+            "优先复核未锁价订单及报价有效期",
+            "向供应商确认交期、锁价条件与可替代料",
+            "结合实际用量、库存与到货计划，再评估是否补库",
+          ]
+        : [
+            "维持日度跟踪，核对近期报价有效期",
+            "如供应商提出调价，核验原料变化与报价传导依据",
+            "结合实际需求与库存安排采购，不因单一指标直接下单",
+          ];
+    const coverageText = coverage
+      ? `${coverage.first_date || "—"} 至 ${coverage.last_date || "—"} · ${coverage.count ?? "—"}条可验证记录`
+      : "暂无历史覆盖说明";
+    const evidence = [
+      [30, item.change_30d],
+      [7, item.change_7d],
+    ]
+      .filter(
+        ([, value]) =>
+          value !== null &&
+          value !== undefined &&
+          Number.isFinite(Number(value)),
+      )
+      .map(
+        ([days, value]) =>
+          `近${days}日${Number(value) > 0 ? "上涨" : Number(value) < 0 ? "回落" : "持平"}${Number(value) === 0 ? "" : `${Math.abs(Number(value)).toFixed(2)}%`}`,
+      )
+      .join("，");
+    const metrics = [
+      ["1日变化", item.change_1d],
+      ["7日变化", item.change_7d],
+      ["30日变化", item.change_30d],
+      ["90日变化", item.change_90d],
+    ];
+    el("detailBody").innerHTML = `
+      <div class="detail-meta">${basisBadge(item)}<span>${escapeHtml(item.category || "")}</span><span>交易日 ${escapeHtml(item.date || "待确认")}</span></div>
+      <section class="detail-hero"><div><span>${basis.cls === "proxy" ? "最新代理指标" : "最新价格"}</span><strong>${escapeHtml(priceLine(item))}</strong></div><div><span>涨价概率 · 模型估算</span><strong class="${riskClass(item)}">${escapeHtml(item.up_probability ?? "—")}%</strong><small>${escapeHtml(item.risk_level || "观察")} · ${escapeHtml(item.trend || "持续观察")}</small></div></section>
+      <section class="detail-section"><h3>价格变化与风险依据</h3><div class="detail-metrics">${metrics.map(([label, value]) => `<div><span>${label}</span><strong>${pct(value)}</strong></div>`).join("")}</div><p class="detail-evidence">${escapeHtml(evidence ? `${evidence}。请结合不同周期的方向核对报价。` : "当前缺少可比较的区间变化，请先核实历史覆盖。")}</p><p class="detail-muted">30日波动率 ${formatNumber(item.volatility_30d)}%${item.future_premium_pct !== null && item.future_premium_pct !== undefined ? ` · 期现升贴水 ${escapeHtml(plainPct(item.future_premium_pct))}` : ""}</p><p class="detail-muted">模型参考了价格趋势、波动与匹配新闻，未作统计概率校准；这里展示输入依据，不代表确定的未来涨幅。</p></section>
+      <section class="detail-section"><h3>采购跟进建议</h3><ol>${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol><p class="detail-caution">这是跟进建议，不是采购订单。公开行情不能替代实际规格、用量与供应商报价核验。</p></section>
+      <section class="detail-section"><h3>数据口径与覆盖</h3><dl class="detail-facts"><div><dt>行情来源</dt><dd>${escapeHtml(basis.source)}</dd></div><div><dt>价格口径</dt><dd>${escapeHtml(basis.label)} · ${escapeHtml(basis.hint)}</dd></div><div><dt>历史覆盖</dt><dd>${escapeHtml(coverageText)}</dd></div></dl>${basis.cls === "proxy" ? '<p class="detail-caution">此值反映上游原料趋势，不是该部件或材料的直接成交报价。</p>' : ""}<p class="detail-muted">${escapeHtml(notes)}</p></section>
+      <section class="detail-section"><h3>关联的产品大类</h3><div class="detail-buckets">${buckets.length ? buckets.map((bucket) => `<article><strong>${escapeHtml(bucket.name)}</strong><p>${escapeHtml(bucket.boss_focus || "维持日度跟踪。")}</p></article>`).join("") : '<p class="detail-muted">暂无产品大类关联。</p>'}</div></section>
+      <section class="detail-section"><h3>匹配的产业新闻 <small>${matchedNews.length}条</small></h3>${
+        matchedNews.length
+          ? matchedNews
+              .map((news) => {
+                const href = safeNewsLink(news.link);
+                return `<article class="detail-news">${href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(news.title)}</a>` : `<strong>${escapeHtml(news.title)}</strong>`}<p>${escapeHtml(news.source || "新闻来源待确认")}${news.published ? ` · ${escapeHtml(formatDateTime(news.published))}` : ""}</p></article>`;
+              })
+              .join("")
+          : '<p class="detail-muted">本次没有匹配新闻；不等于不存在市场扰动。</p>'
+      }<p class="detail-muted">新闻按关键词匹配，需打开原文核实与该原料的关联。</p></section>
+`;
+    dialog.dispatchEvent(
+      new CustomEvent("detailopen", {
+        detail: trigger || document.activeElement,
+      }),
+    );
+    if (!dialog.open) dialog.showModal();
+    el("detailBody").scrollTop = 0;
+    if (el("drawerClose")) el("drawerClose").focus({ preventScroll: true });
+  }
+
   function renderMaterials() {
     const rows = filteredLatest();
-    el("materialsTable").innerHTML = rows
-      .map(
-        (item) => `
-          <tr>
-            <td><strong>${item.material_name}</strong><br><span class="neutral">${item.date || ""}</span></td>
-            <td><span class="tag">${item.category || "-"}</span></td>
+    if (el("resultCount"))
+      el("resultCount").textContent =
+        `${state.category} · 显示 ${rows.length}/${categoryLatest().length} 项`;
+    el("materialsTable").innerHTML =
+      rows
+        .map(
+          (item, index) => `
+          <tr class="${item.material_id === state.selectedMaterial ? "is-selected " : ""}${index < 3 && state.sort === "risk" ? "priority-row" : ""}">
+            <td><button type="button" class="material-link" data-material-detail="${escapeHtml(item.material_id)}" aria-label="查看${escapeHtml(item.material_name)}详细信息">${escapeHtml(item.material_name)}</button><br><span class="neutral">${escapeHtml(item.date || "")}</span></td>
+            <td><span class="tag">${escapeHtml(item.category || "-")}</span></td>
             <td><strong>${formatNumber(item.price)} ${item.unit || ""}</strong><br>${basisBadge(item)}</td>
             <td>${pct(item.change_1d)}</td>
             <td>${pct(item.change_7d)}</td>
             <td>${pct(item.change_30d)}</td>
             <td>${pct(item.change_90d)}</td>
             <td><span class="probability ${riskClass(item)}">${item.up_probability ?? "-"}%</span></td>
-            <td>${item.trend || "-"}</td>
+            <td>${escapeHtml(item.trend || "-")}</td>
             <td>${sourceCell(item)}</td>
           </tr>
-        `
-      )
-      .join("");
+        `,
+        )
+        .join("") ||
+      '<tr><td colspan="10" class="empty filter-empty">没有符合条件的原料。<button type="button" data-filter-reset>清除筛选，查看全部</button></td></tr>';
   }
 
   function rowDate(row) {
@@ -1275,8 +2002,12 @@
   }
 
   function rowsWithinHistoryRange(rows) {
-    const start = state.historyStart ? new Date(`${state.historyStart}T00:00:00`) : null;
-    const end = state.historyEnd ? new Date(`${state.historyEnd}T23:59:59`) : null;
+    const start = state.historyStart
+      ? new Date(`${state.historyStart}T00:00:00`)
+      : null;
+    const end = state.historyEnd
+      ? new Date(`${state.historyEnd}T23:59:59`)
+      : null;
     return rows.filter((row) => {
       const date = rowDate(row);
       return date && (!start || date >= start) && (!end || date <= end);
@@ -1291,7 +2022,7 @@
           price: row.value,
           unit: "指数",
           basis: { label: "综合指数", source: "成本压力模型" },
-        }))
+        })),
       );
     }
     const latest = latestById.get(state.selectedMaterial);
@@ -1301,28 +2032,42 @@
         .map((row) => ({
           ...row,
           basis: basisInfo({ ...(latest || {}), ...row }),
-        }))
+        })),
     );
   }
 
   function renderHistoryTable() {
     const latest = latestById.get(state.selectedMaterial);
-    const rowsAsc = selectedHistoryRows().sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    const rowsAsc = selectedHistoryRows().sort((a, b) =>
+      (a.date || "").localeCompare(b.date || ""),
+    );
     const rows = rowsAsc
       .map((row, index) => {
         const prev = rowsAsc[index - 1];
         const current = Number(row.price);
         const previous = prev ? Number(prev.price) : NaN;
-        const change = Number.isFinite(current) && Number.isFinite(previous) && previous !== 0 ? ((current - previous) / previous) * 100 : null;
+        const change =
+          Number.isFinite(current) &&
+          Number.isFinite(previous) &&
+          previous !== 0
+            ? ((current - previous) / previous) * 100
+            : null;
         return { ...row, change };
       })
       .reverse();
     const coverage = coverageById.get(state.selectedMaterial);
     const coverageText = coverage
-      ? (coverage.full_from_target ? `已覆盖 ${coverage.target_start_date} 起首个有效行情日` : `可验证起点 ${coverage.first_date || "-"}，早于该日暂未取到真实源`)
+      ? coverage.full_from_target
+        ? `已覆盖 ${coverage.target_start_date} 起首个有效行情日`
+        : `可验证起点 ${coverage.first_date || "-"}，早于该日暂未取到真实源`
       : `目标起点 ${defaultHistoryStart}`;
-    const title = state.selectedMaterial === "index" ? "成本压力指数累计历史" : `${latest ? latest.material_name : "原材料"}累计历史价格`;
-    const meta = rows.length ? `${rows[rows.length - 1].date} 至 ${rows[0].date} · ${rows.length} 条 · ${coverageText}` : `暂无该区间历史记录 · ${coverageText}`;
+    const title =
+      state.selectedMaterial === "index"
+        ? "综合成本指数累计历史"
+        : `${latest ? latest.material_name : "原材料"}累计历史价格`;
+    const meta = rows.length
+      ? `${rows[rows.length - 1].date} 至 ${rows[0].date} · ${rows.length} 条 · ${coverageText}`
+      : `暂无该区间历史记录 · ${coverageText}`;
     const setText = (id, value) => {
       const node = el(id);
       if (node) node.textContent = value;
@@ -1342,37 +2087,48 @@
             </tr>
           `;
         })
-        .join("") || '<tr><td colspan="4" class="empty">暂无该区间历史记录</td></tr>';
+        .join("") ||
+      `<tr><td colspan="4" class="empty">${state.historyStart && state.historyEnd && state.historyStart > state.historyEnd ? "开始日期晚于结束日期，请调整日期范围。" : "暂无该区间历史记录，请扩大日期范围或选择其他品种。"}</td></tr>`;
   }
 
   function renderRiskList() {
     const rows = filteredLatest()
       .slice()
       .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))
-      .slice(0, 7);
+      .slice(0, 3);
     el("riskList").innerHTML =
       rows
         .map((item) => {
-          const news = item.matched_news && item.matched_news[0] ? item.matched_news[0] : null;
+          const news =
+            item.matched_news && item.matched_news[0]
+              ? item.matched_news[0]
+              : null;
           const newsTitle = news ? news.title : "";
           const newsSource = news && news.source ? ` · ${news.source}` : "";
           return `
-            <article class="risk-item ${riskClass(item)}">
-              <h4>${item.material_name} · ${item.up_probability ?? "-"}%</h4>
-              <p>${item.trend || "震荡"}，30日${item.change_30d ?? "-"}%，${basisInfo(item).cls === "proxy" ? "最新指标" : "最新价格"} ${formatNumber(item.price)} ${item.unit || ""} · ${basisInfo(item).label}</p>
-              ${newsTitle ? `<p>新闻线索：${newsTitle}${newsSource}</p>` : ""}
-            </article>
+            <button type="button" class="risk-item risk-item-button ${riskClass(item)}" data-material-detail="${escapeHtml(item.material_id)}" aria-label="查看${escapeHtml(item.material_name)}预警依据与采购建议">
+              <span class="risk-item-head"><strong>${escapeHtml(item.material_name)}</strong><span>${escapeHtml(item.up_probability ?? "—")}%</span></span>
+              <span class="risk-item-label">涨价概率 · 模型估算</span>
+              <span class="risk-item-price">${formatNumber(item.price)} ${escapeHtml(item.unit || "")}<span>30日 ${escapeHtml(plainPct(item.change_30d))}</span></span>
+              <span class="risk-item-label">${escapeHtml(basisInfo(item).label)} · ${escapeHtml(item.date || "")}</span>
+              ${newsTitle ? `<span class="risk-item-news">新闻线索：${escapeHtml(newsTitle + newsSource)}</span>` : ""}
+              <span class="risk-item-action">查看依据与跟进建议</span>
+            </button>
           `;
         })
         .join("") || '<div class="empty">暂无风险数据</div>';
   }
 
   function seriesForChart() {
-    const rows = state.selectedMaterial === "index"
-      ? (data.index_history || []).map((row) => ({ date: row.date, value: Number(row.value) }))
-      : (data.history || [])
-          .filter((row) => row.material_id === state.selectedMaterial)
-          .map((row) => ({ date: row.date, value: Number(row.price) }));
+    const rows =
+      state.selectedMaterial === "index"
+        ? (data.index_history || []).map((row) => ({
+            date: row.date,
+            value: Number(row.value),
+          }))
+        : (data.history || [])
+            .filter((row) => row.material_id === state.selectedMaterial)
+            .map((row) => ({ date: row.date, value: Number(row.price) }));
     const sorted = rows
       .filter((row) => row.date && Number.isFinite(row.value))
       .sort((a, b) => a.date.localeCompare(b.date));
@@ -1389,18 +2145,43 @@
     const svg = el("trendChart");
     const series = seriesForChart();
     const selected = latestById.get(state.selectedMaterial);
-    el("chartTitle").textContent = selected ? `${selected.material_name}价格趋势` : "成本压力指数";
+    el("chartTitle").textContent = selected
+      ? `${selected.material_name}${basisInfo(selected).cls === "proxy" ? "指标" : "价格"}趋势`
+      : "综合成本指数";
     renderChartSummary(selected, series);
+    const wrap = svg.parentElement;
+    let tooltip = wrap.querySelector(".chart-tooltip");
+    if (!tooltip) {
+      tooltip = document.createElement("div");
+      tooltip.className = "chart-tooltip";
+      tooltip.id = "chartPointTooltip";
+      tooltip.setAttribute("role", "status");
+      wrap.appendChild(tooltip);
+    }
+    tooltip.hidden = true;
+    svg.onpointermove = null;
+    svg.onpointerleave = null;
+    svg.onkeydown = null;
+    svg.onfocus = null;
+    svg.onblur = null;
+    svg.setAttribute("tabindex", "0");
+    svg.setAttribute(
+      "aria-label",
+      `${selected ? selected.material_name : "综合成本指数"}趋势图，${rangeLabel()}，${series.length}个历史点。使用左右方向键查看数值，Home和End跳至首尾。`,
+    );
 
+    const width = Math.max(300, wrap.clientWidth || 900);
+    const height = window.innerWidth <= 580 ? 225 : 230;
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     if (series.length < 2) {
-      svg.innerHTML = '<text x="450" y="180" text-anchor="middle" fill="#67615a">暂无足够趋势数据</text>';
+      svg.innerHTML = `<text x="${width / 2}" y="${height / 2 - 9}" text-anchor="middle" fill="#94a3b8" font-size="13">暂无足够趋势数据<tspan x="${width / 2}" dy="24">请选择其他品种或扩大时间范围</tspan></text>`;
       return;
     }
 
-    const width = 900;
-    const height = 360;
-    const padding = { top: 28, right: 34, bottom: 46, left: 68 };
-    const values = series.map((point) => point.value).filter((value) => Number.isFinite(value));
+    const padding = { top: 18, right: 24, bottom: 32, left: 60 };
+    const values = series
+      .map((point) => point.value)
+      .filter((value) => Number.isFinite(value));
     const min = Math.min(...values);
     const max = Math.max(...values);
     const span = max - min || 1;
@@ -1409,19 +2190,27 @@
     const xStep = (width - padding.left - padding.right) / (series.length - 1);
 
     const x = (index) => padding.left + index * xStep;
-    const y = (value) => padding.top + (yMax - value) / (yMax - yMin) * (height - padding.top - padding.bottom);
-    const path = series.map((point, index) => `${index === 0 ? "M" : "L"} ${x(index).toFixed(2)} ${y(point.value).toFixed(2)}`).join(" ");
+    const y = (value) =>
+      padding.top +
+      ((yMax - value) / (yMax - yMin)) *
+        (height - padding.top - padding.bottom);
+    const path = series
+      .map(
+        (point, index) =>
+          `${index === 0 ? "M" : "L"} ${x(index).toFixed(2)} ${y(point.value).toFixed(2)}`,
+      )
+      .join(" ");
     const fillPath = `${path} L ${x(series.length - 1).toFixed(2)} ${height - padding.bottom} L ${padding.left} ${height - padding.bottom} Z`;
     const last = series[series.length - 1];
     const first = series[0];
-    const lineColor = last.value >= first.value ? "#b42318" : "#147b3d";
+    const lineColor = "#70d9db";
     const grid = [0, 0.25, 0.5, 0.75, 1]
       .map((tick) => {
         const yy = padding.top + tick * (height - padding.top - padding.bottom);
         const value = yMax - tick * (yMax - yMin);
         return `
-          <line x1="${padding.left}" x2="${width - padding.right}" y1="${yy}" y2="${yy}" stroke="#ded8d0" stroke-width="1" />
-          <text x="${padding.left - 12}" y="${yy + 4}" text-anchor="end" fill="#67615a" font-size="12">${formatNumber(value)}</text>
+          <line x1="${padding.left}" x2="${width - padding.right}" y1="${yy}" y2="${yy}" stroke="#243247" stroke-width="1" />
+          <text x="${padding.left - 12}" y="${yy + 4}" text-anchor="end" fill="#94a3b8" font-size="12">${formatNumber(value)}</text>
         `;
       })
       .join("");
@@ -1430,42 +2219,96 @@
     const endLabel = series[series.length - 1].date.slice(5);
 
     svg.innerHTML = `
-      <rect x="0" y="0" width="${width}" height="${height}" fill="#f8f7f4"></rect>
+      <rect x="0" y="0" width="${width}" height="${height}" fill="#111b29"></rect>
       ${grid}
       <path d="${fillPath}" fill="${lineColor}" opacity="0.08"></path>
       <path d="${path}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
       <circle cx="${x(series.length - 1)}" cy="${y(last.value)}" r="5" fill="${lineColor}"></circle>
-      <line x1="${padding.left}" x2="${width - padding.right}" y1="${height - padding.bottom}" y2="${height - padding.bottom}" stroke="#bfb7ad"></line>
-      <text x="${padding.left}" y="${height - 16}" fill="#67615a" font-size="12">${startLabel}</text>
-      <text x="${width - padding.right}" y="${height - 16}" fill="#67615a" font-size="12" text-anchor="end">${endLabel}</text>
+      <line x1="${padding.left}" x2="${width - padding.right}" y1="${height - padding.bottom}" y2="${height - padding.bottom}" stroke="#243247"></line>
+      <text x="${padding.left}" y="${height - 16}" fill="#94a3b8" font-size="12">${startLabel}</text>
+      <text x="${width - padding.right}" y="${height - 16}" fill="#94a3b8" font-size="12" text-anchor="end">${endLabel}</text>
       <text x="${width - padding.right}" y="${padding.top + 2}" fill="${lineColor}" font-size="13" text-anchor="end">${formatNumber(last.value)}</text>
+      <g class="chart-point-focus" visibility="hidden" pointer-events="none"><line class="chart-hover-line" x1="0" x2="0" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#7699bc" stroke-dasharray="4 4"></line><circle class="chart-hover-dot" cx="0" cy="0" r="5" fill="#70d9db" stroke="#111b29" stroke-width="2"></circle></g>
     `;
+    let activeIndex = series.length - 1;
+    const focusGroup = svg.querySelector(".chart-point-focus");
+    const hoverLine = svg.querySelector(".chart-hover-line");
+    const hoverDot = svg.querySelector(".chart-hover-dot");
+    const showPoint = (index) => {
+      activeIndex = Math.max(0, Math.min(series.length - 1, index));
+      const point = series[activeIndex];
+      hoverLine.setAttribute("x1", x(activeIndex));
+      hoverLine.setAttribute("x2", x(activeIndex));
+      hoverDot.setAttribute("cx", x(activeIndex));
+      hoverDot.setAttribute("cy", y(point.value));
+      focusGroup.setAttribute("visibility", "visible");
+      const previous = series[activeIndex - 1];
+      const change =
+        previous && previous.value
+          ? (point.value / previous.value - 1) * 100
+          : null;
+      const unit = selected ? selected.unit || "" : "指数";
+      tooltip.innerHTML = `<strong>${escapeHtml(point.date)}</strong><span>${formatNumber(point.value)} ${escapeHtml(unit)}</span><small>较上一有效记录 ${escapeHtml(plainPct(change))}</small>`;
+      tooltip.hidden = false;
+      const availableWidth = wrap.clientWidth;
+      tooltip.style.left = `${Math.max(8, Math.min(availableWidth - tooltip.offsetWidth - 8, (availableWidth * x(activeIndex)) / width - tooltip.offsetWidth / 2))}px`;
+      tooltip.style.top = "14px";
+    };
+    const hidePoint = () => {
+      tooltip.hidden = true;
+      focusGroup.setAttribute("visibility", "hidden");
+    };
+    svg.onpointermove = (event) => {
+      const matrix = svg.getScreenCTM();
+      if (!matrix) return;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const local = point.matrixTransform(matrix.inverse());
+      showPoint(Math.round((local.x - padding.left) / xStep));
+    };
+    svg.onpointerleave = () => {
+      if (document.activeElement !== svg) hidePoint();
+    };
+    svg.onfocus = () => showPoint(activeIndex);
+    svg.onblur = hidePoint;
+    svg.onkeydown = (event) => {
+      if (
+        !["ArrowLeft", "ArrowRight", "Home", "End", "Escape"].includes(
+          event.key,
+        )
+      )
+        return;
+      event.preventDefault();
+      if (event.key === "Escape") {
+        hidePoint();
+        return;
+      }
+      showPoint(
+        event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? series.length - 1
+            : activeIndex + (event.key === "ArrowRight" ? 1 : -1),
+      );
+    };
   }
 
   function renderChartSummary(selected, series) {
     const summary = el("chartSummary");
     if (!summary) return;
+    summary.dataset.mode = selected ? "material" : "index";
     if (selected) {
       summary.innerHTML = `
         <article>
-          <span>最新价格</span>
+          <span>${basisInfo(selected).cls === "proxy" ? "最新代理指标" : "最新价格"}</span>
           <strong>${priceLine(selected)}</strong>
-          <small>${selected.date || ""} · ${basisInfo(selected).label} · ${basisInfo(selected).source}</small>
-        </article>
-        <article>
-          <span>1日变化</span>
-          <strong>${plainPct(selected.change_1d)}</strong>
-          <small>相对上一有效价格</small>
+          <small>${escapeHtml(selected.date || "")} · ${basisInfo(selected).label}</small>
         </article>
         <article>
           <span>30日变化</span>
-          <strong>${plainPct(selected.change_30d)}</strong>
-          <small>${selected.trend || "持续观察"}</small>
-        </article>
-        <article>
-          <span>涨价概率</span>
-          <strong>${selected.up_probability ?? "-"}%</strong>
-          <small>${selected.risk_level || "观察"}</small>
+          <strong>${pct(selected.change_30d)}</strong>
+          <small>${escapeHtml(selected.trend || "持续观察")} · ${series.length} 个历史点</small>
         </article>
       `;
       return;
@@ -1473,27 +2316,20 @@
 
     const latest = series[series.length - 1];
     const first = series[0];
-    const change = latest && first && first.value ? (latest.value / first.value - 1) * 100 : null;
+    const change =
+      latest && first && first.value
+        ? (latest.value / first.value - 1) * 100
+        : null;
     summary.innerHTML = `
       <article>
         <span>最新指数</span>
         <strong>${latest ? formatNumber(latest.value) : "-"}</strong>
-        <small>${latest ? latest.date : "等待数据"}</small>
+        <small>${latest ? latest.date : "等待数据"} · 历史综合指数</small>
       </article>
       <article>
         <span>${rangeLabel()}变化</span>
-        <strong>${plainPct(change)}</strong>
-        <small>综合成本压力方向</small>
-      </article>
-      <article>
-        <span>高风险品种</span>
-        <strong>${data.summary.high_risk_count ?? 0}</strong>
-        <small>达到预警线</small>
-      </article>
-      <article>
-        <span>今日上涨</span>
-        <strong>${data.summary.rising_count ?? 0}</strong>
-        <small>相对上一有效价格</small>
+        <strong>${pct(change)}</strong>
+        <small>${first ? first.date : "—"} 至 ${latest ? latest.date : "—"} · ${series.length}个历史点</small>
       </article>
     `;
   }
@@ -1505,14 +2341,22 @@
           .map((materialId) => latestById.get(materialId))
           .filter(Boolean);
         const avgRisk = items.length
-          ? items.reduce((sum, item) => sum + Number(item.up_probability || 0), 0) / items.length
+          ? items.reduce(
+              (sum, item) => sum + Number(item.up_probability || 0),
+              0,
+            ) / items.length
           : 0;
-        const top = items.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))[0];
+        const top = items
+          .slice()
+          .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))[0];
         const chips = items
           .slice()
           .sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))
           .slice(0, 8)
-          .map((item) => `<span class="chip">${item.material_name}</span>`)
+          .map(
+            (item) =>
+              `<button type="button" class="chip" data-material-detail="${escapeHtml(item.material_id)}">${escapeHtml(item.material_name)}</button>`,
+          )
           .join("");
         return `
           <article class="bucket">
@@ -1554,20 +2398,21 @@
       data.manual_watch_items
         .map((item) => {
           const quote = internalQuoteByWatchId.get(item.id);
-          const quoteRows = quote && quote.quotes
-            ? quote.quotes
-                .map(
-                  (row) => `
+          const quoteRows =
+            quote && quote.quotes
+              ? quote.quotes
+                  .map(
+                    (row) => `
                     <tr>
                       <td>${escapeHtml(row.spec)}</td>
                       <td>${formatNumber(row.ah)} Ah</td>
                       <td>${formatNumber(row.price_per_ah)} 元/Ah</td>
                       <td>${formatNumber(row.estimated_cell_cost)} 元/颗</td>
                     </tr>
-                  `
-                )
-                .join("")
-            : "";
+                  `,
+                  )
+                  .join("")
+              : "";
           const quoteBlock = quote
             ? `
               <div class="quote-block">
@@ -1597,17 +2442,32 @@
 
   initHeader();
   renderRefreshWarnings();
+  renderRefreshStatusStrip();
   initCategories();
   initMaterialSelect();
   initHistoryFilters();
   initHistoryExpand();
   initHistoryExport();
-  renderMaterials();
-  renderRiskList();
+  initMaterialInteractions();
+  refreshMaterialViews();
   renderChart();
   renderHistoryTable();
   renderBuckets();
   renderNews();
   renderManualWatch();
   startLiveRefreshWatch();
+  document.querySelectorAll(".main-nav a").forEach((link) =>
+    link.addEventListener("click", () => {
+      document.querySelectorAll(".main-nav a").forEach((item) => {
+        item.classList.toggle("active", item === link);
+        if (item === link) item.setAttribute("aria-current", "location");
+        else item.removeAttribute("aria-current");
+      });
+    }),
+  );
+  let chartResizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(chartResizeTimer);
+    chartResizeTimer = window.setTimeout(renderChart, 120);
+  });
 })();

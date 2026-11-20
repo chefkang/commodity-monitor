@@ -1,263 +1,373 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
     <title>迈瑟伦原材料价格监测</title>
     <link rel="icon" href="./assets/maxcellent-favicon.png" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20261120-dark-8" />
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-mark">
-            <img src="./assets/maxcellent-logo-on-theme.png" alt="MAXCELLENT 迈瑟伦" />
-          </div>
-          <div>
-            <h1>迈瑟伦原材料监测</h1>
-            <p id="updatedAt">等待数据</p>
-          </div>
+    <a class="skip-link" href="#tableSection">跳到原料行情</a>
+    <header class="masthead">
+      <a class="brand-mark" href="#overview" aria-label="迈瑟伦监测总览"
+        ><img
+          src="./assets/maxcellent-logo-wordmark.png"
+          alt="MAXCELLENT 迈瑟伦"
+      /></a>
+      <nav class="main-nav" aria-label="看板导航">
+        <a class="active" href="#overview">监测总览</a
+        ><a href="#chartSection">价格趋势</a><a href="#riskSection">风险预警</a
+        ><a href="#newsSection">产业新闻</a>
+      </nav>
+      <div class="masthead-actions">
+        <span class="terminal-label">采购情报工作台</span
+        ><a id="briefLink" class="icon-button" href="./report.html">市场简报</a
+        ><button
+          id="reloadButton"
+          class="icon-button"
+          title="重新载入已生成的数据，不触发行情抓取"
+        >
+          重新载入
+        </button>
+      </div>
+    </header>
+    <main class="content" id="overview">
+      <header class="page-heading">
+        <div>
+          <p class="eyebrow">MAXCELLENT · MARKET INTELLIGENCE</p>
+          <h1>原材料价格监测与采购预警</h1>
         </div>
-
-        <div class="pressure-block">
-          <span>采购成本压力指数</span>
-          <strong id="pressureIndex">--</strong>
-          <small id="pressureStatus">--</small>
-        </div>
-
-        <nav class="category-nav" id="categoryNav"></nav>
-      </aside>
-
-      <main class="content">
-        <header class="topbar">
-          <div class="topbar-main">
-            <img class="topbar-logo" src="./assets/maxcellent-logo-on-theme.png" alt="MAXCELLENT 迈瑟伦" />
-            <div class="title-block">
-              <h2>原材料价格监测与采购预警</h2>
-              <p id="marketSummary">围绕电池包、PCBA、线束夹、充气泵、塑料外壳与包装，跟踪关键成本变化。</p>
-            </div>
-          </div>
-          <div class="top-actions">
-            <a id="briefLink" class="icon-button" title="打开今日简报" href="./report.html">简报</a>
-            <button class="icon-button" id="reloadButton" title="重新载入数据">刷新</button>
-          </div>
-        </header>
-
-        <section id="refreshWarningBanner" class="refresh-warning-banner" hidden></section>
+        <span class="workspace-badge">公开行情监测</span>
+      </header>
+      <details class="freshness-details" id="refreshDetails">
+        <summary>
+          <span id="freshnessSummary">正在读取行情与刷新状态…</span
+          ><span class="details-toggle">刷新详情</span>
+        </summary>
+        <p id="marketSummary"></p>
+        <p id="updatedAt"></p>
+        <section
+          id="refreshWarningBanner"
+          class="refresh-warning-banner"
+          hidden
+        ></section>
         <section class="refresh-status-strip" id="refreshStatusStrip">
           <article class="refresh-status-card">
-            <span>当前状态</span>
-            <strong id="refreshStateLabel">等待数据</strong>
-            <small id="refreshStateDetail">正在读取刷新窗口状态。</small>
+            <span>当前状态</span><strong id="refreshStateLabel">正在读取</strong
+            ><small id="refreshStateDetail"></small>
           </article>
           <article class="refresh-status-card">
-            <span>刷新时间</span>
-            <strong id="refreshGeneratedAt">等待数据</strong>
-            <small id="refreshGeneratedAtDetail">显示系统最近一次生成或同步时间。</small>
+            <span>刷新时间</span><strong id="refreshGeneratedAt">--</strong
+            ><small id="refreshGeneratedAtDetail"></small>
           </article>
           <article class="refresh-status-card">
-            <span>最新交易日</span>
-            <strong id="refreshTradingDate">等待数据</strong>
-            <small id="refreshTradingDateDetail">价格明细里的日期代表交易日，不等于页面刷新时间。</small>
+            <span>最新交易日</span><strong id="refreshTradingDate">--</strong
+            ><small id="refreshTradingDateDetail"></small>
           </article>
           <article class="refresh-status-card">
-            <span>下次计划刷新</span>
-            <strong id="refreshNextSlot">等待数据</strong>
-            <small id="refreshNextSlotDetail">过了计划时段仍不变化，再按异常处理。</small>
+            <span>下次计划刷新</span><strong id="refreshNextSlot">--</strong
+            ><small id="refreshNextSlotDetail"></small>
           </article>
         </section>
-
-        <section class="decision-strip">
-          <article class="decision-card primary">
-            <span>今日判断</span>
-            <strong id="decisionTitle">等待数据</strong>
-            <p id="decisionBody">正在汇总今日价格、趋势和新闻风险。</p>
-          </article>
-          <article class="decision-card">
-            <span>重点盯盘</span>
-            <strong id="decisionFocus">--</strong>
-            <p id="decisionFocusMeta">按涨价概率与短线涨幅排序。</p>
-          </article>
-          <article class="decision-card">
-            <span>采购动作</span>
-            <strong id="decisionActionTitle">--</strong>
-            <p id="decisionActionBody">等待今日建议。</p>
-          </article>
-        </section>
-
-        <section class="metric-grid">
-          <article class="metric-card">
-            <span>跟踪品种</span>
-            <strong id="trackedCount">--</strong>
-            <small>价格与替代指标</small>
-          </article>
-          <article class="metric-card">
-            <span>高风险</span>
-            <strong id="highRiskCount">--</strong>
-            <small>涨价概率偏高</small>
-          </article>
-          <article class="metric-card">
-            <span>今日上涨</span>
-            <strong id="risingCount">--</strong>
-            <small>相对上一有效价格</small>
-          </article>
-          <article class="metric-card">
-            <span>新闻风险</span>
-            <strong id="newsRiskCount">--</strong>
-            <small>供应链扰动信号</small>
-          </article>
-        </section>
-
-        <section class="main-grid">
-          <section class="panel chart-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">价格趋势</p>
-                <h3 id="chartTitle">成本压力指数</h3>
-              </div>
-              <div class="chart-controls">
-                <select id="materialSelect" aria-label="选择品种"></select>
-                <div class="segmented" id="rangeControl">
-                  <button data-days="30">30天</button>
-                  <button data-days="90" class="active">90天</button>
-                  <button data-days="180">180天</button>
-                  <button data-days="365">1年</button>
-                  <button data-days="all">2024起</button>
-                </div>
-              </div>
-            </div>
-            <div class="chart-summary" id="chartSummary"></div>
-            <div class="chart-wrap">
-              <svg id="trendChart" viewBox="0 0 900 360" role="img" aria-label="价格趋势图"></svg>
-            </div>
-            <div class="history-panel" id="historyPanel">
-              <div class="history-head">
-                <div>
-                  <p class="eyebrow">历史查询</p>
-                  <h3 id="historyTitle">单品累计历史价格</h3>
-                </div>
-                <div class="history-tools">
-                  <label>开始 <input id="historyStartInput" type="date" /></label>
-                  <label>结束 <input id="historyEndInput" type="date" /></label>
-                  <button id="historyResetButton" type="button">2024起</button>
-                  <button id="historyExpandButton" type="button" aria-expanded="false">全屏查看</button>
-                  <button id="historyExportButton" class="history-export-button" type="button">导出 Excel</button>
-                  <span id="historyMeta">请选择品种</span>
-                </div>
-              </div>
-              <details class="history-export-options" id="historyExportOptions">
-                <summary>多品种导出设置（默认同步当前趋势品种；未选具体品种时全选）</summary>
-                <p>勾选多个品种后，会合并导出到同一份 Excel 明细表；仅包含当前日期范围内的公开行情记录。</p>
-                <div class="history-export-actions">
-                  <button id="historyExportSelectAllButton" type="button">全选品种</button>
-                  <button id="historyExportClearButton" type="button">清除选择</button>
-                </div>
-                <div id="historyExportMaterialList" class="history-export-material-list" aria-label="选择需要导出的品种"></div>
-              </details>
-              <div class="history-table-wrap">
-                <table class="history-table">
-                  <thead>
-                    <tr>
-                      <th>日期</th>
-                      <th>价格/指标值</th>
-                      <th>较上一条</th>
-                      <th>口径</th>
-                    </tr>
-                  </thead>
-                  <tbody id="historyTable"></tbody>
-                </table>
-              </div>
-              <button id="historyCloseExpandButton" class="history-close-expand" type="button" aria-label="退出历史记录全屏查看">退出展开 ×</button>
-            </div>
-          </section>
-
-          <section class="panel risk-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">风险预警</p>
-                <h3>优先关注</h3>
-              </div>
-            </div>
-            <div class="risk-list" id="riskList"></div>
-          </section>
-        </section>
-
-        <section class="panel table-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">价格明细</p>
-                <h3>每日原材料价格趋势表</h3>
-              </div>
+      </details>
+      <nav
+        class="category-nav"
+        id="categoryNav"
+        aria-label="按产品大类筛选"
+      ></nav>
+      <section class="main-grid">
+        <section
+          class="panel chart-panel"
+          id="chartSection"
+          aria-label="价格趋势"
+        >
+          <div class="panel-heading">
+            <h2 id="chartTitle">综合成本指数</h2>
+            <select id="materialSelect" aria-label="选择品种"></select>
           </div>
-          <div class="table-wrap">
-            <table>
+          <div class="chart-topline">
+            <div class="chart-summary" id="chartSummary"></div>
+            <div class="segmented" id="rangeControl" aria-label="趋势时间范围">
+              <button data-days="30">30天</button
+              ><button data-days="90" class="active">90天</button
+              ><button data-days="180">180天</button
+              ><button data-days="365">1年</button
+              ><button data-days="all">全部历史</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg
+              id="trendChart"
+              viewBox="0 0 900 360"
+              role="img"
+              tabindex="0"
+              aria-label="价格趋势图；左右方向键查看历史点"
+            ></svg>
+          </div>
+          <p class="chart-help">
+            移动到曲线查看日期与数值；键盘可用左右方向键。综合指数与采购成本压力评分口径不同。
+          </p>
+          <section class="metric-grid" aria-label="快速筛选行情">
+            <button class="metric-card" data-quick-filter="all">
+              <span>跟踪品种</span><strong id="trackedCount">--</strong
+              ><small>查看全部行情</small>
+            </button>
+            <button class="metric-card" data-quick-filter="high">
+              <span>高风险</span><strong id="highRiskCount">--</strong
+              ><small>涨价概率 ≥65%</small>
+            </button>
+            <button class="metric-card" data-quick-filter="rising">
+              <span>今日上涨</span><strong id="risingCount">--</strong
+              ><small>较上一有效价格</small>
+            </button>
+            <button class="metric-card" data-quick-filter="news">
+              <span>新闻风险</span><strong id="newsRiskCount">--</strong
+              ><small>查看产业新闻与来源</small>
+            </button>
+          </section>
+        </section>
+        <aside
+          class="panel decision-panel"
+          id="riskSection"
+          aria-label="今日采购研判"
+        >
+          <div class="panel-heading">
+            <h2>今日采购研判</h2>
+            <span class="subtle-label">全局视角</span>
+          </div>
+          <div class="decision-card primary">
+            <strong id="decisionTitle">正在汇总研判</strong>
+            <p id="decisionBody"></p>
+          </div>
+          <div class="focus-summary">
+            <span>当前筛选 · 优先关注</span><strong id="decisionFocus"></strong>
+            <p id="decisionFocusMeta"></p>
+          </div>
+          <div class="risk-list" id="riskList"></div>
+          <div class="action-summary">
+            <span>采购跟进建议</span>
+            <h3 id="decisionActionTitle"></h3>
+            <p id="decisionActionBody"></p>
+            <button id="procurementButton" class="primary-button">
+              查看原料与采购建议
+            </button>
+          </div>
+          <div class="pressure-block">
+            <span>采购成本压力评分</span><strong id="pressureIndex">--</strong
+            ><small id="pressureStatus"></small>
+          </div>
+        </aside>
+      </section>
+      <section class="panel table-panel" id="tableSection">
+        <div class="panel-heading">
+          <div>
+            <h2>原料行情明细</h2>
+            <p class="section-hint">
+              点击原料名，查看价格依据、影响产品及跟进建议
+            </p>
+          </div>
+          <span id="resultCount" aria-live="polite"></span>
+        </div>
+        <div class="table-toolbar">
+          <label class="search-field"
+            ><span>搜索原料</span
+            ><input
+              id="materialSearch"
+              type="search"
+              placeholder="搜索名称、类别或来源"
+              autocomplete="off"
+          /></label>
+          <label
+            ><span>关注范围</span
+            ><select id="riskFilter">
+              <option value="all">全部行情</option>
+              <option value="high">高风险 ≥65%</option>
+              <option value="rising">今日上涨</option>
+              <option value="news">有匹配新闻</option>
+              <option value="real">真实行情</option>
+              <option value="proxy">上游代理指标</option>
+            </select></label
+          >
+          <label
+            ><span>排序</span
+            ><select id="sortSelect">
+              <option value="risk">涨价概率从高到低</option>
+              <option value="change30">30日涨幅从高到低</option>
+              <option value="name">原料名称</option>
+            </select></label
+          ><button id="filterReset" class="quiet-button">清除筛选</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>品种 / 交易日</th>
+                <th>类别</th>
+                <th>最新价 / 指标值</th>
+                <th>1日</th>
+                <th>7日</th>
+                <th>30日</th>
+                <th>90日</th>
+                <th>涨价概率<small>模型估算</small></th>
+                <th>趋势</th>
+                <th>口径与来源</th>
+              </tr>
+            </thead>
+            <tbody id="materialsTable"></tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          涨价概率为模型估算，仅供跟踪。上游代理指标反映传导方向，不等于该材料或供应商的直接报价。
+        </p>
+      </section>
+      <section class="panel history-section" aria-label="历史价格查询">
+        <div class="history-panel" id="historyPanel">
+          <div class="history-head">
+            <div>
+              <p class="eyebrow">历史查询</p>
+              <h3 id="historyTitle">单品累计历史价格</h3>
+            </div>
+            <div class="history-tools">
+              <label>开始 <input id="historyStartInput" type="date" /></label>
+              <label>结束 <input id="historyEndInput" type="date" /></label>
+              <button id="historyResetButton" type="button">全部历史</button>
+              <button
+                id="historyExpandButton"
+                type="button"
+                aria-expanded="false"
+              >
+                全屏查看
+              </button>
+              <button
+                id="historyExportButton"
+                class="history-export-button"
+                type="button"
+              >
+                导出 Excel
+              </button>
+              <span id="historyMeta">请选择品种</span>
+            </div>
+          </div>
+          <details class="history-export-options" id="historyExportOptions">
+            <summary>
+              多品种导出设置（默认同步当前趋势品种；未选具体品种时全选）
+            </summary>
+            <p>
+              勾选多个品种后，会合并导出到同一份 Excel
+              明细表；仅包含当前日期范围内的公开行情记录。
+            </p>
+            <div class="history-export-actions">
+              <button id="historyExportSelectAllButton" type="button">
+                全选品种
+              </button>
+              <button id="historyExportClearButton" type="button">
+                清除选择
+              </button>
+            </div>
+            <div
+              id="historyExportMaterialList"
+              class="history-export-material-list"
+              aria-label="选择需要导出的品种"
+            ></div>
+          </details>
+          <div class="history-table-wrap">
+            <table class="history-table">
               <thead>
                 <tr>
-                  <th>品种</th>
-                  <th>类别</th>
-                  <th>最新价/指标值</th>
-                  <th>1日</th>
-                  <th>7日</th>
-                  <th>30日</th>
-                  <th>90日</th>
-                  <th>涨价风险</th>
-                  <th>趋势</th>
-                  <th>口径与来源</th>
+                  <th>日期</th>
+                  <th>价格/指标值</th>
+                  <th>较上一条</th>
+                  <th>口径</th>
                 </tr>
               </thead>
-              <tbody id="materialsTable"></tbody>
+              <tbody id="historyTable"></tbody>
             </table>
           </div>
-        </section>
-
-        <section class="bottom-grid">
-          <section class="panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">成本结构</p>
-                <h3>产品大类成本联动</h3>
-              </div>
-            </div>
-            <div class="bucket-grid" id="bucketGrid"></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">新闻扰动</p>
-                <h3>国际与产业新闻</h3>
-              </div>
-            </div>
-            <div class="news-feed" id="newsFeed"></div>
-          </section>
-        </section>
-
-        <section class="panel watch-panel">
+          <button
+            id="historyCloseExpandButton"
+            class="history-close-expand"
+            type="button"
+            aria-label="退出历史记录全屏查看"
+          >
+            退出展开 ×
+          </button>
+        </div>
+      </section>
+      <section class="bottom-grid" id="newsSection">
+        <section class="panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">供应商报价</p>
-              <h3>需补录的关键报价</h3>
+              <p class="eyebrow">成本结构</p>
+              <h3>产品大类成本联动</h3>
             </div>
           </div>
-          <div class="watch-grid" id="manualWatch"></div>
+          <div class="bucket-grid" id="bucketGrid"></div>
         </section>
 
-        <footer class="brand-footer">
-          <img src="./assets/maxcellent-logo-on-theme.png" alt="MAXCELLENT 迈瑟伦" />
-          <span>MAXCELLENT 迈瑟伦 · 原材料价格监测</span>
-        </footer>
-      </main>
-    </div>
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">新闻扰动</p>
+              <h3>国际与产业新闻</h3>
+            </div>
+          </div>
+          <div class="news-feed" id="newsFeed"></div>
+        </section>
+      </section>
 
+      <section class="panel watch-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">供应商报价</p>
+            <h3>需补录的关键报价</h3>
+          </div>
+        </div>
+        <div class="watch-grid" id="manualWatch"></div>
+      </section>
+
+      <footer class="brand-footer">
+        <span>MAXCELLENT 迈瑟伦 · 原材料价格监测</span
+        ><a href="#overview">回到总览</a
+        ><span>真实行情 / 上游代理 / 供应商补录分别标注</span>
+      </footer>
+    </main>
+    <dialog
+      id="detailDialog"
+      class="detail-dialog"
+      aria-labelledby="detailTitle"
+    >
+      <div class="detail-header">
+        <div>
+          <p class="eyebrow">MATERIAL INSIGHT</p>
+          <h2 id="detailTitle">原料详情</h2>
+        </div>
+        <button id="drawerClose" class="icon-button" aria-label="关闭原料详情">
+          关闭
+        </button>
+      </div>
+      <div id="detailBody" class="detail-body"></div>
+      <div class="detail-footer">
+        <button id="drawerTrendButton" class="primary-button">
+          查看价格趋势</button
+        ><button id="drawerHistoryButton" class="icon-button">
+          查看历史明细</button
+        ><small>采购动作需结合实际用量、交期与供应商报价复核。</small>
+      </div>
+    </dialog>
     <!-- runtime-loader:start -->
     <script>
       (function () {
-        var stamp = new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 14);
-        var PUBLIC_DATA_URL = "https://chefkang.github.io/commodity-monitor/data.js";
+        var stamp = new Date()
+          .toISOString()
+          .replace(/[-:TZ.]/g, "")
+          .slice(0, 14);
+        var PUBLIC_DATA_URL =
+          "https://chefkang.github.io/commodity-monitor/data.js";
         var PUBLIC_HOST_RE = /(^|\.)chefkang\.github\.io$/i;
         var PUBLIC_LAG_TOLERANCE_MS = 3 * 60 * 1000;
 
@@ -276,16 +386,42 @@
           if (onerror) {
             script.onerror = onerror;
           }
+          var finished = false;
+          var complete = function (ok) {
+            if (finished) return;
+            finished = true;
+            clearTimeout(timer);
+            if (ok) {
+              if (onload) onload();
+            } else {
+              script.remove();
+              if (onerror) onerror();
+            }
+          };
+          var timer = setTimeout(function () {
+            complete(false);
+          }, 4500);
+          script.onload = function () {
+            complete(true);
+          };
+          script.onerror = function () {
+            complete(false);
+          };
           document.body.appendChild(script);
         }
 
         function parseGeneratedAtMs(payload) {
-          var value = payload && payload.generated_at ? Date.parse(payload.generated_at) : NaN;
+          var value =
+            payload && payload.generated_at
+              ? Date.parse(payload.generated_at)
+              : NaN;
           return Number.isFinite(value) ? value : null;
         }
 
         function latestCount(payload) {
-          return payload && Array.isArray(payload.latest) ? payload.latest.length : 0;
+          return payload && Array.isArray(payload.latest)
+            ? payload.latest.length
+            : 0;
         }
 
         function shouldCheckPublicData() {
@@ -320,7 +456,10 @@
             if (candidateGeneratedAt === null) {
               return baseGeneratedAt === null;
             }
-            return baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt;
+            return (
+              baseGeneratedAt === null ||
+              candidateGeneratedAt >= baseGeneratedAt
+            );
           }
 
           return false;
@@ -336,7 +475,7 @@
             public_lag_tolerance_ms: PUBLIC_LAG_TOLERANCE_MS,
             data_source: checkPublicData ? "local" : "public",
             data_source_label: checkPublicData ? "本地副本" : "公网实时结果",
-            data_source_reason: ""
+            data_source_reason: "",
           };
 
           if (!checkPublicData) {
@@ -344,20 +483,27 @@
             return;
           }
 
-          loadScript(PUBLIC_DATA_URL + "?ts=" + stamp, function () {
-            var publicPayload = window.COMMODITY_MONITOR_DATA || {};
-            if (shouldPreferCandidate(localPayload, publicPayload)) {
-              window.COMMODITY_MONITOR_RUNTIME.data_source = "public";
-              window.COMMODITY_MONITOR_RUNTIME.data_source_label = "公网同步结果";
-              window.COMMODITY_MONITOR_RUNTIME.data_source_reason = "当前页面自动优先使用比本地副本更新的公网结果。";
-            } else {
+          loadScript(
+            PUBLIC_DATA_URL + "?ts=" + stamp,
+            function () {
+              var publicPayload = window.COMMODITY_MONITOR_DATA || {};
+              if (shouldPreferCandidate(localPayload, publicPayload)) {
+                window.COMMODITY_MONITOR_RUNTIME.data_source = "public";
+                window.COMMODITY_MONITOR_RUNTIME.data_source_label =
+                  "公网同步结果";
+                window.COMMODITY_MONITOR_RUNTIME.data_source_reason =
+                  "当前页面自动优先使用比本地副本更新的公网结果。";
+              } else {
+                window.COMMODITY_MONITOR_DATA = localPayload;
+              }
+              continueLoad();
+            },
+            null,
+            function () {
               window.COMMODITY_MONITOR_DATA = localPayload;
-            }
-            continueLoad();
-          }, null, function () {
-            window.COMMODITY_MONITOR_DATA = localPayload;
-            continueLoad();
-          });
+              continueLoad();
+            },
+          );
         }
 
         loadScript("./data.js?ts=" + stamp, function () {
@@ -367,7 +513,10 @@
               function () {
                 loadScript("./app.js?ts=" + stamp);
               },
-              { "data-local-only": "true" }
+              { "data-local-only": "true" },
+              function () {
+                loadScript("./app.js?ts=" + stamp);
+              },
             );
           });
         });
