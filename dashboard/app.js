@@ -23,6 +23,7 @@
     riskFilter: "all",
     sort: "risk",
     detailMaterial: null,
+    detailReturnView: "chart",
   };
 
   const el = (id) => document.getElementById(id);
@@ -384,6 +385,10 @@
   function refreshStateDetailText(notice, nextRefresh, tradingDate) {
     const coverageNote = tradeDateCoverageNote();
     if (notice && notice.level === "info") {
+      if (notice.mode === "slot-waiting")
+        return [notice.lines[0], notice.lines[1], coverageNote]
+          .filter(Boolean)
+          .join(" ");
       if (notice.mode === "early-refreshed") {
         return [
           `现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`,
@@ -421,6 +426,8 @@
     const mismatchNote = latestTradingDateMismatchNote();
     const coverageNote = tradeDateCoverageNote();
     if (notice && notice.level === "info") {
+      if (notice.mode === "slot-waiting")
+        return `本轮仍在等待更新；这里显示的是当前这份结果的交易日 ${tradingDate}。${coverageNote || mismatchNote}`;
       if (notice.mode === "early-refreshed") {
         const baseText = mismatchNote
           ? `这里显示的交易日已经提前切到 ${tradingDate}，说明今天首轮监测已经到位。${mismatchNote}`
@@ -477,6 +484,10 @@
 
   function renderPageTitle(notice, nextRefresh, coverage) {
     if (notice && notice.level === "info") {
+      if (notice.mode === "slot-waiting") {
+        document.title = "等待本轮更新 | 迈瑟伦原材料价格监测";
+        return;
+      }
       if (notice.mode === "early-refreshed") {
         document.title = "今日首轮已提前刷新 | 迈瑟伦原材料价格监测";
         return;
@@ -554,6 +565,31 @@
           ],
         };
       }
+    }
+
+    const activeSlot = currentMinutes >= 15 * 60 ? afternoonSlot : morningSlot;
+    const previousSlot =
+      currentMinutes >= 15 * 60 ? morningSlot : yesterdayAfternoon;
+    const cutoff = new Date(activeSlot.getTime() + 20 * 60 * 1000);
+    if (
+      currentMinutes >= 10 * 60 &&
+      generatedAt >= previousSlot &&
+      generatedAt < activeSlot &&
+      now < cutoff
+    ) {
+      const slotLabel = beijingClockLabel(activeSlot);
+      const cutoffLabel = beijingClockLabel(cutoff);
+      return {
+        level: "info",
+        mode: "slot-waiting",
+        headerLabel: "等待本轮更新",
+        title: `等待本轮更新，${cutoffLabel} 前属正常等待`,
+        lines: [
+          `本轮刷新窗口为北京时间 ${slotLabel}–${cutoffLabel}；现在是 ${beijingClockLabel(now)}，当前这轮尚未确认完成。`,
+          `当前沿用 ${formatDateTime(data.generated_at)} 生成的上一版结果，交易日为 ${latestTradingDateLabel()}。`,
+          `若到 ${cutoffLabel} 以后仍未变化，再按异常处理；可重新载入或运行“检查今日刷新状态”。`,
+        ],
+      };
     }
 
     if (
@@ -746,6 +782,11 @@
     if (notice && notice.headerLabel) {
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
+        if (notice.mode === "slot-waiting") {
+          el("updatedAt").textContent =
+            `${notice.headerLabel}${sourcePrefix} · ${notice.lines[0]} 当前沿用 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}${coverageSuffix}`;
+          return;
+        }
         if (notice.mode === "early-refreshed") {
           el("updatedAt").textContent =
             `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
@@ -1689,7 +1730,48 @@
     if (!select.value) select.value = "index";
   }
 
-  function selectMaterial(materialId) {
+  const supportedMaterialViews = new Set(["chart", "history", "detail"]);
+
+  function materialNavigation() {
+    try {
+      const url = new URL(window.location.href);
+      if (!url.searchParams.has("material") && !url.searchParams.has("view"))
+        return null;
+      const materialId = url.searchParams.has("material")
+        ? url.searchParams.get("material")
+        : "index";
+      const view = url.searchParams.has("view")
+        ? url.searchParams.get("view")
+        : "chart";
+      if (
+        (materialId !== "index" && !latestById.has(materialId)) ||
+        !supportedMaterialViews.has(view)
+      )
+        return null;
+      return { materialId, view };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function syncMaterialNavigation(materialId, view = "chart") {
+    if (
+      (materialId !== "index" && !latestById.has(materialId)) ||
+      !supportedMaterialViews.has(view)
+    )
+      return;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("material", materialId);
+      url.searchParams.set("view", view);
+      url.hash = view === "history" ? "historyPanel" : "chartSection";
+      window.history.replaceState(null, "", url.href);
+    } catch (_) {
+      // File-based browsers may reject history updates; selection still works.
+    }
+  }
+
+  function selectMaterial(materialId, view = "chart") {
     if (materialId !== "index" && !latestById.has(materialId)) return;
     state.selectedMaterial = materialId;
     const select = el("materialSelect");
@@ -1705,6 +1787,30 @@
     renderChart();
     renderHistoryTable();
     refreshMaterialViews();
+    syncMaterialNavigation(materialId, view);
+  }
+
+  function applyInitialMaterialNavigation() {
+    const requested = materialNavigation();
+    if (!requested) return;
+    const view =
+      requested.view === "detail" && requested.materialId === "index"
+        ? "chart"
+        : requested.view;
+    selectMaterial(requested.materialId, view);
+    const openRequestedView = () => {
+      if (view === "detail") {
+        openMaterialDetail(requested.materialId, el("materialSelect"));
+        return;
+      }
+      scrollToSection(view === "history" ? "historyPanel" : "chartSection");
+      const target =
+        view === "history" ? el("historyStartInput") : el("materialSelect");
+      if (target) target.focus({ preventScroll: true });
+    };
+    if (window.requestAnimationFrame)
+      window.requestAnimationFrame(openRequestedView);
+    else window.setTimeout(openRequestedView, 0);
   }
 
   function refreshMaterialViews() {
@@ -1837,6 +1943,11 @@
     if (dialog) {
       let lastTrigger = null;
       dialog.addEventListener("close", () => {
+        if (materialNavigation()?.view === "detail")
+          syncMaterialNavigation(
+            state.selectedMaterial,
+            state.detailReturnView,
+          );
         if (lastTrigger && document.contains(lastTrigger))
           lastTrigger.focus({ preventScroll: true });
       });
@@ -1860,7 +1971,10 @@
       const openSection = (sectionId) => {
         const materialId = state.detailMaterial;
         dialog.close();
-        selectMaterial(materialId);
+        selectMaterial(
+          materialId,
+          sectionId === "chartSection" ? "chart" : "history",
+        );
         scrollToSection(sectionId);
         const target =
           sectionId === "chartSection"
@@ -1893,7 +2007,11 @@
     const item = latestById.get(materialId);
     const dialog = el("detailDialog");
     if (!item || !dialog || !el("detailBody")) return;
+    if (!dialog.open)
+      state.detailReturnView =
+        materialNavigation()?.view === "history" ? "history" : "chart";
     state.detailMaterial = materialId;
+    syncMaterialNavigation(materialId, "detail");
     if (el("detailTitle")) el("detailTitle").textContent = item.material_name;
     const basis = basisInfo(item);
     const coverage = coverageById.get(materialId);
@@ -2455,6 +2573,7 @@
   renderBuckets();
   renderNews();
   renderManualWatch();
+  applyInitialMaterialNavigation();
   startLiveRefreshWatch();
   document.querySelectorAll(".main-nav a").forEach((link) =>
     link.addEventListener("click", () => {

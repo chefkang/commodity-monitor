@@ -35,6 +35,7 @@ class HtmlResources(HTMLParser):
     def __init__(self):
         super().__init__()
         self.stylesheets: list[str] = []
+        self.links: list[str] = []
         self.inline_scripts: list[str] = []
         self._script_parts: list[str] | None = None
 
@@ -42,6 +43,8 @@ class HtmlResources(HTMLParser):
         attributes = dict(attrs)
         if tag == "link" and attributes.get("rel") == "stylesheet":
             self.stylesheets.append(attributes.get("href", ""))
+        if tag == "a":
+            self.links.append(attributes.get("href", ""))
         if tag == "script" and "src" not in attributes:
             self._script_parts = []
 
@@ -193,9 +196,15 @@ class PublicSiteBuildTests(unittest.TestCase):
             ("index.html", "styles.css", "report.html"),
             ("report.html", "report.css", "index.html"),
         ):
+            stylesheets = (
+                '<link rel="stylesheet" href="./styles.css?v=old-shared" />'
+                '<link rel="stylesheet" href="./report.css?v=old-report" />'
+                if name == "report.html"
+                else f'<link rel="stylesheet" href="./{css}?v=old" />'
+            )
             (self.dashboard / name).write_text(
                 '<!doctype html><html><head>'
-                f'<link rel="stylesheet" href="./{css}?v=old" />'
+                f'{stylesheets}'
                 '</head><body><h1>Synthetic public monitor</h1>'
                 f'<a href="./{destination}">Related view</a>{old_loader}'
                 '</body></html>',
@@ -261,16 +270,38 @@ class PublicSiteBuildTests(unittest.TestCase):
 
     def test_existing_stylesheet_query_is_replaced_with_generated_version(self):
         self.build()
-        for html_name, css_name in (("trend.html", "styles.css"), ("index.html", "report.css")):
+        generated_versions = set()
+        for html_name, css_names in (
+            ("trend.html", ("styles.css",)),
+            ("index.html", ("styles.css", "report.css")),
+        ):
             resources = HtmlResources()
             resources.feed((self.public / html_name).read_text(encoding="utf-8"))
-            matches = [href for href in resources.stylesheets if urlsplit(href).path == f"./{css_name}"]
             with self.subTest(html=html_name):
-                self.assertEqual(len(matches), 1)
-                versions = parse_qs(urlsplit(matches[0]).query).get("v", [])
-                self.assertEqual(len(versions), 1)
-                self.assertTrue(versions[0])
-                self.assertNotEqual(versions[0], "old")
+                self.assertEqual(len(resources.stylesheets), len(css_names))
+            for css_name in css_names:
+                matches = [href for href in resources.stylesheets if urlsplit(href).path == f"./{css_name}"]
+                with self.subTest(html=html_name, stylesheet=css_name):
+                    self.assertEqual(len(matches), 1)
+                    query = urlsplit(matches[0]).query
+                    versions = parse_qs(query).get("v", [])
+                    self.assertEqual(len(versions), 1)
+                    self.assertTrue(versions[0])
+                    self.assertNotIn("old", query)
+                    generated_versions.add(versions[0])
+        self.assertEqual(len(generated_versions), 1, "All public stylesheets must use this build's version")
+
+    def test_public_report_and_trend_links_use_the_public_routes(self):
+        self.build()
+        for html_name, expected_link, local_link in (
+            ("index.html", "./trend.html", "./index.html"),
+            ("trend.html", "./index.html", "./report.html"),
+        ):
+            resources = HtmlResources()
+            resources.feed((self.public / html_name).read_text(encoding="utf-8"))
+            with self.subTest(html=html_name):
+                self.assertIn(expected_link, resources.links)
+                self.assertNotIn(local_link, resources.links)
 
     def test_repeated_build_with_unchanged_inputs_is_stable(self):
         self.build()

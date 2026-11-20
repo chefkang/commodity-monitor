@@ -1,12 +1,24 @@
 (function () {
-  const data = window.COMMODITY_MONITOR_DATA || { latest: [], history: [], index_history: [], news: [], summary: {}, brief: {} };
+  const data = window.COMMODITY_MONITOR_DATA || {
+    latest: [],
+    history: [],
+    index_history: [],
+    news: [],
+    summary: {},
+    brief: {},
+  };
   const byId = new Map(data.latest.map((item) => [item.material_id, item]));
   const runtimeMeta = window.COMMODITY_MONITOR_RUNTIME || {};
   const dataSourceLabel = String(runtimeMeta.data_source_label || "").trim();
   const dataSourceReason = String(runtimeMeta.data_source_reason || "").trim();
   const publicDataCheckEnabled = Boolean(runtimeMeta.check_public_data);
-  const publicDataUrl = String(runtimeMeta.public_data_url || "https://chefkang.github.io/commodity-monitor/data.js");
-  const publicLagToleranceMs = Number(runtimeMeta.public_lag_tolerance_ms || 3 * 60 * 1000);
+  const publicDataUrl = String(
+    runtimeMeta.public_data_url ||
+      "https://chefkang.github.io/commodity-monitor/data.js",
+  );
+  const publicLagToleranceMs = Number(
+    runtimeMeta.public_lag_tolerance_ms || 3 * 60 * 1000,
+  );
   const NOTICE_REFRESH_INTERVAL_MS = 60 * 1000;
   const BACKGROUND_DATA_CHECK_INTERVAL_MS = 5 * 60 * 1000;
   let backgroundDataCheckInFlight = false;
@@ -52,17 +64,30 @@
     if (!data.summary || !Array.isArray(data.summary.refresh_warnings)) {
       return [];
     }
-    return data.summary.refresh_warnings.filter((warning) => String(warning || "").trim());
+    return data.summary.refresh_warnings.filter((warning) =>
+      String(warning || "").trim(),
+    );
   }
 
   function dateText(value) {
-    const d = value ? new Date(value) : new Date();
+    if (!value) return "待生成";
+    const d = new Date(value);
     if (Number.isNaN(d.getTime())) return value || "";
-    return d.toLocaleString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleString("zh-CN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Shanghai",
+    });
   }
 
   function parseGeneratedAtMs(payload) {
-    const value = payload && payload.generated_at ? Date.parse(payload.generated_at) : Number.NaN;
+    const value =
+      payload && payload.generated_at
+        ? Date.parse(payload.generated_at)
+        : Number.NaN;
     return Number.isFinite(value) ? value : null;
   }
 
@@ -90,7 +115,9 @@
       if (candidateGeneratedAt === null) {
         return baseGeneratedAt === null;
       }
-      return baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt;
+      return (
+        baseGeneratedAt === null || candidateGeneratedAt >= baseGeneratedAt
+      );
     }
 
     return false;
@@ -125,7 +152,9 @@
   }
 
   function beijingSlotTime(parts, hour) {
-    return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0));
+    return new Date(
+      Date.UTC(parts.year, parts.month - 1, parts.day, hour - 8, 0, 0),
+    );
   }
 
   function beijingClockLabel(value) {
@@ -159,14 +188,23 @@
   }
 
   function tradeDateDistribution() {
-    if (Array.isArray(data.trade_date_distribution) && data.trade_date_distribution.length) {
+    if (
+      Array.isArray(data.trade_date_distribution) &&
+      data.trade_date_distribution.length
+    ) {
       return data.trade_date_distribution
         .map((entry) => ({
           date: String(entry && entry.date ? entry.date : "").trim(),
           count: Number(entry && entry.count ? entry.count : 0),
         }))
-        .filter((entry) => entry.date && Number.isFinite(entry.count) && entry.count > 0)
-        .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+        .filter(
+          (entry) =>
+            entry.date && Number.isFinite(entry.count) && entry.count > 0,
+        )
+        .sort(
+          (left, right) =>
+            right.count - left.count || right.date.localeCompare(left.date),
+        );
     }
 
     const counts = new Map();
@@ -179,7 +217,10 @@
     });
     return Array.from(counts.entries())
       .map(([tradeDate, count]) => ({ date: tradeDate, count }))
-      .sort((left, right) => right.count - left.count || right.date.localeCompare(left.date));
+      .sort(
+        (left, right) =>
+          right.count - left.count || right.date.localeCompare(left.date),
+      );
   }
 
   function tradeDateCoverageSummary() {
@@ -188,8 +229,12 @@
       return null;
     }
     const latestTradeDate = latestTradingDateValue();
-    const latestEntry = distribution.find((entry) => entry.date === latestTradeDate) || null;
-    const totalCount = distribution.reduce((sum, entry) => sum + entry.count, 0);
+    const latestEntry =
+      distribution.find((entry) => entry.date === latestTradeDate) || null;
+    const totalCount = distribution.reduce(
+      (sum, entry) => sum + entry.count,
+      0,
+    );
     const dominantEntry = distribution[0] || null;
     return {
       distribution,
@@ -199,17 +244,28 @@
       dominantTradeDate: dominantEntry ? dominantEntry.date : "",
       dominantTradeDateCount: dominantEntry ? dominantEntry.count : 0,
       mixedTradeDates: distribution.length > 1,
-      laggingCount: Math.max(totalCount - (latestEntry ? latestEntry.count : 0), 0),
+      laggingCount: Math.max(
+        totalCount - (latestEntry ? latestEntry.count : 0),
+        0,
+      ),
     };
   }
 
   function tradeDateCoverageNote() {
     const coverage = tradeDateCoverageSummary();
-    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+    if (
+      !coverage ||
+      !coverage.mixedTradeDates ||
+      !coverage.latestTradeDate ||
+      !coverage.laggingCount
+    ) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
-      return `当前 ${coverage.totalCount} 个跟踪品类里，只有 ${coverage.latestTradeDateCount} 个已经切到 ${coverage.latestTradeDate}，仍有 ${coverage.laggingCount} 个停留在 ${coverage.dominantTradeDate}；这说明今天脚本已经执行，但多数上游价格源尚未全面换日。`;
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
+      return `当前 ${coverage.totalCount} 个跟踪品类里，只有 ${coverage.latestTradeDateCount} 个已经切到 ${coverage.latestTradeDate}，仍有 ${coverage.laggingCount} 个日期较早（其中 ${coverage.dominantTradeDateCount} 个为 ${coverage.dominantTradeDate}）；这说明今天脚本已经执行，但多数上游价格源尚未全面换日。`;
     }
     return `当前 ${coverage.totalCount} 个跟踪品类里，最新交易日 ${coverage.latestTradeDate} 仅覆盖了 ${coverage.latestTradeDateCount} 个，其余 ${coverage.laggingCount} 个仍停留在更早交易日；这说明今天脚本已经执行，但不同上游价格源的换日节奏并不一致。`;
   }
@@ -218,18 +274,29 @@
     if (!coverage || !coverage.mixedTradeDates || !coverage.laggingCount) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
       return "部分更新，主行情仍是上一交易日";
     }
     return "今天已刷新，但行情日期混合";
   }
 
   function coverageHeaderSuffix(coverage) {
-    if (!coverage || !coverage.mixedTradeDates || !coverage.latestTradeDate || !coverage.laggingCount) {
+    if (
+      !coverage ||
+      !coverage.mixedTradeDates ||
+      !coverage.latestTradeDate ||
+      !coverage.laggingCount
+    ) {
       return "";
     }
-    if (coverage.dominantTradeDate && coverage.dominantTradeDate !== coverage.latestTradeDate) {
-      return `，${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项仍为 ${coverage.dominantTradeDate}`;
+    if (
+      coverage.dominantTradeDate &&
+      coverage.dominantTradeDate !== coverage.latestTradeDate
+    ) {
+      return `，${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项日期较早`;
     }
     return `，${coverage.latestTradeDateCount}/${coverage.totalCount} 品类到 ${coverage.latestTradeDate}，${coverage.laggingCount} 项日期较早`;
   }
@@ -277,7 +344,10 @@
     if (!(targetTime instanceof Date) || Number.isNaN(targetTime.getTime())) {
       return null;
     }
-    return Math.max(0, Math.ceil((targetTime.getTime() - Date.now()) / (60 * 1000)));
+    return Math.max(
+      0,
+      Math.ceil((targetTime.getTime() - Date.now()) / (60 * 1000)),
+    );
   }
 
   function countdownLabel(targetTime) {
@@ -290,23 +360,34 @@
     }
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return minutes ? `约 ${hours} 小时 ${minutes} 分钟后` : `约 ${hours} 小时后`;
+    return minutes
+      ? `约 ${hours} 小时 ${minutes} 分钟后`
+      : `约 ${hours} 小时后`;
   }
 
   function refreshStateDetailText(notice, nextRefresh, tradingDate) {
     const coverageNote = tradeDateCoverageNote();
+    if (notice && notice.mode === "waiting-slot")
+      return [...notice.lines, coverageNote].filter(Boolean).join(" ");
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
-        return [`现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`, coverageNote]
+        return [
+          `现在是北京时间 ${beijingClockLabel(new Date())}，虽然还没到 10:00 首轮窗口，但今天的首轮数据已经提前落地，最新交易日 ${tradingDate} 已到位。`,
+          coverageNote,
+        ]
           .filter(Boolean)
           .join(" ");
       }
-      return [`现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`, coverageNote]
+      return [
+        `现在是北京时间 ${beijingClockLabel(new Date())}，今天首轮刷新会在 ${nextRefresh.label} 左右开始；10:20 前仍显示最新交易日 ${tradingDate} 属于正常等待，不是故障。`,
+        coverageNote,
+      ]
         .filter(Boolean)
         .join(" ");
     }
     if (notice && notice.lines && notice.lines.length) {
-      const tail = notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
+      const tail =
+        notice.lines.length > 1 ? notice.lines[notice.lines.length - 1] : "";
       return [notice.lines[0], tail, coverageNote].filter(Boolean).join(" ");
     }
     if (coverageNote) {
@@ -325,6 +406,8 @@
   function refreshTradingDateDetailText(notice, tradingDate) {
     const mismatchNote = latestTradingDateMismatchNote();
     const coverageNote = tradeDateCoverageNote();
+    if (notice && notice.mode === "waiting-slot")
+      return `这里是当前已加载行情的交易日，不等于页面刷新时间。${coverageNote}`;
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
         const baseText = mismatchNote
@@ -337,7 +420,11 @@
         : `这里显示的是系统最新交易日。北京时间 10:20 前看到 ${tradingDate} 属正常等待；过了 10:20 仍不变化，再按异常处理。`;
       return [baseText, coverageNote].filter(Boolean).join("");
     }
-    return coverageNote || mismatchNote || "价格明细里的日期代表交易日，不等于页面刷新时间。";
+    return (
+      coverageNote ||
+      mismatchNote ||
+      "价格明细里的日期代表交易日，不等于页面刷新时间。"
+    );
   }
 
   function refreshNextSlotDetailText(nextRefresh) {
@@ -347,8 +434,12 @@
   }
 
   function applyRefreshCardTone(notice, coverage) {
-    const stateCard = el("refreshStateLabel") ? el("refreshStateLabel").closest(".refresh-status-card") : null;
-    const nextSlotCard = el("refreshNextSlot") ? el("refreshNextSlot").closest(".refresh-status-card") : null;
+    const stateCard = el("refreshStateLabel")
+      ? el("refreshStateLabel").closest(".refresh-status-card")
+      : null;
+    const nextSlotCard = el("refreshNextSlot")
+      ? el("refreshNextSlot").closest(".refresh-status-card")
+      : null;
     [stateCard, nextSlotCard].forEach((card) => {
       if (card) {
         card.classList.remove("info-tone", "warning-tone");
@@ -373,6 +464,10 @@
   }
 
   function renderPageTitle(notice, nextRefresh, coverage) {
+    if (notice && notice.mode === "waiting-slot") {
+      document.title = `${notice.headerLabel} | 迈瑟伦原材料价格日报`;
+      return;
+    }
     if (notice && notice.level === "info") {
       if (notice.mode === "early-refreshed") {
         document.title = "今日首轮已提前刷新 | 迈瑟伦原材料价格日报";
@@ -409,7 +504,11 @@
     const latestTradeDate = latestTradingDateValue();
 
     if (currentMinutes < 10 * 60) {
-      if (latestTradeDate && latestTradeDate === todayTradeDate && generatedAt >= yesterdayAfternoon) {
+      if (
+        latestTradeDate &&
+        latestTradeDate === todayTradeDate &&
+        generatedAt >= yesterdayAfternoon
+      ) {
         return {
           level: "info",
           mode: "early-refreshed",
@@ -449,7 +548,22 @@
       }
     }
 
-    if (currentMinutes >= 10 * 60 && currentMinutes < 15 * 60 && generatedAt < morningSlot) {
+    if (
+      currentMinutes >= 10 * 60 &&
+      currentMinutes < 15 * 60 &&
+      generatedAt < morningSlot
+    ) {
+      if (currentMinutes < 10 * 60 + 20 && generatedAt >= yesterdayAfternoon)
+        return {
+          level: "info",
+          mode: "waiting-slot",
+          headerLabel: "等待本轮更新",
+          title: "等待上午本轮更新（10:20 前）",
+          lines: [
+            `当前保留 ${dateText(data.generated_at)} 的结果，正在等待今天 10:00 这一轮更新。`,
+            "北京时间 10:20 前属于正常等待；超过 10:20 仍未更新，再关注刷新状态。",
+          ],
+        };
       return {
         level: "warning",
         headerLabel: "今日上午刷新待关注",
@@ -463,6 +577,17 @@
     }
 
     if (currentMinutes >= 15 * 60 && generatedAt < afternoonSlot) {
+      if (currentMinutes < 15 * 60 + 20 && generatedAt >= morningSlot)
+        return {
+          level: "info",
+          mode: "waiting-slot",
+          headerLabel: "等待本轮更新",
+          title: "等待下午本轮更新（15:20 前）",
+          lines: [
+            `当前保留 ${dateText(data.generated_at)} 的结果，正在等待今天 15:00 这一轮更新。`,
+            "北京时间 15:20 前属于正常等待；超过 15:20 仍未更新，再关注刷新状态。",
+          ],
+        };
       return {
         level: "warning",
         headerLabel: "今日下午刷新待关注",
@@ -479,12 +604,16 @@
   }
 
   function num(value, digits = 0) {
-    if (value === null || value === undefined || Number.isNaN(Number(value))) return "-";
-    return Number(value).toLocaleString("zh-CN", { maximumFractionDigits: digits });
+    if (value === null || value === undefined || Number.isNaN(Number(value)))
+      return "-";
+    return Number(value).toLocaleString("zh-CN", {
+      maximumFractionDigits: digits,
+    });
   }
 
   function pct(value) {
-    if (value === null || value === undefined || Number.isNaN(Number(value))) return '<span class="neutral">-</span>';
+    if (value === null || value === undefined || Number.isNaN(Number(value)))
+      return '<span class="neutral">-</span>';
     const n = Number(value);
     const cls = n > 0 ? "positive" : n < 0 ? "negative" : "neutral";
     const sign = n > 0 ? "+" : "";
@@ -506,13 +635,19 @@
   }
 
   function historyFor(id, days = 90) {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - days);
-    return data.history
-      .filter((row) => row.material_id === id)
-      .filter((row) => new Date(row.date) >= cutoff)
+    const rows = (data.history || [])
+      .filter(
+        (row) =>
+          row.material_id === id &&
+          row.date &&
+          Number.isFinite(Number(row.price)),
+      )
       .map((row) => ({ date: row.date, value: Number(row.price) }))
-      .filter((row) => Number.isFinite(row.value));
+      .sort((left, right) => left.date.localeCompare(right.date));
+    if (!rows.length) return rows;
+    const cutoff = new Date(`${rows[rows.length - 1].date}T00:00:00Z`);
+    cutoff.setUTCDate(cutoff.getUTCDate() - days);
+    return rows.filter((row) => new Date(`${row.date}T00:00:00Z`) >= cutoff);
   }
 
   function sparkline(id) {
@@ -526,9 +661,14 @@
     const span = max - min || 1;
     const x = (i) => (i / (points.length - 1)) * w;
     const y = (v) => h - ((v - min) / span) * (h - 6) - 3;
-    const path = points.map((p, i) => `${i ? "L" : "M"} ${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
+    const path = points
+      .map(
+        (p, i) =>
+          `${i ? "L" : "M"} ${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`,
+      )
+      .join(" ");
     const up = points[points.length - 1].value >= points[0].value;
-    const color = up ? "#b42318" : "#147b3d";
+    const color = up ? "#ff8288" : "#5ed4a0";
     return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 
@@ -546,18 +686,26 @@
     const coverage = tradeDateCoverageSummary();
     const coverageSuffix = coverageHeaderSuffix(coverage);
     renderPageTitle(notice, nextRefresh, coverage);
+    if (notice && notice.mode === "waiting-slot") {
+      el("reportDate").textContent =
+        `${notice.headerLabel} · 当前结果生成于 ${updatedLabel} · 最新交易日 ${tradingDate}${coverageSuffix}`;
+      return;
+    }
     if (notice && notice.headerLabel) {
       const sourcePrefix = dataSourceLabel ? ` · ${dataSourceLabel}` : "";
       if (notice.level === "info") {
         if (notice.mode === "early-refreshed") {
-          el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
+          el("reportDate").textContent =
+            `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天数据已在 ${updatedLabel} 提前落地 · 最新交易日 ${tradingDate}${coverageSuffix}`;
           return;
         }
         const countdown = countdownLabel(nextRefresh.time);
-        el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}${coverageSuffix}`;
+        el("reportDate").textContent =
+          `${notice.headerLabel}${sourcePrefix} · 现在 ${beijingClockLabel(new Date())}，今天首刷约 ${nextRefresh.label}${countdown ? `（${countdown}）` : ""} · 10:20 前仍显示最新交易日 ${tradingDate} 属正常等待，不是故障 · 上一监测结果生成于 ${updatedLabel}${coverageSuffix}`;
         return;
       }
-      el("reportDate").textContent = `${notice.headerLabel}${sourcePrefix} · 当前显示上一监测时段 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}${coverageSuffix}`;
+      el("reportDate").textContent =
+        `${notice.headerLabel}${sourcePrefix} · 当前显示上一监测时段 ${updatedLabel} 的结果 · 最新交易日 ${tradingDate}${coverageSuffix}`;
       return;
     }
     el("reportDate").textContent = dataSourceLabel
@@ -567,10 +715,25 @@
 
   function renderHeader() {
     const score = data.summary.pressure_index;
-    el("score").textContent = score === undefined ? "--" : Math.round(score);
-    el("scoreText").textContent = scoreText(Number(score || 0));
+    el("score").textContent = finite(score) ? Math.round(Number(score)) : "--";
+    el("scoreText").textContent = finite(score)
+      ? scoreText(Number(score))
+      : "暂无评分";
     renderReportDate();
-    el("tracked").textContent = data.summary.tracked_count ?? data.latest.length;
+    const generated = data.generated_at ? new Date(data.generated_at) : null;
+    setText(
+      "briefDate",
+      generated && !Number.isNaN(generated.getTime())
+        ? generated.toLocaleDateString("zh-CN", {
+            timeZone: "Asia/Shanghai",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          })
+        : "生成日期待确认",
+    );
+    el("tracked").textContent =
+      data.summary.tracked_count ?? data.latest.length;
     el("rising").textContent = data.summary.rising_count ?? 0;
     el("highRisk").textContent = data.summary.high_risk_count ?? 0;
     el("newsRisk").textContent = data.summary.news_risk_count ?? 0;
@@ -605,7 +768,10 @@
     }
 
     banner.hidden = false;
-    banner.classList.toggle("info-mode", notice && notice.level === "info" && !warnings.length);
+    banner.classList.toggle(
+      "info-mode",
+      notice && notice.level === "info" && !warnings.length,
+    );
     banner.innerHTML = sections.join("");
   }
 
@@ -615,11 +781,15 @@
     const tradingDate = latestTradingDateLabel();
     const coverage = tradeDateCoverageSummary();
     const stateLabel = notice
-      ? (notice.headerLabel || notice.title)
+      ? notice.headerLabel || notice.title
       : coverage && coverage.mixedTradeDates && coverage.laggingCount > 0
         ? mixedCoverageStateLabel(coverage)
         : "已覆盖当前时段";
-    const stateDetail = refreshStateDetailText(notice, nextRefresh, tradingDate);
+    const stateDetail = refreshStateDetailText(
+      notice,
+      nextRefresh,
+      tradingDate,
+    );
     const generatedDetail = refreshGeneratedDetailText();
     const nextSlotDetail = refreshNextSlotDetailText(nextRefresh);
 
@@ -635,10 +805,16 @@
     setText("refreshGeneratedAt", dateText(data.generated_at));
     setText("refreshGeneratedAtDetail", generatedDetail);
     setText("refreshTradingDate", tradingDate);
-    setText("refreshTradingDateDetail", refreshTradingDateDetailText(notice, tradingDate));
+    setText(
+      "refreshTradingDateDetail",
+      refreshTradingDateDetailText(notice, tradingDate),
+    );
     setText("refreshNextSlot", nextRefresh.label);
     setText("refreshNextSlotDetail", nextSlotDetail);
     applyRefreshCardTone(notice, coverage);
+    const compact = el("freshnessSummary");
+    if (compact)
+      compact.innerHTML = `<span class="freshness-state">${escapeHtml(stateLabel)}</span><span>生成 ${escapeHtml(dateText(data.generated_at))}</span><span>最新交易日 ${escapeHtml(tradingDate)}</span><span>${coverage ? `当日覆盖 ${coverage.latestTradeDateCount}/${coverage.totalCount}${coverage.laggingCount ? ` · ${coverage.laggingCount}项日期较早` : ""}` : "暂无日期覆盖信息"}</span>`;
   }
 
   function refreshLiveStatus() {
@@ -701,20 +877,28 @@
         return;
       }
 
-      loadDataScript(`${publicDataUrl}?ts=${Date.now()}`, function (candidatePayload) {
+      loadDataScript(
+        `${publicDataUrl}?ts=${Date.now()}`,
+        function (candidatePayload) {
+          if (shouldReloadForCandidate(candidatePayload)) {
+            return;
+          }
+          finalize();
+        },
+        finalize,
+      );
+    };
+
+    loadDataScript(
+      `./data.js?ts=${Date.now()}`,
+      function (candidatePayload) {
         if (shouldReloadForCandidate(candidatePayload)) {
           return;
         }
-        finalize();
-      }, finalize);
-    };
-
-    loadDataScript(`./data.js?ts=${Date.now()}`, function (candidatePayload) {
-      if (shouldReloadForCandidate(candidatePayload)) {
-        return;
-      }
-      checkPublicData();
-    }, checkPublicData);
+        checkPublicData();
+      },
+      checkPublicData,
+    );
   }
 
   function startLiveRefreshWatch() {
@@ -730,144 +914,683 @@
     window.addEventListener("focus", backgroundDataCheck);
   }
 
+  const state = { search: "", category: "全部", filter: "all", sort: "risk" };
+  const coverageById = new Map(
+    (data.history_coverage || []).map((row) => [row.material_id, row]),
+  );
+  let lastDetailTrigger = null;
+  let toastTimer;
+
+  function basisInfo(item) {
+    if (item && item.provider === "derived_from")
+      return {
+        cls: "proxy",
+        label: "上游代理指标",
+        hint: "不是该材料的直接报价",
+        source: item.source || "上游行情代理",
+      };
+    if (item && item.provider === "manual")
+      return {
+        cls: "manual",
+        label: "供应商补录",
+        hint: "人工补录口径",
+        source: item.source || "供应商补录",
+      };
+    return {
+      cls: "real",
+      label: "真实行情",
+      hint: "公开市场参考价格",
+      source: (item && item.source) || "公开行情",
+    };
+  }
+
+  function basisBadge(item) {
+    const basis = basisInfo(item);
+    return `<span class="basis-badge ${basis.cls}">${escapeHtml(basis.label)}</span>`;
+  }
+
+  function plainPct(value) {
+    if (
+      value === null ||
+      value === undefined ||
+      !Number.isFinite(Number(value))
+    )
+      return "暂无可比记录";
+    return `${Number(value) > 0 ? "+" : ""}${Number(value).toFixed(2)}%`;
+  }
+
+  function shortName(item) {
+    return String(item.material_name || "原料")
+      .replace(/（.*?）|\(.*?\)/g, "")
+      .trim();
+  }
+
+  function finite(value) {
+    return (
+      value !== null && value !== undefined && Number.isFinite(Number(value))
+    );
+  }
+
+  function priorityRows() {
+    return data.latest
+      .slice()
+      .sort(
+        (a, b) => Number(b.up_probability || 0) - Number(a.up_probability || 0),
+      );
+  }
+
+  function trendBase() {
+    return window.location.pathname.toLowerCase().endsWith("/report.html")
+      ? "./index.html"
+      : "./trend.html";
+  }
+
+  function trendHref(materialId, view = "chart") {
+    const mode = ["chart", "history", "detail"].includes(view) ? view : "chart";
+    const params = new URLSearchParams();
+    if (materialId && byId.has(materialId)) params.set("material", materialId);
+    if (materialId) params.set("view", mode);
+    const query = params.toString();
+    return `${trendBase()}${query ? `?${query}` : ""}#${mode === "history" ? "historyPanel" : "chartSection"}`;
+  }
+
+  function safeNewsLink(value) {
+    try {
+      const url = new URL(value);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function setText(id, value) {
+    const node = el(id);
+    if (node) node.textContent = value;
+  }
+
   function renderBrief() {
-    const sorted = data.latest.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0));
-    const watch = sorted.slice(0, 3);
+    const score = Number(data.summary.pressure_index);
+    const first = priorityRows()[0];
+    let headline = "成本压力可控，按需安排采购";
+    if (!data.latest.length) headline = "暂无可用行情，请先核对数据状态";
+    else if (!finite(data.summary.pressure_index))
+      headline = "行情已汇总，请结合原料变化核对";
+    else if (score >= 65) headline = "成本压力偏高，优先复核未锁价需求";
+    else if (score >= 55) headline = "成本压力抬头，关注报价有效期";
+    else if (first && first.risk_level === "高")
+      headline = `成本总体可控，优先复核 ${shortName(first)}`;
+    else if (Number(data.summary.news_risk_count || 0) > 0)
+      headline = "成本总体可控，继续跟踪新闻扰动";
+    setText("briefHeadline", headline);
+    setText(
+      "briefLead",
+      `跟踪 ${data.summary.tracked_count ?? data.latest.length} 个价格与指标；${data.summary.rising_count ?? 0} 项较上一有效记录上涨，${data.summary.high_risk_count ?? 0} 项涨价概率达到预警线。`,
+    );
+    const primary = el("briefPrimaryAction");
+    if (primary) {
+      primary.disabled = !first;
+      primary.textContent = first
+        ? `查看${shortName(first)}的风险依据`
+        : "暂无可查看的原料";
+    }
     const risers = data.latest
-      .filter((item) => item.change_1d !== null && item.change_1d !== undefined)
-      .sort((a, b) => (b.change_1d || 0) - (a.change_1d || 0))
+      .filter((item) => finite(item.change_1d) && Number(item.change_1d) > 0)
+      .sort((a, b) => Number(b.change_1d) - Number(a.change_1d))
       .slice(0, 3);
     const fallers = data.latest
-      .filter((item) => item.change_1d !== null && item.change_1d !== undefined)
-      .sort((a, b) => (a.change_1d || 0) - (b.change_1d || 0))
+      .filter((item) => finite(item.change_1d) && Number(item.change_1d) < 0)
+      .sort((a, b) => Number(a.change_1d) - Number(b.change_1d))
       .slice(0, 3);
+    const groups = [
+      {
+        title: "全局优先关注",
+        rows: priorityRows().slice(0, 3),
+        value: (item) => `涨价概率 ${item.up_probability ?? "—"}%（模型估算）`,
+        empty: "暂无可比较的原料",
+      },
+      {
+        title: "今日上涨靠前",
+        rows: risers,
+        value: (item) => `较上一有效记录 ${plainPct(item.change_1d)}`,
+        empty: "本次没有上涨记录",
+      },
+      {
+        title: "今日回落靠前",
+        rows: fallers,
+        value: (item) => `较上一有效记录 ${plainPct(item.change_1d)}`,
+        empty: "本次没有下跌记录",
+      },
+    ];
+    const cards = el("briefCards");
+    if (cards)
+      cards.innerHTML = groups
+        .map(
+          (group) =>
+            `<section class="brief-reading-block"><h3>${group.title}</h3>${group.rows.length ? `<ul>${group.rows.map((item) => `<li><button type="button" class="material-link" data-brief-material="${escapeHtml(item.material_id)}">${escapeHtml(item.material_name)}</button><span>${escapeHtml(group.value(item))}</span></li>`).join("")}</ul>` : `<p class="neutral">${group.empty}</p>`}</section>`,
+        )
+        .join("");
+    const actions =
+      data.brief &&
+      Array.isArray(data.brief.actions) &&
+      data.brief.actions.length
+        ? data.brief.actions
+        : ["维持日度监测，结合实际需求核对报价与交期。"];
+    if (el("actions"))
+      el("actions").innerHTML = actions
+        .map((action) => {
+          const match = priorityRows().find(
+            (item) =>
+              shortName(item).length >= 2 &&
+              String(action).includes(shortName(item)),
+          );
+          return `<li><span>${escapeHtml(action)}</span>${match ? `<button type="button" class="action-evidence" data-brief-material="${escapeHtml(match.material_id)}">核对原料依据</button>` : ""}</li>`;
+        })
+        .join("");
+    renderPriorities();
+  }
 
-    el("briefCards").innerHTML = [
-      {
-        title: "重点盯盘",
-        body: watch.map((item) => `${item.material_name}${item.up_probability}%`).join("、") || "暂无高风险品种",
-      },
-      {
-        title: "涨幅靠前",
-        body: risers.map((item) => `${item.material_name}${item.change_1d > 0 ? "+" : ""}${item.change_1d}%`).join("、"),
-      },
-      {
-        title: "跌幅靠前",
-        body: fallers.map((item) => `${item.material_name}${item.change_1d > 0 ? "+" : ""}${item.change_1d}%`).join("、"),
-      },
-    ]
-      .map((card) => `<article class="brief-card"><strong>${card.title}</strong><p>${card.body}</p></article>`)
-      .join("");
+  function renderPriorities() {
+    const target = el("priorityList");
+    if (!target) return;
+    const labels =
+      '<div class="brief-priority-labels" aria-hidden="true"><span>原料 / 口径</span><span>最新价格</span><span>30日变化</span><span>涨价概率</span><span></span></div>';
+    target.innerHTML =
+      labels +
+      (priorityRows()
+        .slice(0, 3)
+        .map(
+          (item) =>
+            `<button type="button" class="brief-priority-item ${riskClass(item)}" data-brief-material="${escapeHtml(item.material_id)}" aria-label="查看${escapeHtml(item.material_name)}原料详情"><span class="brief-priority-head"><strong>${escapeHtml(item.material_name)}</strong><small>${escapeHtml(basisInfo(item).label)}</small></span><span class="brief-priority-meta"><strong>${num(item.price, 2)} ${escapeHtml(item.unit || "")}</strong><small>交易日 ${escapeHtml(item.date || "待确认")}</small></span><span class="brief-priority-change"><strong>${pct(item.change_30d)}</strong><small>30日变化</small></span><span class="brief-priority-risk"><strong>${escapeHtml(item.up_probability ?? "—")}%</strong><small>模型估算</small></span><span class="brief-priority-action">查看依据</span></button>`,
+        )
+        .join("") || '<p class="empty">暂无原料行情，请稍后重新载入。</p>');
+  }
 
-    const actions = data.brief && data.brief.actions && data.brief.actions.length ? data.brief.actions : ["维持日度监控，重点观察短线上行品种。"];
-    el("actions").innerHTML = actions.map((action) => `<li>${action}</li>`).join("");
+  function categoryRows() {
+    if (state.category === "全部") return data.latest.slice();
+    const bucket = (data.cost_buckets || []).find(
+      (item) => item.name === state.category,
+    );
+    const ids = new Set(bucket ? bucket.materials : []);
+    return data.latest.filter((item) => ids.has(item.material_id));
+  }
+
+  function filteredRows() {
+    const query = state.search.trim().toLocaleLowerCase();
+    const rows = categoryRows().filter((item) => {
+      if (
+        query &&
+        ![
+          item.material_name,
+          item.category,
+          item.source,
+          item.material_id,
+        ].some((value) =>
+          String(value || "")
+            .toLocaleLowerCase()
+            .includes(query),
+        )
+      )
+        return false;
+      if (state.filter === "high" && item.risk_level !== "高") return false;
+      if (
+        state.filter === "rising" &&
+        !(finite(item.change_1d) && Number(item.change_1d) > 0)
+      )
+        return false;
+      if (state.filter === "real" && basisInfo(item).cls !== "real")
+        return false;
+      if (state.filter === "proxy" && basisInfo(item).cls !== "proxy")
+        return false;
+      if (state.filter === "news" && !(item.matched_news || []).length)
+        return false;
+      return true;
+    });
+    const value = (v) => (finite(v) ? Number(v) : -Infinity);
+    return rows.sort((a, b) =>
+      state.sort === "name"
+        ? String(a.material_name || "").localeCompare(
+            String(b.material_name || ""),
+            "zh-CN",
+          )
+        : value(
+            b[state.sort === "change30" ? "change_30d" : "up_probability"],
+          ) -
+            value(
+              a[state.sort === "change30" ? "change_30d" : "up_probability"],
+            ) ||
+          String(a.material_name || "").localeCompare(
+            String(b.material_name || ""),
+            "zh-CN",
+          ),
+    );
   }
 
   function renderTable() {
-    const ordered = [
-      ...coreOrder.map((id) => byId.get(id)).filter(Boolean),
-      ...data.latest.filter((item) => !coreOrder.includes(item.material_id)),
-    ];
-    el("visualTable").innerHTML = `
-      <div class="table-head">
-        <span>原材料</span><span>最新价</span><span>90日趋势</span><span>1日</span><span>30日</span><span>90日</span><span>判断</span><span>概率</span>
-      </div>
-      ${ordered
-        .map(
-          (item) => `
-          <article class="material-row">
-            <div class="material-name"><strong>${item.material_name}</strong><span>${item.category || ""} · ${item.source || ""}</span></div>
-            <div class="price">${num(item.price, 2)}<span class="source">${item.unit || ""}</span></div>
-            <div class="spark">${sparkline(item.material_id)}</div>
-            <div>${pct(item.change_1d)}</div>
-            <div>${pct(item.change_30d)}</div>
-            <div>${pct(item.change_90d)}</div>
-            <div>${item.trend || "-"}</div>
-            <div><span class="risk-pill ${riskClass(item)}">${item.up_probability ?? "-"}%</span></div>
-          </article>
-        `
-        )
-        .join("")}
-    `;
+    const target = el("visualTable");
+    if (!target) return;
+    const rows = filteredRows();
+    const filterLabels = {
+      high: "高风险",
+      rising: "今日上涨",
+      real: "真实行情",
+      proxy: "上游代理指标",
+      news: "有匹配新闻",
+    };
+    const scope = [
+      state.category === "全部" ? "全部大类" : state.category,
+      filterLabels[state.filter],
+      state.search.trim() ? `搜索 ${state.search.trim().slice(0, 40)}` : "",
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    setText(
+      "briefResultCount",
+      `${scope} · 显示 ${rows.length}/${categoryRows().length} 项`,
+    );
+    target.innerHTML = `<div class="table-wrap"><table class="brief-table"><thead><tr><th scope="col">原料 / 交易日</th><th>最新价 / 指标值</th><th>1日</th><th>30日</th><th>90日</th><th>涨价概率<small>模型估算</small></th><th>继续查看</th></tr></thead><tbody>${rows.map((item) => `<tr><td><button type="button" class="material-link" data-brief-material="${escapeHtml(item.material_id)}" aria-label="查看${escapeHtml(item.material_name)}原料详情">${escapeHtml(item.material_name)}</button><small class="brief-row-meta">${escapeHtml(item.date || "待确认")} · ${escapeHtml(item.category || "")}</small></td><td><strong>${num(item.price, 2)} ${escapeHtml(item.unit || "")}</strong><br>${basisBadge(item)}</td><td>${pct(item.change_1d)}</td><td>${pct(item.change_30d)}</td><td>${pct(item.change_90d)}</td><td><span class="probability ${riskClass(item)}">${escapeHtml(item.up_probability ?? "—")}%</span></td><td class="brief-table-actions"><a href="${escapeHtml(trendHref(item.material_id, "chart"))}">价格趋势</a><a href="${escapeHtml(trendHref(item.material_id, "history"))}">历史明细</a></td></tr>`).join("") || '<tr><td colspan="7" class="empty">没有匹配的原料。<button type="button" class="quiet-button" data-brief-reset>清除条件，查看全部</button></td></tr>'}</tbody></table></div>`;
+    document
+      .querySelectorAll("[data-brief-filter]")
+      .forEach((button) =>
+        button.setAttribute(
+          "aria-pressed",
+          String(
+            button.dataset.briefFilter !== "news" &&
+              button.dataset.briefFilter === state.filter,
+          ),
+        ),
+      );
   }
 
   function renderComponents() {
     const target = el("componentGrid");
     if (!target) return;
-    target.innerHTML = (data.cost_buckets || [])
-      .map((bucket) => {
-        const items = bucket.materials.map((id) => byId.get(id)).filter(Boolean);
-        const avgRisk = items.length ? items.reduce((sum, item) => sum + Number(item.up_probability || 0), 0) / items.length : 0;
-        const top = items.slice().sort((a, b) => (b.up_probability || 0) - (a.up_probability || 0))[0];
-        const trend = top ? `${top.material_name} ${top.up_probability ?? "-"}%` : "暂无重点";
-        const price = top ? `${num(top.price, 2)} ${top.unit || ""}` : "-";
-        return `
-          <article class="component-card">
-            <div class="component-head">
-              <h3>${bucket.name}</h3>
-              <strong>${bucket.share ?? "-"}%</strong>
-            </div>
-            <p>${bucket.boss_focus || "维持日度跟踪。"}</p>
-            <div class="component-meta">
-              <span>压力 ${Math.round(avgRisk)}%</span>
-              <span>重点 ${trend}</span>
-              <span>最新 ${price}</span>
-            </div>
-          </article>
-        `;
-      })
-      .join("");
+    target.innerHTML =
+      (data.cost_buckets || [])
+        .map((bucket) => {
+          const items = (bucket.materials || [])
+            .map((id) => byId.get(id))
+            .filter(Boolean);
+          const avg = items.length
+            ? items.reduce(
+                (sum, item) => sum + Number(item.up_probability || 0),
+                0,
+              ) / items.length
+            : null;
+          const top = items
+            .slice()
+            .sort(
+              (a, b) =>
+                Number(b.up_probability || 0) - Number(a.up_probability || 0),
+            )[0];
+          return `<details class="component-card ${state.category === bucket.name ? "is-active" : ""}" ${state.category === bucket.name ? "open" : ""}><summary class="component-head"><h3>${escapeHtml(bucket.name)}</h3><span>${escapeHtml(bucket.share ?? "—")}%<small>配置参考占比</small></span></summary><p>${escapeHtml(bucket.boss_focus || "维持日度跟踪。")}</p><div class="component-meta"><span>类内平均涨价模型值 ${avg === null ? "—" : Math.round(avg)}%</span>${top ? `<button type="button" class="material-link" data-brief-material="${escapeHtml(top.material_id)}">重点 ${escapeHtml(shortName(top))} · ${escapeHtml(top.up_probability ?? "—")}%</button>` : ""}</div><button type="button" class="component-filter" data-brief-category="${escapeHtml(bucket.name)}" aria-pressed="${state.category === bucket.name}">查看关联原料 ${items.length} 项</button></details>`;
+        })
+        .join("") || '<p class="empty">暂无产品大类配置。</p>';
   }
 
   function renderIndexChart() {
     const svg = el("indexChart");
-    const points = data.index_history.slice(-90).map((row) => ({ date: row.date, value: Number(row.value) }));
+    if (!svg) return;
+    const sorted = (data.index_history || [])
+      .filter((row) => row.date && finite(row.value))
+      .map((row) => ({ date: row.date, value: Number(row.value) }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    const latest = sorted[sorted.length - 1];
+    const cutoff = latest ? new Date(`${latest.date}T00:00:00Z`) : null;
+    if (cutoff) cutoff.setUTCDate(cutoff.getUTCDate() - 90);
+    const points = sorted.filter(
+      (row) => !cutoff || new Date(`${row.date}T00:00:00Z`) >= cutoff,
+    );
+    const w = Math.max(300, svg.parentElement.clientWidth - 4 || 920);
+    const h = 250;
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    svg.setAttribute(
+      "aria-label",
+      `近90天综合成本趋势，${points.length}个有效历史点；历史综合指数与采购成本压力评分口径不同`,
+    );
     if (points.length < 2) {
-      svg.innerHTML = '<text x="460" y="130" text-anchor="middle" fill="#6b6359">暂无足够趋势数据</text>';
+      svg.innerHTML = `<text x="${w / 2}" y="125" text-anchor="middle" fill="#9daec4" font-size="13">暂无足够趋势数据</text>`;
       return;
     }
-    const w = 920;
-    const h = 260;
-    const pad = { l: 62, r: 28, t: 22, b: 38 };
-    const values = points.map((p) => p.value);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const span = max - min || 1;
-    const yMin = min - span * 0.08;
-    const yMax = max + span * 0.08;
+    const pad = { l: 58, r: 25, t: 20, b: 36 };
+    const values = points.map((point) => point.value);
+    const min = Math.min(...values),
+      max = Math.max(...values),
+      span = max - min || 1;
+    const yMin = min - span * 0.08,
+      yMax = max + span * 0.08;
     const x = (i) => pad.l + (i / (points.length - 1)) * (w - pad.l - pad.r);
-    const y = (v) => pad.t + ((yMax - v) / (yMax - yMin)) * (h - pad.t - pad.b);
-    const path = points.map((p, i) => `${i ? "L" : "M"} ${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(" ");
+    const y = (value) =>
+      pad.t + ((yMax - value) / (yMax - yMin)) * (h - pad.t - pad.b);
+    const path = points
+      .map(
+        (point, i) =>
+          `${i ? "L" : "M"} ${x(i).toFixed(1)} ${y(point.value).toFixed(1)}`,
+      )
+      .join(" ");
     const fillPath = `${path} L ${x(points.length - 1)} ${h - pad.b} L ${pad.l} ${h - pad.b} Z`;
-    const color = points[points.length - 1].value >= points[0].value ? "#b42318" : "#147b3d";
     const grid = [0, 0.25, 0.5, 0.75, 1]
       .map((tick) => {
         const yy = pad.t + tick * (h - pad.t - pad.b);
         const label = yMax - tick * (yMax - yMin);
-        return `<line x1="${pad.l}" x2="${w - pad.r}" y1="${yy}" y2="${yy}" stroke="#ded5c8"/><text x="${pad.l - 10}" y="${yy + 4}" text-anchor="end" fill="#6b6359" font-size="12">${num(label, 1)}</text>`;
+        return `<line x1="${pad.l}" x2="${w - pad.r}" y1="${yy}" y2="${yy}" stroke="#26364b"/><text x="${pad.l - 10}" y="${yy + 4}" text-anchor="end" fill="#9daec4" font-size="11">${num(label, 1)}</text>`;
       })
       .join("");
-    svg.innerHTML = `
-      ${grid}
-      <path d="${fillPath}" fill="${color}" opacity="0.08"></path>
-      <path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-      <circle cx="${x(points.length - 1)}" cy="${y(points[points.length - 1].value)}" r="5" fill="${color}"></circle>
-      <text x="${pad.l}" y="${h - 14}" fill="#6b6359" font-size="12">${points[0].date.slice(5)}</text>
-      <text x="${w - pad.r}" y="${h - 14}" fill="#6b6359" font-size="12" text-anchor="end">${points[points.length - 1].date.slice(5)}</text>
-    `;
+    svg.innerHTML = `${grid}<path d="${fillPath}" fill="#70d9db" opacity="0.07"></path><path d="${path}" fill="none" stroke="#70d9db" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="${x(points.length - 1)}" cy="${y(latest.value)}" r="4" fill="#70d9db"></circle><text x="${pad.l}" y="${h - 12}" fill="#9daec4" font-size="11">${points[0].date.slice(5)}</text><text x="${w - pad.r}" y="${h - 12}" text-anchor="end" fill="#9daec4" font-size="11">${latest.date.slice(5)}</text>`;
   }
 
   function renderNews() {
-    el("newsList").innerHTML =
-      data.news
-        .slice(0, 8)
-        .map((item) => `<article class="news-item"><a href="${item.link}" target="_blank" rel="noreferrer">${item.title}</a><span>${item.source || "新闻"}</span></article>`)
-        .join("") || '<p class="neutral">暂无新闻风险。</p>';
+    const target = el("newsList");
+    if (!target) return;
+    target.innerHTML =
+      (data.news || [])
+        .slice(0, 12)
+        .map((item) => {
+          const href = safeNewsLink(item.link);
+          return `<article class="news-item">${href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title || "未提供标题")}</a>` : `<strong>${escapeHtml(item.title || "未提供标题")}</strong>`}<span>${escapeHtml(item.source || "来源待核实")}${item.published ? ` · ${escapeHtml(dateText(item.published))}` : ""}</span><small>产业新闻线索，需打开原文核实关联</small></article>`;
+        })
+        .join("") ||
+      '<p class="empty">本次暂无新闻记录，不代表市场不存在扰动。</p>';
+  }
+
+  function scrollToSection(id) {
+    const node = el(id);
+    if (!node) return;
+    node.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+  }
+
+  function resetFilters() {
+    state.search = "";
+    state.category = "全部";
+    state.filter = "all";
+    state.sort = "risk";
+    syncFilters();
+    renderTable();
+    renderComponents();
+  }
+
+  function syncFilters() {
+    const pairs = [
+      ["briefSearch", state.search],
+      ["briefCategory", state.category],
+      ["briefRiskFilter", state.filter],
+      ["briefSort", state.sort],
+    ];
+    pairs.forEach(([id, value]) => {
+      if (el(id)) el(id).value = value;
+    });
+  }
+
+  function openMaterialDetail(materialId, trigger) {
+    const item = byId.get(materialId),
+      dialog = el("briefDetailDialog"),
+      body = el("briefDetailBody");
+    if (!item || !dialog || !body) return;
+    lastDetailTrigger = trigger || document.activeElement;
+    setText("briefDetailTitle", item.material_name);
+    const basis = basisInfo(item),
+      coverage = coverageById.get(materialId);
+    const buckets = (data.cost_buckets || []).filter((bucket) =>
+      (bucket.materials || []).includes(materialId),
+    );
+    const news = Array.isArray(item.matched_news) ? item.matched_news : [];
+    const metrics = [
+      ["1日变化", item.change_1d],
+      ["7日变化", item.change_7d],
+      ["30日变化", item.change_30d],
+      ["90日变化", item.change_90d],
+    ];
+    const evidence = [
+      [30, item.change_30d],
+      [7, item.change_7d],
+    ]
+      .filter(([, value]) => finite(value))
+      .map(
+        ([days, value]) =>
+          `近${days}日${Number(value) > 0 ? "上涨" : Number(value) < 0 ? "回落" : "持平"}${Number(value) === 0 ? "" : `${Math.abs(Number(value)).toFixed(2)}%`}`,
+      )
+      .join("，");
+    const actions =
+      item.risk_level === "高"
+        ? [
+            "优先复核未锁价需求及报价有效期",
+            "向供应商确认交期、锁价条件与替代料",
+            "结合实际用量和到货计划，评估后续采购安排",
+          ]
+        : [
+            "维持日度跟踪，核对近期报价有效期",
+            "供应商如提出调价，核验原料变化与传导依据",
+            "结合实际需求安排采购，不因单一指标直接下单",
+          ];
+    body.innerHTML = `<div class="detail-meta">${basisBadge(item)}<span>${escapeHtml(item.category || "")}</span><span>交易日 ${escapeHtml(item.date || "待确认")}</span></div><section class="detail-hero"><div><span>${basis.cls === "proxy" ? "最新代理指标" : "最新价格"}</span><strong>${num(item.price, 2)} ${escapeHtml(item.unit || "")}</strong></div><div><span>涨价概率 · 模型估算</span><strong class="${riskClass(item)}">${escapeHtml(item.up_probability ?? "—")}%</strong><small>${escapeHtml(item.risk_level || "观察")} · ${escapeHtml(item.trend || "持续观察")}</small></div></section><section class="detail-section"><h3>价格变化与关注依据</h3><div class="detail-metrics">${metrics.map(([label, value]) => `<div><span>${label}</span><strong>${pct(value)}</strong></div>`).join("")}</div><p class="detail-evidence">${escapeHtml(evidence ? `${evidence}。请结合不同周期方向核对报价。` : "暂无可比区间变化，请先核实历史覆盖。")}</p><p class="detail-muted">30日波动率 ${finite(item.volatility_30d) ? `${num(item.volatility_30d, 2)}%` : "暂无记录"}${finite(item.future_premium_pct) ? ` · 期现升贴水 ${plainPct(item.future_premium_pct)}` : ""}</p><p class="detail-muted">涨价概率是综合趋势、波动与新闻的模型提示，不等于实际涨价结果或未来涨幅。</p></section><section class="detail-section"><h3>采购跟进建议</h3><ol>${actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}</ol><p class="detail-caution">需结合实际规格、需求和供应商报价核验；此处不生成采购订单。</p></section><section class="detail-section"><h3>来源、口径与覆盖</h3><dl class="detail-facts"><div><dt>行情来源</dt><dd>${escapeHtml(basis.source)}</dd></div><div><dt>价格口径</dt><dd>${escapeHtml(basis.label)} · ${escapeHtml(basis.hint)}</dd></div><div><dt>历史覆盖</dt><dd>${coverage ? `${escapeHtml(coverage.first_date || "—")} 至 ${escapeHtml(coverage.last_date || "—")} · ${escapeHtml(coverage.count ?? "—")}条可验证记录` : "暂无历史覆盖说明"}</dd></div></dl>${basis.cls === "proxy" ? '<p class="detail-caution">代理指标只能提示上游传导方向，不能当作该材料或部件的直接成交报价。</p>' : ""}<p class="detail-muted">${escapeHtml(item.notes && item.notes !== "NaN" ? item.notes : "暂无额外口径备注。")}</p></section><section class="detail-section"><h3>关联产品大类</h3><div class="detail-buckets">${buckets.length ? buckets.map((bucket) => `<article><strong>${escapeHtml(bucket.name)}</strong><p>${escapeHtml(bucket.boss_focus || "维持日度跟踪。")}</p></article>`).join("") : '<p class="detail-muted">暂无已配置的产品关联。</p>'}</div></section><section class="detail-section"><h3>匹配新闻 <small>${news.length}条</small></h3>${
+      news.length
+        ? news
+            .map((item) => {
+              const href = safeNewsLink(item.link);
+              return `<article class="detail-news">${href ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title || "新闻线索")}</a>` : `<strong>${escapeHtml(item.title || "新闻线索")}</strong>`}<p>${escapeHtml(item.source || "来源待核实")}${item.published ? ` · ${escapeHtml(dateText(item.published))}` : ""}</p></article>`;
+            })
+            .join("")
+        : '<p class="detail-muted">本次没有匹配新闻，不代表没有市场扰动。</p>'
+    }<p class="detail-muted">新闻按关键词匹配，需打开原文核实与该原料的关联。</p></section>`;
+    if (el("briefDetailTrend"))
+      el("briefDetailTrend").href = trendHref(materialId, "chart");
+    if (el("briefDetailHistory"))
+      el("briefDetailHistory").href = trendHref(materialId, "history");
+    if (!dialog.open) dialog.showModal();
+    body.scrollTop = 0;
+    if (el("briefDetailClose"))
+      el("briefDetailClose").focus({ preventScroll: true });
+  }
+
+  function showToast(message) {
+    const toast = el("briefToast");
+    if (!toast) return;
+    clearTimeout(toastTimer);
+    toast.textContent = message;
+    toast.hidden = false;
+    toastTimer = window.setTimeout(() => {
+      toast.hidden = true;
+    }, 4200);
+  }
+
+  function publicSummaryText() {
+    const coverage = tradeDateCoverageSummary();
+    const top = priorityRows()
+      .filter((item) => item.provider !== "manual")
+      .slice(0, 3);
+    const actions =
+      data.brief && Array.isArray(data.brief.actions)
+        ? data.brief.actions.filter(
+            (action) =>
+              typeof action === "string" &&
+              !/(?:file:\/\/|[a-z]:[\\/]|\.private[\\/]|data[\\/]internal|runtime[\\/]internal)/i.test(
+                action,
+              ),
+          )
+        : [];
+    return [
+      "迈瑟伦原材料市场简报",
+      `生成时间：${dateText(data.generated_at)}（北京时间）`,
+      `最新交易日：${latestTradingDateLabel()}`,
+      coverage
+        ? `最新日覆盖：${coverage.latestTradeDateCount}/${coverage.totalCount}${coverage.laggingCount ? `；${coverage.laggingCount}项日期较早` : ""}`
+        : "暂无日期覆盖说明",
+      `采购成本压力评分：${finite(data.summary.pressure_index) ? Math.round(Number(data.summary.pressure_index)) : "暂无评分"}，${finite(data.summary.pressure_index) ? scoreText(Number(data.summary.pressure_index)) : "等待评估"}`,
+      "重点原料：",
+      ...top.map(
+        (item) =>
+          `${item.material_name}：${num(item.price, 2)} ${item.unit || ""}；30日${plainPct(item.change_30d)}；涨价概率${item.up_probability ?? "—"}%（模型估算）；${basisInfo(item).label}；交易日${item.date || "待确认"}`,
+      ),
+      "采购跟进：",
+      ...actions.map((action, index) => `${index + 1}. ${String(action)}`),
+      "说明：公开行情与代理指标用于跟踪，不替代实际规格、需求及供应商报价核验。",
+    ].join("\n");
+  }
+
+  async function copySummary() {
+    const button = el("copyBrief");
+    if (button) button.disabled = true;
+    try {
+      const text = publicSummaryText();
+      if (navigator.clipboard && window.isSecureContext)
+        await navigator.clipboard.writeText(text);
+      else {
+        const field = document.createElement("textarea");
+        field.value = text;
+        field.readOnly = true;
+        field.style.position = "fixed";
+        field.style.opacity = "0";
+        document.body.appendChild(field);
+        field.select();
+        const copied = document.execCommand("copy");
+        field.remove();
+        if (!copied) throw new Error("clipboard unavailable");
+      }
+      showToast("已复制公开摘要，可粘贴到你的会议或工作记录。");
+    } catch (_) {
+      showToast("未能复制，请选中简报内容后使用浏览器复制。");
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.focus({ preventScroll: true });
+      }
+    }
+  }
+
+  function initInteractions() {
+    document.querySelectorAll('a[href="#marketReading"]').forEach((link) =>
+      link.addEventListener("click", () => {
+        if (el("marketReading")) el("marketReading").open = true;
+      }),
+    );
+    const category = el("briefCategory");
+    if (category)
+      category.innerHTML = [
+        '<option value="全部">全部大类</option>',
+        ...(data.cost_buckets || []).map(
+          (bucket) =>
+            `<option value="${escapeHtml(bucket.name)}">${escapeHtml(bucket.name)}</option>`,
+        ),
+      ].join("");
+    const controls = [
+      ["briefSearch", "input", "search"],
+      ["briefCategory", "change", "category"],
+      ["briefRiskFilter", "change", "filter"],
+      ["briefSort", "change", "sort"],
+    ];
+    controls.forEach(([id, eventName, key]) => {
+      const control = el(id);
+      if (control)
+        control.addEventListener(eventName, (event) => {
+          state[key] = event.target.value;
+          renderTable();
+          if (key === "category") renderComponents();
+        });
+    });
+    if (el("briefReset"))
+      el("briefReset").addEventListener("click", resetFilters);
+    if (el("briefPrimaryAction"))
+      el("briefPrimaryAction").addEventListener("click", (event) => {
+        const top = priorityRows()[0];
+        if (top) openMaterialDetail(top.material_id, event.currentTarget);
+      });
+    if (el("copyBrief")) el("copyBrief").addEventListener("click", copySummary);
+    if (el("printBrief"))
+      el("printBrief").addEventListener("click", () => window.print());
+    if (el("reloadButton"))
+      el("reloadButton").addEventListener("click", hardReload);
+    document.querySelectorAll("[data-trend-nav]").forEach((link) => {
+      const section = [
+        "overview",
+        "chartSection",
+        "riskSection",
+        "newsSection",
+      ].includes(link.dataset.trendNav)
+        ? link.dataset.trendNav
+        : "overview";
+      link.href = `${trendBase()}#${section}`;
+    });
+    document.querySelectorAll("[data-trend-link]").forEach((link) => {
+      link.href =
+        link.dataset.trendLink === "overview"
+          ? `${trendBase()}#overview`
+          : trendHref("", link.dataset.trendLink);
+    });
+    document.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-brief-material]");
+      if (item) {
+        openMaterialDetail(item.dataset.briefMaterial, item);
+        return;
+      }
+      if (event.target.closest("[data-brief-reset]")) {
+        resetFilters();
+        return;
+      }
+      const bucket = event.target.closest("[data-brief-category]");
+      if (bucket) {
+        state.category = bucket.dataset.briefCategory;
+        state.search = "";
+        state.filter = "all";
+        syncFilters();
+        renderTable();
+        renderComponents();
+        scrollToSection("materialSection");
+        return;
+      }
+      const quick = event.target.closest("[data-brief-filter]");
+      if (quick) {
+        const filter = quick.dataset.briefFilter;
+        if (filter === "news") {
+          scrollToSection("briefNewsSection");
+          return;
+        }
+        state.category = "全部";
+        state.search = "";
+        state.filter = filter;
+        syncFilters();
+        renderTable();
+        renderComponents();
+        scrollToSection("materialSection");
+      }
+    });
+    const dialog = el("briefDetailDialog");
+    if (dialog) {
+      if (el("briefDetailClose"))
+        el("briefDetailClose").addEventListener("click", () => dialog.close());
+      dialog.addEventListener("close", () => {
+        if (lastDetailTrigger && document.contains(lastDetailTrigger))
+          lastDetailTrigger.focus({ preventScroll: true });
+      });
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          const rect = dialog.getBoundingClientRect();
+          if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          )
+            dialog.close();
+        }
+      });
+    }
+    syncFilters();
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(renderIndexChart, 120);
+    });
   }
 
   renderHeader();
   renderRefreshWarnings();
+  renderRefreshStatusStrip();
   renderBrief();
+  initInteractions();
   renderComponents();
   renderTable();
   renderIndexChart();

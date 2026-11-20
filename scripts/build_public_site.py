@@ -192,6 +192,7 @@ def main() -> int:
 
     report_html = (DASHBOARD / "report.html").read_text(encoding="utf-8")
     report_html = report_html.replace('href="./index.html"', 'href="./trend.html"')
+    report_html = version_stylesheet(report_html, "styles.css", asset_version)
     report_html = version_stylesheet(report_html, "report.css", asset_version)
     report_html = replace_loader(report_html, runtime_loader("report.js", asset_version))
     (PUBLIC / "index.html").write_text(report_html, encoding="utf-8")
